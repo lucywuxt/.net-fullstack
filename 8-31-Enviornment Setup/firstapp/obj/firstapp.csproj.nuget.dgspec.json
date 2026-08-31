@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/firstapp/firstapp.csproj": {}
+    "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/8-31-Enviornment Setup/firstapp/firstapp.csproj": {}
   },
   "projects": {
-    "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/firstapp/firstapp.csproj": {
+    "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/8-31-Enviornment Setup/firstapp/firstapp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/firstapp/firstapp.csproj",
+        "projectUniqueName": "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/8-31-Enviornment Setup/firstapp/firstapp.csproj",
         "projectName": "firstapp",
-        "projectPath": "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/firstapp/firstapp.csproj",
+        "projectPath": "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/8-31-Enviornment Setup/firstapp/firstapp.csproj",
         "packagesPath": "/Users/lucywu/.nuget/packages/",
-        "outputPath": "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/firstapp/obj/",
+        "outputPath": "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/8-31-Enviornment Setup/firstapp/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/lucywu/.nuget/NuGet/NuGet.Config"
