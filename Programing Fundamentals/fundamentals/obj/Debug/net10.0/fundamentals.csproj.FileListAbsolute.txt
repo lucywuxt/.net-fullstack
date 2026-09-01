@@ -1,0 +1,30 @@
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Day2/fundamentals/obj/Debug/net10.0/fundamentals.GeneratedMSBuildEditorConfig.editorconfig
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Day2/fundamentals/obj/Debug/net10.0/fundamentals.AssemblyInfoInputs.cache
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Day2/fundamentals/obj/Debug/net10.0/fundamentals.AssemblyInfo.cs
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Day2/fundamentals/obj/Debug/net10.0/fundamentals.csproj.CoreCompileInputs.cache
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Day2/fundamentals/obj/Debug/net10.0/fundamentals.sourcelink.json
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Day2/fundamentals/bin/Debug/net10.0/fundamentals
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Day2/fundamentals/bin/Debug/net10.0/fundamentals.deps.json
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Day2/fundamentals/bin/Debug/net10.0/fundamentals.runtimeconfig.json
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Day2/fundamentals/bin/Debug/net10.0/fundamentals.dll
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Day2/fundamentals/bin/Debug/net10.0/fundamentals.pdb
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Day2/fundamentals/obj/Debug/net10.0/fundamentals.dll
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Day2/fundamentals/obj/Debug/net10.0/refint/fundamentals.dll
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Day2/fundamentals/obj/Debug/net10.0/fundamentals.pdb
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Day2/fundamentals/obj/Debug/net10.0/fundamentals.genruntimeconfig.cache
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Day2/fundamentals/obj/Debug/net10.0/ref/fundamentals.dll
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/fundamentals/bin/Debug/net10.0/fundamentals
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/fundamentals/bin/Debug/net10.0/fundamentals.deps.json
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/fundamentals/bin/Debug/net10.0/fundamentals.runtimeconfig.json
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/fundamentals/bin/Debug/net10.0/fundamentals.dll
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/fundamentals/bin/Debug/net10.0/fundamentals.pdb
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/fundamentals/obj/Debug/net10.0/fundamentals.GeneratedMSBuildEditorConfig.editorconfig
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/fundamentals/obj/Debug/net10.0/fundamentals.AssemblyInfoInputs.cache
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/fundamentals/obj/Debug/net10.0/fundamentals.AssemblyInfo.cs
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/fundamentals/obj/Debug/net10.0/fundamentals.csproj.CoreCompileInputs.cache
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/fundamentals/obj/Debug/net10.0/fundamentals.sourcelink.json
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/fundamentals/obj/Debug/net10.0/fundamentals.dll
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/fundamentals/obj/Debug/net10.0/refint/fundamentals.dll
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/fundamentals/obj/Debug/net10.0/fundamentals.pdb
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/fundamentals/obj/Debug/net10.0/fundamentals.genruntimeconfig.cache
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/fundamentals/obj/Debug/net10.0/ref/fundamentals.dll

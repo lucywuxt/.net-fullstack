@@ -1,0 +1,15 @@
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/bankingapp/obj/Debug/net10.0/bankingapp.GeneratedMSBuildEditorConfig.editorconfig
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/bankingapp/obj/Debug/net10.0/bankingapp.AssemblyInfoInputs.cache
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/bankingapp/obj/Debug/net10.0/bankingapp.AssemblyInfo.cs
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/bankingapp/obj/Debug/net10.0/bankingapp.csproj.CoreCompileInputs.cache
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/bankingapp/obj/Debug/net10.0/bankingapp.sourcelink.json
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/bankingapp/bin/Debug/net10.0/bankingapp
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/bankingapp/bin/Debug/net10.0/bankingapp.deps.json
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/bankingapp/bin/Debug/net10.0/bankingapp.runtimeconfig.json
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/bankingapp/bin/Debug/net10.0/bankingapp.dll
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/bankingapp/bin/Debug/net10.0/bankingapp.pdb
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/bankingapp/obj/Debug/net10.0/bankingapp.dll
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/bankingapp/obj/Debug/net10.0/refint/bankingapp.dll
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/bankingapp/obj/Debug/net10.0/bankingapp.pdb
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/bankingapp/obj/Debug/net10.0/bankingapp.genruntimeconfig.cache
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/bankingapp/obj/Debug/net10.0/ref/bankingapp.dll
