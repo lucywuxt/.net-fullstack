@@ -1,0 +1,15 @@
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/EmployeeManagement/bin/Debug/net10.0/EmployeeManagement
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/EmployeeManagement/bin/Debug/net10.0/EmployeeManagement.deps.json
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/EmployeeManagement/bin/Debug/net10.0/EmployeeManagement.runtimeconfig.json
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/EmployeeManagement/bin/Debug/net10.0/EmployeeManagement.dll
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/EmployeeManagement/bin/Debug/net10.0/EmployeeManagement.pdb
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/EmployeeManagement/obj/Debug/net10.0/EmployeeManagement.GeneratedMSBuildEditorConfig.editorconfig
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/EmployeeManagement/obj/Debug/net10.0/EmployeeManagement.AssemblyInfoInputs.cache
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/EmployeeManagement/obj/Debug/net10.0/EmployeeManagement.AssemblyInfo.cs
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/EmployeeManagement/obj/Debug/net10.0/EmployeeManagement.csproj.CoreCompileInputs.cache
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/EmployeeManagement/obj/Debug/net10.0/EmployeeManagement.sourcelink.json
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/EmployeeManagement/obj/Debug/net10.0/EmployeeManagement.dll
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/EmployeeManagement/obj/Debug/net10.0/refint/EmployeeManagement.dll
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/EmployeeManagement/obj/Debug/net10.0/EmployeeManagement.pdb
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/EmployeeManagement/obj/Debug/net10.0/EmployeeManagement.genruntimeconfig.cache
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/EmployeeManagement/obj/Debug/net10.0/ref/EmployeeManagement.dll
