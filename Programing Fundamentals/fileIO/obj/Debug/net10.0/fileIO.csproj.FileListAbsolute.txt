@@ -1,0 +1,15 @@
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/fileIO/bin/Debug/net10.0/fileIO
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/fileIO/bin/Debug/net10.0/fileIO.deps.json
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/fileIO/bin/Debug/net10.0/fileIO.runtimeconfig.json
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/fileIO/bin/Debug/net10.0/fileIO.dll
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/fileIO/bin/Debug/net10.0/fileIO.pdb
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/fileIO/obj/Debug/net10.0/fileIO.GeneratedMSBuildEditorConfig.editorconfig
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/fileIO/obj/Debug/net10.0/fileIO.AssemblyInfoInputs.cache
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/fileIO/obj/Debug/net10.0/fileIO.AssemblyInfo.cs
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/fileIO/obj/Debug/net10.0/fileIO.csproj.CoreCompileInputs.cache
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/fileIO/obj/Debug/net10.0/fileIO.sourcelink.json
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/fileIO/obj/Debug/net10.0/fileIO.dll
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/fileIO/obj/Debug/net10.0/refint/fileIO.dll
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/fileIO/obj/Debug/net10.0/fileIO.pdb
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/fileIO/obj/Debug/net10.0/fileIO.genruntimeconfig.cache
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Programing Fundamentals/fileIO/obj/Debug/net10.0/ref/fileIO.dll
