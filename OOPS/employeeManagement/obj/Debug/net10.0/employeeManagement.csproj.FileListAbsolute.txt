@@ -1,0 +1,15 @@
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/OOPS/employeeManagement/bin/Debug/net10.0/employeeManagement
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/OOPS/employeeManagement/bin/Debug/net10.0/employeeManagement.deps.json
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/OOPS/employeeManagement/bin/Debug/net10.0/employeeManagement.runtimeconfig.json
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/OOPS/employeeManagement/bin/Debug/net10.0/employeeManagement.dll
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/OOPS/employeeManagement/bin/Debug/net10.0/employeeManagement.pdb
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/OOPS/employeeManagement/obj/Debug/net10.0/employeeManagement.GeneratedMSBuildEditorConfig.editorconfig
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/OOPS/employeeManagement/obj/Debug/net10.0/employeeManagement.AssemblyInfoInputs.cache
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/OOPS/employeeManagement/obj/Debug/net10.0/employeeManagement.AssemblyInfo.cs
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/OOPS/employeeManagement/obj/Debug/net10.0/employeeManagement.csproj.CoreCompileInputs.cache
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/OOPS/employeeManagement/obj/Debug/net10.0/employeeManagement.sourcelink.json
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/OOPS/employeeManagement/obj/Debug/net10.0/employeeManagement.dll
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/OOPS/employeeManagement/obj/Debug/net10.0/refint/employeeManagement.dll
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/OOPS/employeeManagement/obj/Debug/net10.0/employeeManagement.pdb
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/OOPS/employeeManagement/obj/Debug/net10.0/employeeManagement.genruntimeconfig.cache
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/OOPS/employeeManagement/obj/Debug/net10.0/ref/employeeManagement.dll
