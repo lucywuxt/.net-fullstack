@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Day3/guestManagement/guestManagement.csproj": {}
+    "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/OOPS/guestManagement/guestManagement.csproj": {}
   },
   "projects": {
-    "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Day3/guestManagement/guestManagement.csproj": {
+    "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/OOPS/guestManagement/guestManagement.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Day3/guestManagement/guestManagement.csproj",
+        "projectUniqueName": "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/OOPS/guestManagement/guestManagement.csproj",
         "projectName": "guestManagement",
-        "projectPath": "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Day3/guestManagement/guestManagement.csproj",
+        "projectPath": "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/OOPS/guestManagement/guestManagement.csproj",
         "packagesPath": "/Users/lucywu/.nuget/packages/",
-        "outputPath": "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Day3/guestManagement/obj/",
+        "outputPath": "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/OOPS/guestManagement/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/lucywu/.nuget/NuGet/NuGet.Config"

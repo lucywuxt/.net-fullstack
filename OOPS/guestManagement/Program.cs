@@ -2,7 +2,6 @@
 
 while (continueProgram){
 
-    Console.Clear();
     ShowMainMenu();
 
     Console.Write("Please select an option: ");
@@ -47,13 +46,14 @@ while (continueProgram){
             break;
         default:
             Console.WriteLine("Invalid option. Please try again.");
-            Pause();
+            // Pause();
             break;
     }
 
 
     static void ShowMainMenu()
     {
+        Console.Clear();
         Console.WriteLine("!~~~~~~~Welcome to Guest Management~~~~~~~!");
         Console.WriteLine("a. New Guest");
         Console.WriteLine("b. View Guest Details");
