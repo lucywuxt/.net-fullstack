@@ -1,13 +1,12 @@
 namespace Banking
 {
-
     public enum TypeOfAccount
     {
         Savings,
         Current,
         Loan
     }
-    public class Accounts
+    public abstract class Accounts
     {
         #region Properties
         public int AccountNum { get; set; }
@@ -16,22 +15,37 @@ namespace Banking
         public double Balance { get; set; }
         public bool IsActive { get; set; }
         #endregion
-
-        public double Withdraw(double amount)
+        
+        #region Methods
+        public virtual double Withdraw(double amount)
         {
-            if (amount > Balance)
+            if (amount < 100)
             {
-                throw new Exception("Insufficient Balance");
-            }
-            else if (amount < 0)
-            {
-                throw new Exception("Invalid Amount");
+                throw new Exception("withdrawal amount should be more than 100");
             }
             else
             {
-                Balance -= amount;
+                return Balance -= amount;
+            }
+        }
+
+        public double Deposit(double amount)
+        {
+            if (amount < 0)
+            {
+                throw new Exception("Invalid amount");
+            }
+            else
+            {
+                Balance += amount;
                 return Balance;
             }
         }
+
+        public double AvailableBalance()
+        {
+            return Balance;
+        }
+        #endregion
     }
 }
