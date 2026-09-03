@@ -3,7 +3,7 @@ namespace Banking
     public enum TypeOfAccount
     {
         Savings,
-        Current,
+        Checking,
         Loan
     }
     public abstract class Accounts
@@ -14,8 +14,9 @@ namespace Banking
         public TypeOfAccount AccountType { get; set; }
         public double Balance { get; set; }
         public bool IsActive { get; set; }
+        public int AccountOpenYear { get; set; }
         #endregion
-        
+
         #region Methods
         public virtual double Withdraw(double amount)
         {
@@ -45,6 +46,11 @@ namespace Banking
         public double CheckBalance()
         {
             return Balance;
+        }
+
+        public double InterestCalculator(double interest)
+        {
+            return Balance += Balance * interest;
         }
         #endregion
     }
