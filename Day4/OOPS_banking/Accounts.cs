@@ -42,7 +42,7 @@ namespace Banking
             }
         }
 
-        public double AvailableBalance()
+        public double CheckBalance()
         {
             return Balance;
         }

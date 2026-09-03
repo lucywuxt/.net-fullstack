@@ -1,0 +1,15 @@
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Day4/OOPS_banking/obj/Debug/net10.0/OOPS_banking.GeneratedMSBuildEditorConfig.editorconfig
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Day4/OOPS_banking/obj/Debug/net10.0/OOPS_banking.AssemblyInfoInputs.cache
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Day4/OOPS_banking/obj/Debug/net10.0/OOPS_banking.AssemblyInfo.cs
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Day4/OOPS_banking/obj/Debug/net10.0/OOPS_banking.csproj.CoreCompileInputs.cache
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Day4/OOPS_banking/obj/Debug/net10.0/OOPS_banking.sourcelink.json
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Day4/OOPS_banking/bin/Debug/net10.0/OOPS_banking
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Day4/OOPS_banking/bin/Debug/net10.0/OOPS_banking.deps.json
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Day4/OOPS_banking/bin/Debug/net10.0/OOPS_banking.runtimeconfig.json
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Day4/OOPS_banking/bin/Debug/net10.0/OOPS_banking.dll
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Day4/OOPS_banking/bin/Debug/net10.0/OOPS_banking.pdb
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Day4/OOPS_banking/obj/Debug/net10.0/OOPS_banking.dll
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Day4/OOPS_banking/obj/Debug/net10.0/refint/OOPS_banking.dll
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Day4/OOPS_banking/obj/Debug/net10.0/OOPS_banking.pdb
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Day4/OOPS_banking/obj/Debug/net10.0/OOPS_banking.genruntimeconfig.cache
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Day4/OOPS_banking/obj/Debug/net10.0/ref/OOPS_banking.dll
