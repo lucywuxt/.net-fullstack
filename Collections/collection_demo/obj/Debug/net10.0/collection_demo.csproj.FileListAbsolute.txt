@@ -1,0 +1,15 @@
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Collections/collection_demo/obj/Debug/net10.0/collection_demo.GeneratedMSBuildEditorConfig.editorconfig
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Collections/collection_demo/obj/Debug/net10.0/collection_demo.AssemblyInfoInputs.cache
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Collections/collection_demo/obj/Debug/net10.0/collection_demo.AssemblyInfo.cs
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Collections/collection_demo/obj/Debug/net10.0/collection_demo.csproj.CoreCompileInputs.cache
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Collections/collection_demo/obj/Debug/net10.0/collection_demo.sourcelink.json
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Collections/collection_demo/bin/Debug/net10.0/collection_demo
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Collections/collection_demo/bin/Debug/net10.0/collection_demo.deps.json
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Collections/collection_demo/bin/Debug/net10.0/collection_demo.runtimeconfig.json
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Collections/collection_demo/bin/Debug/net10.0/collection_demo.dll
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Collections/collection_demo/bin/Debug/net10.0/collection_demo.pdb
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Collections/collection_demo/obj/Debug/net10.0/collection_demo.dll
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Collections/collection_demo/obj/Debug/net10.0/refint/collection_demo.dll
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Collections/collection_demo/obj/Debug/net10.0/collection_demo.pdb
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Collections/collection_demo/obj/Debug/net10.0/collection_demo.genruntimeconfig.cache
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Collections/collection_demo/obj/Debug/net10.0/ref/collection_demo.dll
