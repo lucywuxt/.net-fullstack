@@ -1,0 +1,15 @@
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/LINQ/LINQ_Collection/obj/Debug/net10.0/LINQ_Collection.GeneratedMSBuildEditorConfig.editorconfig
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/LINQ/LINQ_Collection/obj/Debug/net10.0/LINQ_Collection.AssemblyInfoInputs.cache
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/LINQ/LINQ_Collection/obj/Debug/net10.0/LINQ_Collection.AssemblyInfo.cs
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/LINQ/LINQ_Collection/obj/Debug/net10.0/LINQ_Collection.csproj.CoreCompileInputs.cache
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/LINQ/LINQ_Collection/obj/Debug/net10.0/LINQ_Collection.sourcelink.json
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/LINQ/LINQ_Collection/bin/Debug/net10.0/LINQ_Collection
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/LINQ/LINQ_Collection/bin/Debug/net10.0/LINQ_Collection.deps.json
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/LINQ/LINQ_Collection/bin/Debug/net10.0/LINQ_Collection.runtimeconfig.json
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/LINQ/LINQ_Collection/bin/Debug/net10.0/LINQ_Collection.dll
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/LINQ/LINQ_Collection/bin/Debug/net10.0/LINQ_Collection.pdb
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/LINQ/LINQ_Collection/obj/Debug/net10.0/LINQ_Collection.dll
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/LINQ/LINQ_Collection/obj/Debug/net10.0/refint/LINQ_Collection.dll
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/LINQ/LINQ_Collection/obj/Debug/net10.0/LINQ_Collection.pdb
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/LINQ/LINQ_Collection/obj/Debug/net10.0/LINQ_Collection.genruntimeconfig.cache
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/LINQ/LINQ_Collection/obj/Debug/net10.0/ref/LINQ_Collection.dll
