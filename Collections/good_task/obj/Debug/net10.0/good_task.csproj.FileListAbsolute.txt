@@ -1,0 +1,15 @@
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Collections/good_task/obj/Debug/net10.0/good_task.GeneratedMSBuildEditorConfig.editorconfig
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Collections/good_task/obj/Debug/net10.0/good_task.AssemblyInfoInputs.cache
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Collections/good_task/obj/Debug/net10.0/good_task.AssemblyInfo.cs
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Collections/good_task/obj/Debug/net10.0/good_task.csproj.CoreCompileInputs.cache
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Collections/good_task/obj/Debug/net10.0/good_task.sourcelink.json
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Collections/good_task/bin/Debug/net10.0/good_task
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Collections/good_task/bin/Debug/net10.0/good_task.deps.json
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Collections/good_task/bin/Debug/net10.0/good_task.runtimeconfig.json
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Collections/good_task/bin/Debug/net10.0/good_task.dll
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Collections/good_task/bin/Debug/net10.0/good_task.pdb
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Collections/good_task/obj/Debug/net10.0/good_task.dll
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Collections/good_task/obj/Debug/net10.0/refint/good_task.dll
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Collections/good_task/obj/Debug/net10.0/good_task.pdb
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Collections/good_task/obj/Debug/net10.0/good_task.genruntimeconfig.cache
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Collections/good_task/obj/Debug/net10.0/ref/good_task.dll

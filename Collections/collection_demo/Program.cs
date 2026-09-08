@@ -1,8 +1,6 @@
 ﻿using System.Collections;
 using EmployeeManagement;
 
-Console.BackgroundColor = ConsoleColor.Cyan;
-
 #region Array
 
 // int[] nums = new int[10];
