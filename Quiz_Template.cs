@@ -1,44 +1,44 @@
-// using System;
-// public class Solution
-// {
-//     public string functionName(int x, string y)
-//     {
-//         // implement the funtion here
-//         return x + y;
-//     }
-//     static void Main(string[] args)
-//     {
-//         int integers = int.TryParse(Console.ReadLine());
-//         // OR
-//         int strings = Console.ReadLine();
-
-//         Solution s = new Solution();
-//         Console.WriteLine(s.functionName(integers, strings));
-//     }
-// }
-
-
-// ----------------- Wiget -----------------
 using System;
 public class Solution
 {
-    public long Widgets(int x)
+    public string functionName(int x, string y)
     {
-        long sum = 0;
-        for(int i = 1; i <= x; i++)
-        {
-            sum += (long)i*i;
-        }
-        return sum;
+        // implement the funtion here
+        return x + y;
     }
     static void Main(string[] args)
     {
-        int x = int.Parse(Console.ReadLine());
+        int integers = int.TryParse(Console.ReadLine());
+        // OR
+        int strings = Console.ReadLine();
 
         Solution s = new Solution();
-        Console.WriteLine(s.Widgets(x));
+        Console.WriteLine(s.functionName(integers, strings));
     }
 }
+
+
+// ----------------- Wiget -----------------
+// using System;
+// public class Solution
+// {
+//     public long Widgets(int x)
+//     {
+//         long sum = 0;
+//         for(int i = 1; i <= x; i++)
+//         {
+//             sum += (long)i*i;
+//         }
+//         return sum;
+//     }
+//     static void Main(string[] args)
+//     {
+//         int x = int.Parse(Console.ReadLine());
+
+//         Solution s = new Solution();
+//         Console.WriteLine(s.Widgets(x));
+//     }
+// }
 
 
 // -------------------- Palindrome --------------------
