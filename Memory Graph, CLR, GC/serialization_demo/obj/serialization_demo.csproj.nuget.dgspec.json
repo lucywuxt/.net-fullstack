@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph CLR GC/serialization_demo/serialization_demo.csproj": {}
+    "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph, CLR, GC/serialization_demo/serialization_demo.csproj": {}
   },
   "projects": {
-    "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph CLR GC/serialization_demo/serialization_demo.csproj": {
+    "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph, CLR, GC/serialization_demo/serialization_demo.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph CLR GC/serialization_demo/serialization_demo.csproj",
+        "projectUniqueName": "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph, CLR, GC/serialization_demo/serialization_demo.csproj",
         "projectName": "serialization_demo",
-        "projectPath": "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph CLR GC/serialization_demo/serialization_demo.csproj",
+        "projectPath": "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph, CLR, GC/serialization_demo/serialization_demo.csproj",
         "packagesPath": "/Users/lucywu/.nuget/packages/",
-        "outputPath": "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph CLR GC/serialization_demo/obj/",
+        "outputPath": "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph, CLR, GC/serialization_demo/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/lucywu/.nuget/NuGet/NuGet.Config"
