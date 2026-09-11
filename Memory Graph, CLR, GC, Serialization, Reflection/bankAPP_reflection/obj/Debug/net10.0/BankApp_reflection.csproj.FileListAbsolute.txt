@@ -1,0 +1,5 @@
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph, CLR, GC/bankAPP_reflection/obj/Debug/net10.0/BankApp_reflection.GeneratedMSBuildEditorConfig.editorconfig
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph, CLR, GC/bankAPP_reflection/obj/Debug/net10.0/BankApp_reflection.AssemblyInfoInputs.cache
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph, CLR, GC/bankAPP_reflection/obj/Debug/net10.0/BankApp_reflection.AssemblyInfo.cs
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph, CLR, GC/bankAPP_reflection/obj/Debug/net10.0/BankApp_reflection.csproj.CoreCompileInputs.cache
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph, CLR, GC/bankAPP_reflection/obj/Debug/net10.0/BankApp_reflection.sourcelink.json
