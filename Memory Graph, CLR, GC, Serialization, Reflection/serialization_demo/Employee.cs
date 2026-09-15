@@ -6,7 +6,7 @@ namespace EmpManagement
     class Employee
     {
         [JsonRequired]
-        public int empNo { get; set; }
+        public int empNo { get; set; } // will not serialize if this is missing
         public string empName { get; set; } = "";
         public int empAvailableLeave { get; set; }
 
@@ -38,7 +38,8 @@ namespace EmpManagement
 
         public string SaveObject()
         {
-            var options = new JsonSerializerOptions()
+            // set up the Json format
+            var format = new JsonSerializerOptions()
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 WriteIndented = true,
@@ -46,7 +47,7 @@ namespace EmpManagement
             };
 
             // save this object
-            string data = JsonSerializer.Serialize(this, options);
+            string data = JsonSerializer.Serialize(this, format);
             File.WriteAllText(this.empNo + ".json", data);
             return "Object saved!";
         }
