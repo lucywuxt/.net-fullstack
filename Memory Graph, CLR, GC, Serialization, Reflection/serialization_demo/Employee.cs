@@ -32,7 +32,7 @@ namespace EmpManagement
 
         public double AppriseSalary()
         {
-            empSalary = empSalary + 2000;
+            empSalary += 2000;
             return empSalary;
         }
 
