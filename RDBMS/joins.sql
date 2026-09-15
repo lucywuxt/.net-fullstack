@@ -59,4 +59,4 @@ SELECT
 FROM emp_info e1 
 JOIN emp_info e2 
     ON e1.empManager = e2.empNo
-GROUP BY e2.empName;
+GROUP BY e2.empName; 
