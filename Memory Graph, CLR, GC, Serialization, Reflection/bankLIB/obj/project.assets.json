@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph, CLR, GC/bankLIB/bankLIB.csproj",
+      "projectUniqueName": "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph, CLR, GC, Serialization, Reflection/bankLIB/bankLIB.csproj",
       "projectName": "bankLIB",
-      "projectPath": "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph, CLR, GC/bankLIB/bankLIB.csproj",
+      "projectPath": "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph, CLR, GC, Serialization, Reflection/bankLIB/bankLIB.csproj",
       "packagesPath": "/Users/lucywu/.nuget/packages/",
-      "outputPath": "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph, CLR, GC/bankLIB/obj/",
+      "outputPath": "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph, CLR, GC, Serialization, Reflection/bankLIB/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/lucywu/.nuget/NuGet/NuGet.Config"

@@ -1,0 +1,12 @@
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph, CLR, GC, Serialization, Reflection/bankLIB/bin/Debug/net10.0/bankLIB.deps.json
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph, CLR, GC, Serialization, Reflection/bankLIB/bin/Debug/net10.0/bankLIB.dll
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph, CLR, GC, Serialization, Reflection/bankLIB/bin/Debug/net10.0/bankLIB.pdb
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph, CLR, GC, Serialization, Reflection/bankLIB/obj/Debug/net10.0/bankLIB.GeneratedMSBuildEditorConfig.editorconfig
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph, CLR, GC, Serialization, Reflection/bankLIB/obj/Debug/net10.0/bankLIB.AssemblyInfoInputs.cache
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph, CLR, GC, Serialization, Reflection/bankLIB/obj/Debug/net10.0/bankLIB.AssemblyInfo.cs
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph, CLR, GC, Serialization, Reflection/bankLIB/obj/Debug/net10.0/bankLIB.csproj.CoreCompileInputs.cache
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph, CLR, GC, Serialization, Reflection/bankLIB/obj/Debug/net10.0/bankLIB.sourcelink.json
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph, CLR, GC, Serialization, Reflection/bankLIB/obj/Debug/net10.0/bankLIB.dll
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph, CLR, GC, Serialization, Reflection/bankLIB/obj/Debug/net10.0/refint/bankLIB.dll
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph, CLR, GC, Serialization, Reflection/bankLIB/obj/Debug/net10.0/bankLIB.pdb
+/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph, CLR, GC, Serialization, Reflection/bankLIB/obj/Debug/net10.0/ref/bankLIB.dll

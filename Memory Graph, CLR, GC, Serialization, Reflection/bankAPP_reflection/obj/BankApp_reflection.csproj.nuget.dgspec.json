@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph, CLR, GC/bankAPP_reflection/BankApp_reflection.csproj": {}
+    "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph, CLR, GC, Serialization, Reflection/bankAPP_reflection/BankApp_reflection.csproj": {}
   },
   "projects": {
-    "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph, CLR, GC/bankAPP_reflection/BankApp_reflection.csproj": {
+    "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph, CLR, GC, Serialization, Reflection/bankAPP_reflection/BankApp_reflection.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph, CLR, GC/bankAPP_reflection/BankApp_reflection.csproj",
+        "projectUniqueName": "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph, CLR, GC, Serialization, Reflection/bankAPP_reflection/BankApp_reflection.csproj",
         "projectName": "BankApp_reflection",
-        "projectPath": "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph, CLR, GC/bankAPP_reflection/BankApp_reflection.csproj",
+        "projectPath": "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph, CLR, GC, Serialization, Reflection/bankAPP_reflection/BankApp_reflection.csproj",
         "packagesPath": "/Users/lucywu/.nuget/packages/",
-        "outputPath": "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph, CLR, GC/bankAPP_reflection/obj/",
+        "outputPath": "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Memory Graph, CLR, GC, Serialization, Reflection/bankAPP_reflection/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/lucywu/.nuget/NuGet/NuGet.Config"
