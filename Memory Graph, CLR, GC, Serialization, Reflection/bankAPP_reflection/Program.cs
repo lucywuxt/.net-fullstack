@@ -11,11 +11,15 @@ foreach (var i in myClasses)
     Console.WriteLine(i.FullName);
 }
 
-MethodInfo[] myMethods = myClasses[1].GetMethods();
+Console.WriteLine("-------------------------");
+
+MethodInfo[] myMethods = myClasses[3].GetMethods();
 foreach (var i in myMethods)
 {
     Console.WriteLine(i);
 }
+
+Console.WriteLine("-------------------------");
 
 var myClass = myClasses[3];
 // create a new object of myMaths
@@ -23,4 +27,5 @@ var obj = Activator.CreateInstance(myClass);
 MethodInfo m = myClass.GetMethod("Add");
 Object[] parameters = new object[]{10,20};
 Object result = (int)m.Invoke(obj,parameters);
-Console.WriteLine(result);
+// Console.WriteLine(result);
+Console.WriteLine($"{parameters[0]} adds {parameters[1]} = {result}");
