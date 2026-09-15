@@ -153,4 +153,4 @@ WHERE e.empDesignation IS NULL
 
 -- Self Join:
 SELECT * FROM employeeInfo e1
-JOIN employeeInfo e2 ON e1.empNO = e2.empNO 
+JOIN employeeInfo e2 ON e1.empNO = e2.empNO
