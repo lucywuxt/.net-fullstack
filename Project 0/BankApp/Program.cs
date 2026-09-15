@@ -2,17 +2,14 @@
 using System.Security;
 using Accounts;
 
-List<Account> accList = new List<Account>();
-accList.Add(new Account() { accNo = 001, username = "Joker", accBalance = 100.0 });
-accList.Add(new Account() { accNo = 002, username = "Johnas", accBalance = 0.0 });
-accList.Add(new Account() { accNo = 003, username = "Joy", accBalance = 0.0, });
-accList.Add(new Account() { accNo = 004, username = "Joshua", accBalance = 0.0 });
-accList.Add(new Account() { accNo = 005, username = "Joe", accBalance = 0.0 });
-
-int counter = 5;
+// Account accObj = new Account() { accNo = 105, username = "Joe", password = "105", accBalance = 0.0 };
+// accObj.SaveObject();
 
 bool conintuation = true;
+bool sub_menu_conintuation = true;
 int accNum = 0;
+Account accObj = null;
+
 while (conintuation)
 {
     ShowMainMenu();
@@ -26,11 +23,17 @@ while (conintuation)
             Console.WriteLine("Please enter password:");
             string password = Console.ReadLine();
 
-            if (Authentication(username, password))
+            try
             {
-                ShowBankOptions();
+                accObj = Account.LoadObject(username, password);
+                while (sub_menu_conintuation)
+                {
+                    ShowBankOptions();
+                    accObj.SaveObject();
+                }
+                sub_menu_conintuation = true;
             }
-            else
+            catch (FileNotFoundException ex)
             {
                 Console.WriteLine("Invalid credentials.");
                 Pause();
@@ -40,11 +43,13 @@ while (conintuation)
 
         case 2:
             Console.WriteLine("Admin????");
+            Pause();
             break;
 
         case 3:
             Console.WriteLine("Thanks for banking with us!");
             conintuation = false;
+            accObj.SaveObject();
             break;
 
         default:
@@ -83,48 +88,26 @@ void ShowBankOptions()
     {
 
         case 1:
-            Console.WriteLine("Enter account number: ");
-            accNum = int.Parse(Console.ReadLine());
             Console.WriteLine("~~~~~~~~~~~~ Account Detials ~~~~~~~~~~~~");
-            foreach (var a in accList)
-            {
-                if (a.accNo == accNum)
-                    Console.WriteLine(a.ToString());
-            }
+            Console.WriteLine(accObj.ToString());
             Pause();
             break;
 
         case 2:
             Console.WriteLine("~~~~~~~~~~~~ Withdraw ~~~~~~~~~~~~");
-            Console.WriteLine("Enter account number: ");
-            accNum = int.Parse(Console.ReadLine());
             Console.WriteLine("Enter amount to withdraw: ");
             double withdrawAmount = int.Parse(Console.ReadLine());
-            foreach (var a in accList)
-            {
-                if (a.accNo == accNum)
-                {
-                    a.Withdraw(withdrawAmount);
-                    Console.WriteLine($"The new balance is: {a.accBalance}");
-                }
-            }
+            accObj.Withdraw(withdrawAmount);
+            Console.WriteLine($"The new balance is: {accObj.accBalance}");
             Pause();
             break;
 
         case 3:
             Console.WriteLine("~~~~~~~~~~~~ Deposit ~~~~~~~~~~~~");
-            Console.WriteLine("Enter account number: ");
-            accNum = int.Parse(Console.ReadLine());
             Console.WriteLine("Enter amount to deposit: ");
             double depositAmount = int.Parse(Console.ReadLine());
-            foreach (var a in accList)
-            {
-                if (a.accNo == accNum)
-                {
-                    a.Deposit(depositAmount);
-                    Console.WriteLine($"The new balance is: {a.accBalance}");
-                }
-            }
+            accObj.Deposit(depositAmount);
+            Console.WriteLine($"The new balance is: {accObj.accBalance}");
             Pause();
             break;
 
@@ -161,7 +144,7 @@ void ShowBankOptions()
 
         case 8:
             Console.WriteLine("Thanks for banking with us!");
-            conintuation = false;
+            sub_menu_conintuation = false;
             break;
 
         default:
@@ -172,16 +155,6 @@ void ShowBankOptions()
     }
 }
 
-// void AddNewAccount()
-// {
-//     Console.WriteLine("Enter name: ");
-//     string name = Console.ReadLine();
-//     Console.WriteLine("Enter branch: ");
-//     string branch = Console.ReadLine();
-
-//     accList.Add(new Account() { accNo = counter, username = name, accBalance = 0.0 });
-//     counter++;
-// }
 
 static void Pause()
 {
@@ -189,7 +162,7 @@ static void Pause()
     Console.ReadKey();
 }
 
-static bool Authentication(string username, string password)
-{
-    return username == "111" && password == "123";
-}
+// bool Authentication(string username, string password)
+// {
+//     return accObj.username == username && accObj.password == password;
+// }
