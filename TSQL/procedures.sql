@@ -81,7 +81,7 @@
 -- insert into bankAccount values(101,'Lucy','Savings', 3000, 0)
 -- insert into bankAccount values(103,'Bill','Checking', 2000, 0)
 
-ALTER procedure bankAccountProc
+CREATE procedure bankAccountProc
 (
     @action varchar(10),
     @accNo int out, 
