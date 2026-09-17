@@ -69,51 +69,87 @@
 
 ----------------------------------------------------------
 
-create procedure bankAccountProc
+-- create table bankAccount
+-- (
+--     accNo int,
+--     accName varchar(20),
+--     accType varchar(20),
+--     accBalance int,
+--     accIsActive bit
+-- )
+
+-- insert into bankAccount values(101,'Lucy','Savings', 3000, 0)
+-- insert into bankAccount values(103,'Bill','Checking', 2000, 0)
+
+ALTER procedure bankAccountProc
 (
     @action varchar(10),
-    @accNo int,
-    @accName varchar(20), 
+    @accNo int out, 
+    @accName varchar(20),
     @accType varchar(20),
     @accBal int,
     @accIsActive bit,
     @accTransAmt int,
-    @accTransferToAccNo int,
-    @result varchar(30) out
-)
-as
+    @transferToAccNo int,
+    @result varchar(60) out
+) as
 begin
     if (@action = 'newAcc')
     begin
         declare @newAccNo int = (select max(accNo) + 1 from bankAccount)
-        insert into bankAccount (accNo, accName, accType, accBalance, accIsActive)
-        values(@newAccNo, upper(@accName), @accType, @accBal, @accIsActive);
-        set @result = 'Account Created, new Account Number is : ' + convert(varchar, @newAccNo);
-    end
-    else if (@action = 'DelAcc')
-    begin
-        delete from bankAccount where accNo = @accNo
-        set @result = 'Account Deleted Successfully'
-    end
-    else if (@action = 'Withdraw')
-    begin
-        update bankAccount set accBalance = accBalance - @accTransAmt
-        set @result = 'Withdrawal Successful'
-    end
-    else if (@action = 'Deposit')
-    begin
-        update bankAccount set accBalance = accBalance + @accTransAmt
-        set @result = 'Deposit Successful'
-    end
-    else if (@action = 'Transfer')
-    begin
-        update bankAccount set accBalance = accBalance - @accTransAmt where accNo = @accNo
-        update bankAccount set accBalance = accBalance + @accTransAmt where accNo = @accTransferToAccNo
-        set @result = 'Transfer Successful'
-    end
-    else
-    begin
-        set @result = 'Invalid Action'
+        insert into bankAccount values(@newAccNo, upper(@accName), @accType, @accBal, @accIsActive)
+        set @result = 'Account created, new account number  is : ' + convert(varchar, @newAccNo)
     end
 
+    else if(@action = 'DelAcc')
+    begin
+        delete from bankAccount where accNo = @accNo
+        set @result = 'Account deleted successfully.'
+    end
+
+    else if(@action = 'Withdraw')
+    begin
+        update bankAccount set accBalance = accBalance - @accTransAmt where accNo = @accNo
+        --we can select the new transaction number from transaction table and return the transaction number to user
+        set @result = 'Withdraw successfully.'
+    end
+
+    else if(@action = 'Deposit')
+    begin
+        update bankAccount set accBalance = accBalance + @accTransAmt where accNo = @accNo
+        --we can select the new transaction number from transaction table and return the transaction number to user
+        set @result = 'Deposit successfully.'
+    end
+
+    else if(@action = 'Transfer')
+    begin
+        update bankAccount set accBalance = accBalance - @accTransAmt where accNo = @accNo
+        update bankAccount set accBalance = accBalance + @accTransAmt where accNo = @transferToAccNo
+        set @result = 'Transfer successfully.'
+    end
+
+    else
+        set @result = 'Invalid Action'
 end
+
+-- create a new saving account for Harry with $70
+declare @res1 varchar(70)
+exec bankAccountProc 'newAcc',0,'Harry','Saving',70,0,0,0,@res1 out
+print @res1
+        
+-- transfer $10 from Lucy (101) to Harry (102)
+declare @res2 varchar(70)
+exec bankAccountProc 'Transfer',101,'','',0,0,10,102,@res2 out
+print @res2
+
+-- withdraw $500 from Bill (103)
+declare @res3 varchar(70)
+exec bankAccountProc 'Withdraw',103,'','',0,0,500,0,@res3 out
+print @res3
+
+-- deposit $10 to Harry (102)
+declare @res4 varchar(70)
+exec bankAccountProc 'Deposit',102,'','',0,0,10,0,@res4 out
+print @res4
+
+select * from bankAccount
