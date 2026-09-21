@@ -92,17 +92,13 @@ select * from stockInfo
 ---------------------------------------------------------------
 -- ======== INSTEAD OF Trigger ========
 
-create view emp_dept_view
-as
-select empNo, empName, empDesignation, empSalary, empDeptNo, empManager, dept_info.DeptNo, dept_info.DeptName, dept_info.DeptLocation
-from emp_info
-left join dept_info
-on emp_info.empDeptNo = dept_info.DeptNo
+-- create view emp_dept_view
+-- as
+-- select empNo, empName, empDesignation, empSalary, empDeptNo, empManager, dept_info.DeptNo, dept_info.DeptName, dept_info.DeptLocation
+-- from emp_info
+-- left join dept_info
+-- on emp_info.empDeptNo = dept_info.DeptNo
 
-select * from emp_dept_view
-
--- can NOT insert values to a join view
-insert into emp_dept_view (empName, empDesignation, empSalary, empDeptNo, empManager) values('Hecter', 'Accountant', 15000, 30, 15)
 
 create trigger instead_of_emp_dept_view
 on emp_dept_view
@@ -113,4 +109,5 @@ insert into emp_info (empName, empDesignation, empSalary, empDeptNo, empManager)
 select empName, empDesignation, empSalary, empDeptNo, empManager from inserted
 end
 
+insert into emp_dept_view (empName, empDesignation, empSalary, empDeptNo, empManager) values('Hecter', 'Accountant', 15000, 30, 15)
 select * from emp_info
