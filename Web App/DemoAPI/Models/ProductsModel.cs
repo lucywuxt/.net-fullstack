@@ -1,4 +1,4 @@
-namespace firestRSTFilService.Models
+namespace firestRSTFulService.Models
 {
     public class ProductsModel
     {
@@ -21,13 +21,13 @@ namespace firestRSTFilService.Models
         };
         #endregion
 
-        #region CRUD Methods
-            #region Add Method
+        // CRUD Methods
+        #region Add Method
         public string AddProduct(ProductsModel product)
         {
             // do validation here
 
-            if(product.Price < 2) throw new Exception("Price should be more than 2");
+            if (product.Price < 2) throw new Exception("Price should be more than 2");
             else
             {
                 productsList.Add(product);
@@ -35,7 +35,7 @@ namespace firestRSTFilService.Models
             }
         }
         #endregion
-            #region Get Methods
+        #region Get Methods
         public List<ProductsModel> GetAllProducts()
         {
             return productsList;
@@ -44,9 +44,9 @@ namespace firestRSTFilService.Models
         public ProductsModel GetProductByID(int id)
         {
             // LINQ
-            var p = from pr in productsList
-                    where pr.ProductID == id
-                    select pr;
+            // var p = from pr in productsList
+            //         where pr.ProductID == id
+            //         select pr;
 
             // Lambda
             var p = productsList.SingleOrDefault(pr => pr.ProductID == id);
@@ -63,42 +63,61 @@ namespace firestRSTFilService.Models
         public List<ProductsModel> GetProductsByCategory(string category)
         {
             // LINQ
-            var p = from pr in productsList
-                    where pr.CategoryName == category
-                    select pr;
+            // var p = from pr in productsList
+            //         where pr.CategoryName == category
+            //         select pr;
 
             // Lambda
-            var p = productsList.Where(pr => pr.CategoryName == category);
+            var p = productsList.Where(pr => pr.CategoryName == category).ToList();
 
-            return p.ToList();
+            if (p.Any()) return p;
+            else throw new Exception($"Category '{category}' does not exsit");
         }
         #endregion
-            #region Update Method
+        #region Update Method
         public string UpdateProduct(ProductsModel product)
         {
-            var p = productsList.Where(pr => pr.ProductID == product.ProductID);
-            if(p != null)
+            var p = productsList.FirstOrDefault(pr => pr.ProductID == product.ProductID);
+            if (p != null)
             {
-                productsList.Replace();
+                p.ProductID = product.ProductID;
+                p.ProductName = product.ProductName;
+                p.CategoryName = product.CategoryName;
+                p.Description = product.Description;
+                p.Price = product.Price;
+
+                return "Product updated";
             }
+            else
+            {
+                return "Product not found";
+            }
+
+            // var index = productsList.FindIndex(pr => pr.ProductID == product.ProductID);
+            // if (index == -1)
+            // {
+            //     return "Product not found";
+            // }
+
+            // productsList[index] = product;
+            // return "Product updated";
         }
-            #endregion
-            #region Delete Method
+        #endregion
+        #region Delete Method
         public string DeleteProduct(int id)
         {
-            var p = productsList.Where(pr => pr.ProductID == id).Single();
+            var p = productsList.Single(pr => pr.ProductID == id);
 
-            if(p != null)
+            if (p != null)
             {
                 productsList.Remove(p);
                 return "Product deleted successfully";
-            } 
+            }
             else
             {
                 throw new Exception("Product not found in the system");
             }
         }
-        #endregion
         #endregion
     }
 }
