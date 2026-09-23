@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "sFrNtPfc7yo=",
+  "success": true,
+  "projectFilePath": "/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/Web App/DemoAPI/DemoAPI.csproj",
+  "expectedPackageFiles": [
+    "/Users/lucywu/.nuget/packages/microsoft.aspnetcore.openapi/10.0.11/microsoft.aspnetcore.openapi.10.0.11.nupkg.sha512",
+    "/Users/lucywu/.nuget/packages/microsoft.openapi/2.7.5/microsoft.openapi.2.7.5.nupkg.sha512"
+  ],
+  "logs": []
+}
