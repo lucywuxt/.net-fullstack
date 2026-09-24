@@ -13,8 +13,10 @@ namespace ShoppingDBAPI.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
+        // this is Dependency Injection
         private readonly AppDbContext _context;
 
+        // this is Constructor Injection
         public ProductsController(AppDbContext context)
         {
             _context = context;
