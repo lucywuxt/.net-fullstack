@@ -10,7 +10,7 @@ public static class ConsoleHelper
         return (Console.ReadLine() ?? string.Empty).Trim();
     }
 
-    /// <summary>Reads a password and shows * for each character.</summary>
+    // Reads a password and shows * for each character
     public static string ReadPassword(string prompt)
     {
         Console.Write(prompt);
@@ -39,7 +39,7 @@ public static class ConsoleHelper
             if (!char.IsControl(key.KeyChar))
             {
                 sb.Append(key.KeyChar);
-                Console.Write('*');
+                Console.Write('·');
             }
         }
 
@@ -60,4 +60,17 @@ public static class ConsoleHelper
         Console.WriteLine();
         Console.WriteLine($"===== {title} =====");
     }
+
+    public static void WriteColored(string message, ConsoleColor color)
+    {
+        var original = Console.ForegroundColor;
+        Console.ForegroundColor = color;
+        Console.WriteLine(message);
+        Console.ForegroundColor = original;   // restore rather than hard-reset
+    }
+
+    public static void Success(string message) => WriteColored(message, ConsoleColor.Green);
+    public static void Error(string message) => WriteColored(message, ConsoleColor.Red);
+    public static void AdminInfo(string message) => WriteColored(message, ConsoleColor.Magenta);
+    public static void CustomerInfo(string message) => WriteColored(message, ConsoleColor.Yellow);
 }

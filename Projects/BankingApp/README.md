@@ -5,12 +5,7 @@ Console banking app with a Customer menu and an Admin menu.
 ## Run it (VS Code)
 
 1. Install the **.NET 8 SDK** and the **C# Dev Kit** extension for VS Code.
-2. Have SQL Server available. The default connection string in `appsettings.json` uses **LocalDB** (Windows).
-   - Any other SQL Server (Docker, SQL Express, remote): change the `BankDb` connection string.
-   - Docker example:
-     `docker run -e ACCEPT_EULA=Y -e MSSQL_SA_PASSWORD=LWxt1234 -p 1433:1433 -d mcr.microsoft.com/mssql/server:2022-latest`
-     then use
-     `Server=localhost,1433;Database=BankingDb;User Id=sa;Password=LWxt1234;TrustServerCertificate=True;`
+2. Have SQL Server available. The default connection string in `appsettings.json` uses **LocalDB**
 3. In the VS Code terminal:
    ```
    dotnet restore

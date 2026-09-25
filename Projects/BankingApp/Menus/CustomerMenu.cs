@@ -71,11 +71,11 @@ public class CustomerMenu : MenuBase
         {
             Account.Withdraw(amount);
             _db.SaveChanges();
-            Console.WriteLine($"Withdrawal successful. New balance: {Account.Balance:C}");
+            ConsoleHelper.Success($"Withdrawal successful. New balance: {Account.Balance:C}");
         }
         catch (Exception ex) when (ex is ArgumentException or InvalidOperationException)
         {
-            Console.WriteLine($"Withdrawal failed: {ex.Message}");
+            ConsoleHelper.Error($"Withdrawal failed: {ex.Message}");
         }
     }
 
@@ -91,11 +91,11 @@ public class CustomerMenu : MenuBase
         {
             Account.Deposit(amount);
             _db.SaveChanges();
-            Console.WriteLine($"Deposit successful. New balance: {Account.Balance:C}");
+            ConsoleHelper.Success($"Deposit successful. New balance: {Account.Balance:C}");
         }
         catch (ArgumentException ex)
         {
-            Console.WriteLine($"Deposit failed: {ex.Message}");
+            ConsoleHelper.Error($"Deposit failed: {ex.Message}");
         }
     }
 
@@ -124,11 +124,11 @@ public class CustomerMenu : MenuBase
         {
             Account.TransferTo(target, amount);
             _db.SaveChanges();   // both sides are saved in a single database transaction
-            Console.WriteLine($"Transfer successful. New balance: {Account.Balance:C}");
+            ConsoleHelper.Success($"Transfer successful. New balance: {Account.Balance:C}");
         }
         catch (Exception ex) when (ex is ArgumentException or InvalidOperationException)
         {
-            Console.WriteLine($"Transfer failed: {ex.Message}");
+            ConsoleHelper.Error($"Transfer failed: {ex.Message}");
         }
     }
 
@@ -191,6 +191,6 @@ public class CustomerMenu : MenuBase
 
         _customer.PasswordHash = PasswordHasher.Hash(newPwd);
         _db.SaveChanges();
-        Console.WriteLine("Password changed successfully.");
+        ConsoleHelper.Success("Password changed successfully.");
     }
 }
