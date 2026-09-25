@@ -13,9 +13,9 @@ builder.Services.AddSwaggerGen();
 // Per call
 builder.Services.AddTransient(typeof(shoppingDBAPI.Modles.AppDbContext));
 // Per session
-builder.Services.AddTransient(typeof(shoppingDBAPI.Modles.AppDbContext));
+builder.Services.AddScoped(typeof(shoppingDBAPI.Modles.AppDbContext));
 // Per user
-builder.Services.AddTransient(typeof(shoppingDBAPI.Modles.AppDbContext));
+builder.Services.AddSingleton(typeof(shoppingDBAPI.Modles.AppDbContext));
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
