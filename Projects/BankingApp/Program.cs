@@ -51,7 +51,7 @@ while (true)
             var customer = auth.LoginCustomer(username, password);
             if (customer?.Account is null)
             {
-                Console.WriteLine("Invalid Credential");
+                ConsoleHelper.Invalid("Invalid Credential");
                 break;   // back to the welcome screen
             }
 
@@ -67,7 +67,8 @@ while (true)
             var admin = auth.LoginAdmin(username, password);
             if (admin is null)
             {
-                Console.WriteLine("Invalid Credential");
+                ConsoleHelper.Invalid("Invalid Credential");
+                
                 break;
             }
 
@@ -80,7 +81,7 @@ while (true)
             return;
 
         default:
-            Console.WriteLine("Invalid choice");
+            ConsoleHelper.Invalid("Invalid choice");
             break;
     }
 }

@@ -72,5 +72,6 @@ public static class ConsoleHelper
     public static void Success(string message) => WriteColored(message, ConsoleColor.Green);
     public static void Error(string message) => WriteColored(message, ConsoleColor.Red);
     public static void AdminInfo(string message) => WriteColored(message, ConsoleColor.Magenta);
-    public static void CustomerInfo(string message) => WriteColored(message, ConsoleColor.Yellow);
+    public static void CustomerInfo(string message) => WriteColored(message, ConsoleColor.Cyan);
+    public static void Invalid(string message) => WriteColored(message, ConsoleColor.Yellow);
 }

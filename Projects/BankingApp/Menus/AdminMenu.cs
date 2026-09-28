@@ -14,14 +14,14 @@ public class AdminMenu : MenuBase
     protected override void Display()
     {
         Console.WriteLine();
-        Console.WriteLine("----- Admin Menu -----");
-        Console.WriteLine("1. Create New Account");
-        Console.WriteLine("2. Delete Account");
-        Console.WriteLine("3. Edit Account Details");
-        Console.WriteLine("4. Display Summary");
-        Console.WriteLine("5. Reset Customer Password");
-        Console.WriteLine("6. Approve Cheque book request");
-        Console.WriteLine("7. Exit");
+        ConsoleHelper.AdminInfo("----- Admin Menu -----");
+        ConsoleHelper.AdminInfo("1. Create New Account");
+        ConsoleHelper.AdminInfo("2. Delete Account");
+        ConsoleHelper.AdminInfo("3. Edit Account Details");
+        ConsoleHelper.AdminInfo("4. Display Summary");
+        ConsoleHelper.AdminInfo("5. Reset Customer Password");
+        ConsoleHelper.AdminInfo("6. Approve Cheque book request");
+        ConsoleHelper.AdminInfo("7. Exit");
     }
 
     protected override bool Handle(string choice)
@@ -35,7 +35,7 @@ public class AdminMenu : MenuBase
             case "5": ResetPassword(); break;
             case "6": ApproveChequeRequests(); break;
             case "7": return false;
-            default: Console.WriteLine("Invalid choice."); break;
+            default: ConsoleHelper.Invalid("Invalid choice."); break;
         }
         return true;
     }
@@ -48,26 +48,26 @@ public class AdminMenu : MenuBase
         var fullName = ConsoleHelper.ReadLine("Full name: ");
         if (string.IsNullOrWhiteSpace(fullName))
         {
-            Console.WriteLine("Name is required.");
+            ConsoleHelper.Invalid("Name is required.");
             return;
         }
 
         var username = ConsoleHelper.ReadLine("Username: ");
         if (string.IsNullOrWhiteSpace(username))
         {
-            Console.WriteLine("Username is required.");
+            ConsoleHelper.Invalid("Username is required.");
             return;
         }
         if (_db.Customers.Any(c => c.Username == username))
         {
-            Console.WriteLine("That username already exists.");
+            ConsoleHelper.Invalid("That username already exists.");
             return;
         }
 
         var password = ConsoleHelper.ReadPassword("Initial password: ");
         if (string.IsNullOrWhiteSpace(password))
         {
-            Console.WriteLine("Password is required.");
+            ConsoleHelper.Invalid("Password is required.");
             return;
         }
 
@@ -79,7 +79,7 @@ public class AdminMenu : MenuBase
 
         if (!ConsoleHelper.TryReadDecimal("Opening deposit (0 for none): ", out var opening) || opening < 0)
         {
-            Console.WriteLine("Invalid opening deposit.");
+            ConsoleHelper.Invalid("Invalid opening deposit.");
             return;
         }
 
@@ -107,7 +107,7 @@ public class AdminMenu : MenuBase
         _db.Accounts.Add(account);
         _db.SaveChanges();
 
-        Console.WriteLine($"Account created. Account number: {account.AccountNumber}");
+        ConsoleHelper.Success($"Account created. Account number: {account.AccountNumber}");
     }
 
     // ---------- 2. Delete ----------
@@ -119,13 +119,13 @@ public class AdminMenu : MenuBase
         Console.WriteLine($"Account {account.AccountNumber} - {account.Customer!.FullName} - Balance {account.Balance:C}");
         if (!ConsoleHelper.Confirm("Delete this account and its customer record?"))
         {
-            Console.WriteLine("Cancelled.");
+            ConsoleHelper.Success("Cancelled.");
             return;
         }
 
         _db.Customers.Remove(account.Customer);   // cascades to account, transactions, requests
         _db.SaveChanges();
-        Console.WriteLine("Account deleted.");
+        ConsoleHelper.Success("Account deleted.");
     }
 
     // ---------- 3. Edit ----------
@@ -149,7 +149,7 @@ public class AdminMenu : MenuBase
         if (type == "2") account.AccountType = AccountType.Current;
 
         _db.SaveChanges();
-        Console.WriteLine("Account details updated.");
+        ConsoleHelper.Success("Account details updated.");
     }
 
     // ---------- 4. Summary ----------
@@ -158,9 +158,9 @@ public class AdminMenu : MenuBase
         var accounts = _db.Accounts.Include(a => a.Customer).OrderBy(a => a.AccountNumber).ToList();
 
         ConsoleHelper.Header("Bank Summary");
-        Console.WriteLine($"Total customers        : {accounts.Count}");
-        Console.WriteLine($"Total deposits held    : {accounts.Sum(a => a.Balance):C}");
-        Console.WriteLine($"Pending cheque requests: {_db.ServiceRequests.Count(s => s.Status == RequestStatus.Pending)}");
+        ConsoleHelper.AdminInfo($"Total customers        : {accounts.Count}");
+        ConsoleHelper.AdminInfo($"Total deposits held    : {accounts.Sum(a => a.Balance):C}");
+        ConsoleHelper.AdminInfo($"Pending cheque requests: {_db.ServiceRequests.Count(s => s.Status == RequestStatus.Pending)}");
         Console.WriteLine();
 
         if (accounts.Count == 0) return;
@@ -182,13 +182,13 @@ public class AdminMenu : MenuBase
         var newPwd = ConsoleHelper.ReadPassword("Enter new password for the customer: ");
         if (string.IsNullOrWhiteSpace(newPwd))
         {
-            Console.WriteLine("Password cannot be empty.");
+            ConsoleHelper.Invalid("Password cannot be empty.");
             return;
         }
 
         account.Customer!.PasswordHash = PasswordHasher.Hash(newPwd);
         _db.SaveChanges();
-        Console.WriteLine($"Password reset for {account.Customer.FullName}.");
+        ConsoleHelper.Success($"Password reset for {account.Customer.FullName}.");
     }
 
     // ---------- 6. Approve cheque book ----------
@@ -220,7 +220,7 @@ public class AdminMenu : MenuBase
         var request = pending.FirstOrDefault(r => r.Id == id);
         if (request is null)
         {
-            Console.WriteLine("Request not found in the pending list.");
+            ConsoleHelper.Error("Request not found in the pending list.");
             return;
         }
 
@@ -231,13 +231,13 @@ public class AdminMenu : MenuBase
             request.Status = RequestStatus.Rejected;
         else
         {
-            Console.WriteLine("Invalid choice.");
+            ConsoleHelper.Invalid("Invalid choice.");
             return;
         }
 
         request.ProcessedOn = DateTime.Now;
         _db.SaveChanges();
-        Console.WriteLine($"Request {request.Id} {request.Status.ToString().ToLower()}.");
+        ConsoleHelper.Success($"Request {request.Id} {request.Status.ToString().ToLower()}.");
     }
 
     // ---------- helper ----------
@@ -245,7 +245,7 @@ public class AdminMenu : MenuBase
     {
         if (!ConsoleHelper.TryReadInt("Enter account number: ", out var number))
         {
-            Console.WriteLine("Invalid account number.");
+            ConsoleHelper.Invalid("Invalid account number.");
             return null;
         }
 
@@ -254,7 +254,7 @@ public class AdminMenu : MenuBase
             .FirstOrDefault(a => a.AccountNumber == number);
 
         if (account is null)
-            Console.WriteLine("Account not found.");
+            ConsoleHelper.Invalid("Account not found.");
 
         return account;
     }

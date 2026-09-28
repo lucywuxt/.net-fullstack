@@ -20,15 +20,15 @@ public class CustomerMenu : MenuBase
     protected override void Display()
     {
         Console.WriteLine();
-        Console.WriteLine($"----- Customer Menu ({_customer.FullName}) -----");
-        Console.WriteLine("1. Check Account Details");
-        Console.WriteLine("2. Withdraw");
-        Console.WriteLine("3. Deposit");
-        Console.WriteLine("4. Transfer");
-        Console.WriteLine("5. Last 5 transactions");
-        Console.WriteLine("6. Request Cheque Book");
-        Console.WriteLine("7. Change Password");
-        Console.WriteLine("8. Exit");
+        ConsoleHelper.CustomerInfo($"----- Customer Menu ({_customer.FullName}) -----");
+        ConsoleHelper.CustomerInfo("1. Check Account Details");
+        ConsoleHelper.CustomerInfo("2. Withdraw");
+        ConsoleHelper.CustomerInfo("3. Deposit");
+        ConsoleHelper.CustomerInfo("4. Transfer");
+        ConsoleHelper.CustomerInfo("5. Last 5 transactions");
+        ConsoleHelper.CustomerInfo("6. Request Cheque Book");
+        ConsoleHelper.CustomerInfo("7. Change Password");
+        ConsoleHelper.CustomerInfo("8. Exit");
     }
 
     protected override bool Handle(string choice)
@@ -43,7 +43,7 @@ public class CustomerMenu : MenuBase
             case "6": RequestChequeBook(); break;
             case "7": ChangePassword(); break;
             case "8": return false;
-            default: Console.WriteLine("Invalid choice."); break;
+            default: ConsoleHelper.Invalid("Invalid choice."); break;
         }
         return true;
     }
@@ -51,19 +51,19 @@ public class CustomerMenu : MenuBase
     private void ShowDetails()
     {
         ConsoleHelper.Header("Account Details");
-        Console.WriteLine($"Name           : {_customer.FullName}");
-        Console.WriteLine($"Account Number : {Account.AccountNumber}");
-        Console.WriteLine($"Account Type   : {Account.AccountType}");
-        Console.WriteLine($"Balance        : {Account.Balance:C}");
-        Console.WriteLine($"Email          : {_customer.Email}");
-        Console.WriteLine($"Phone          : {_customer.Phone}");
+        ConsoleHelper.CustomerInfo($"Name           : {_customer.FullName}");
+        ConsoleHelper.CustomerInfo($"Account Number : {Account.AccountNumber}");
+        ConsoleHelper.CustomerInfo($"Account Type   : {Account.AccountType}");
+        ConsoleHelper.CustomerInfo($"Balance        : {Account.Balance:C}");
+        ConsoleHelper.CustomerInfo($"Email          : {_customer.Email}");
+        ConsoleHelper.CustomerInfo($"Phone          : {_customer.Phone}");
     }
 
     private void Withdraw()
     {
         if (!ConsoleHelper.TryReadDecimal("Enter amount to withdraw: ", out var amount))
         {
-            Console.WriteLine("Invalid amount.");
+            ConsoleHelper.Invalid("Invalid amount.");
             return;
         }
 
@@ -83,7 +83,7 @@ public class CustomerMenu : MenuBase
     {
         if (!ConsoleHelper.TryReadDecimal("Enter amount to deposit: ", out var amount))
         {
-            Console.WriteLine("Invalid amount.");
+            ConsoleHelper.Invalid("Invalid amount.");
             return;
         }
 
@@ -103,20 +103,20 @@ public class CustomerMenu : MenuBase
     {
         if (!ConsoleHelper.TryReadInt("Enter destination account number: ", out var toNumber))
         {
-            Console.WriteLine("Invalid account number.");
+            ConsoleHelper.Invalid("Invalid account number.");
             return;
         }
 
         var target = _db.Accounts.FirstOrDefault(a => a.AccountNumber == toNumber);
         if (target is null)
         {
-            Console.WriteLine("Destination account not found.");
+            ConsoleHelper.Error("Destination account not found.");
             return;
         }
 
         if (!ConsoleHelper.TryReadDecimal("Enter amount to transfer: ", out var amount))
         {
-            Console.WriteLine("Invalid amount.");
+            ConsoleHelper.Invalid("Invalid amount.");
             return;
         }
 
@@ -144,7 +144,7 @@ public class CustomerMenu : MenuBase
         ConsoleHelper.Header("Last 5 Transactions");
         if (txns.Count == 0)
         {
-            Console.WriteLine("No transactions found.");
+            ConsoleHelper.Invalid("No transactions found.");
             return;
         }
 
@@ -168,7 +168,7 @@ public class CustomerMenu : MenuBase
         _db.ServiceRequests.Add(request);
         _db.SaveChanges();
 
-        Console.WriteLine($"Cheque book requested. Your request ID is: {request.Id}");
+        ConsoleHelper.Success($"Cheque book requested. Your request ID is: {request.Id}");
     }
 
     private void ChangePassword()
@@ -176,7 +176,7 @@ public class CustomerMenu : MenuBase
         var oldPwd = ConsoleHelper.ReadPassword("Enter current password: ");
         if (PasswordHasher.Hash(oldPwd) != _customer.PasswordHash)
         {
-            Console.WriteLine("Current password is incorrect.");
+            ConsoleHelper.Error("Current password is incorrect.");
             return;
         }
 
@@ -185,7 +185,7 @@ public class CustomerMenu : MenuBase
 
         if (string.IsNullOrWhiteSpace(newPwd) || newPwd != confirm)
         {
-            Console.WriteLine("Passwords do not match (or are empty). Password not changed.");
+            ConsoleHelper.Error("Passwords do not match (or are empty). Password not changed.");
             return;
         }
 
