@@ -11,11 +11,11 @@ builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
 
 // Per call
-builder.Services.AddTransient(typeof(shoppingDBAPI.Modles.AppDbContext));
+builder.Services.AddTransient(typeof(ShoppingDBAPI.Models.AppDbContext));
 // Per session
-builder.Services.AddScoped(typeof(shoppingDBAPI.Modles.AppDbContext));
+builder.Services.AddScoped(typeof(ShoppingDBAPI.Models.AppDbContext));
 // Per user
-builder.Services.AddSingleton(typeof(shoppingDBAPI.Modles.AppDbContext));
+builder.Services.AddSingleton(typeof(ShoppingDBAPI.Models.AppDbContext));
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
