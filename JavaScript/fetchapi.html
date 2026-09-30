@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Post Details</title>
+  </head>
+
+  <script>
+        function searchProduct(){
+        var pID = document.getElementById('txtpID').value;
+        var url = "https://fakestoreapi.com/products/" + pID;
+        fetch(url).then(resP => resP.json())
+                  .then(result => {
+                        document.getElementById("title").innerText = result.title;
+                        document.getElementById("price").innerText = result.price;
+                        document.getElementById("description").innerText = result.description;
+                        document.getElementById("category").innerText = result.category;
+                        document.getElementById("productImg").src = result.image;
+                        document.getElementById("rating").innerText = result.rating.count;
+                  })
+                  .catch(err => {console.log(err)})
+    }
+
+    function getPostData() {
+      var url = "http://jsonplaceholder.typicode.com/posts";
+      fetch(url).then(respType => respType.json())
+                .then(data => {
+                    let table = document.getElementById("postTable");
+                    table.innerHTML = "";
+                    data.forEach(post => {
+                        let row = `
+                            <tr>
+                                <td>${post.userId}</td>
+                                <td>${post.id}</td>
+                                <td>${post.title}</td>
+                                <td>${post.body}</td>
+                            </tr>
+                        `;
+                        table.innerHTML += row;
+                    });
+                })
+                .catch(err => {console.log(err)})
+                .finally();
+    }
+  </script>
+
+  <body>
+    <input type="number" onblur="searchProduct()" placeholder="enter product ID" id="txtpID"/>
+    <h3 style="text-align: center;" id="title"></h3>
+    <h3 style="color: aqua;" id="price"></h3>
+    <p style="font-style: italic;" id="description"></p>
+    <h3 id="category"></h3>
+    <img src="" width="200px" height="200px" id="productImg"/>
+    <h3 id="rating"></h3>
+
+    <button id="postButton" onclick="getPostData()">Display Post</button>
+    <table id="postTable"></table>
+  </body>
+</html>

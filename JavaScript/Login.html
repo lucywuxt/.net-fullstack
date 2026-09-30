@@ -7,6 +7,11 @@
   </head>
 
   <script>
+    function pageLoad(){
+        var user = localStorage.firstName;
+        document.getElementById('welcomeMsg').innerHTML = "Welcome " + user;
+    }
+
     function validateUser() {
       var uName = document.getElementById("txtUserName").value;
       var pwd = document.getElementById("txtPassword").value;
@@ -15,6 +20,12 @@
       if (uName == "admin" && pwd == "admin123") {
         loginMessage.innerText = "Log in successful!";
         loginMessage.style.color = "Green";
+
+        // check in Web Inspection - Local Storage
+        localStorage.userName = uName;
+        localStorage.firstName = "Lucy";
+        localStorage.designation = "Dev";
+
       } else {
         loginMessage.innerText = "Invalid credentials.";
         loginMessage.style.color = "Red";
@@ -22,7 +33,8 @@
     }
   </script>
 
-  <body>
+  <body onload="pageLoad()">
+    <h6 id="welcomeMsg" style="text-align: right;"></h6>
     <input type="text" placeholder="Enter user name" id="txtUserName" />
     <input type="password" placeholder="Enter password" id="txtPassword" />
     <button onclick="validateUser()">Login</button>

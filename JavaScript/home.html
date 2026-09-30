@@ -48,10 +48,11 @@
 
     <hr />
     <h1>Calculations</h1>
-
-    <input type="number" placeholder="Enter first number" id="txtNum1" />
-    <input type="number" placeholder="Enter second number" id="txtNum2" />
-    <button onclick="Calculate()">Calculate</button>
+        <form onsubmit="Calculate(); return false;">
+      <input type="number" id="txtNum1" min="1" max="100" required />
+      <input type="number" id="txtNum2" min="1" max="100" required />
+      <button type="submit">Calculate</button>
+    </form>
     <h3 id="addition"></h3>
     <h3 id="subtraction"></h3>
     <h3 id="multiplication"></h3>
