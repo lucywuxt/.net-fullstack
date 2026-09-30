@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Log In</title>
+  </head>
+
+  <script>
+    function validateUser() {
+      var uName = document.getElementById("txtUserName").value;
+      var pwd = document.getElementById("txtPassword").value;
+      var loginMessage = document.getElementById("loginMsg");
+
+      if (uName == "admin" && pwd == "admin123") {
+        loginMessage.innerText = "Log in successful!";
+        loginMessage.style.color = "Green";
+      } else {
+        loginMessage.innerText = "Invalid credentials.";
+        loginMessage.style.color = "Red";
+      }
+    }
+  </script>
+
+  <body>
+    <input type="text" placeholder="Enter user name" id="txtUserName" />
+    <input type="password" placeholder="Enter password" id="txtPassword" />
+    <button onclick="validateUser()">Login</button>
+    <h4 id="loginMsg"></h4>
+  </body>
+</html>
