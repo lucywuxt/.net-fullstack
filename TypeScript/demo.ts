@@ -1,4 +1,4 @@
-Class Person {
+Ctslass Person {
     firstName:string;
     lastName:string;
 
