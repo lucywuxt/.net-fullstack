@@ -1,4 +1,5 @@
 import React from 'react'
+import './home.css'
 
 class Home extends React.Component {
     // every component must have a render method which return JSX

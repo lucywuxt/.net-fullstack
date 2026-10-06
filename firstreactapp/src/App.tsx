@@ -1,5 +1,6 @@
 import './App.css'
-import Home from './components/Home'
+import About from './components/about'
+import Home from './components/home'
 
 function App() {
   return (
@@ -8,6 +9,8 @@ function App() {
       <h2>Developer: Lucy</h2>
 
       <Home />
+      <hr/>
+      <About />
     </>
   )
 }
