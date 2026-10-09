@@ -19,3 +19,5 @@ export default function App() {
     </div>
   );
 }
+
+// Reference: https://chatgpt.com/share/6ac7d33b-f010-83e8-8387-b154c5fb711e
