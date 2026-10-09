@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1791562855664" clover="3.2.0">
+  <project timestamp="1791562855664" name="All files">
+    <metrics statements="45" coveredstatements="43" conditionals="21" coveredconditionals="21" methods="16" coveredmethods="15" elements="82" coveredelements="79" complexity="0" loc="45" ncloc="45" packages="1" files="5" classes="5"/>
+    <file name="About.tsx" path="/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/React/react-jest-demo/src/components/About.tsx">
+      <metrics statements="2" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
+      <line num="1" count="0" type="stmt"/>
+      <line num="2" count="0" type="stmt"/>
+    </file>
+    <file name="Counter.tsx" path="/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/React/react-jest-demo/src/components/Counter.tsx">
+      <metrics statements="10" coveredstatements="10" conditionals="0" coveredconditionals="0" methods="6" coveredmethods="6"/>
+      <line num="1" count="1" type="stmt"/>
+      <line num="3" count="1" type="stmt"/>
+      <line num="5" count="8" type="stmt"/>
+      <line num="7" count="8" type="stmt"/>
+      <line num="8" count="2" type="stmt"/>
+      <line num="11" count="8" type="stmt"/>
+      <line num="12" count="1" type="stmt"/>
+      <line num="15" count="8" type="stmt"/>
+      <line num="16" count="1" type="stmt"/>
+      <line num="19" count="8" type="stmt"/>
+    </file>
+    <file name="Home.tsx" path="/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/React/react-jest-demo/src/components/Home.tsx">
+      <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+      <line num="1" count="1" type="stmt"/>
+      <line num="2" count="1" type="stmt"/>
+    </file>
+    <file name="Login.tsx" path="/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/React/react-jest-demo/src/components/Login.tsx">
+      <metrics statements="16" coveredstatements="16" conditionals="8" coveredconditionals="8" methods="4" coveredmethods="4"/>
+      <line num="1" count="1" type="stmt"/>
+      <line num="4" count="1" type="stmt"/>
+      <line num="6" count="42" type="stmt"/>
+      <line num="7" count="42" type="stmt"/>
+      <line num="8" count="42" type="stmt"/>
+      <line num="10" count="42" type="stmt"/>
+      <line num="11" count="3" type="stmt"/>
+      <line num="13" count="3" type="cond" truecount="4" falsecount="0"/>
+      <line num="14" count="1" type="stmt"/>
+      <line num="15" count="1" type="stmt"/>
+      <line num="18" count="2" type="cond" truecount="2" falsecount="0"/>
+      <line num="22" count="1" type="stmt"/>
+      <line num="24" count="1" type="stmt"/>
+      <line num="28" count="42" type="stmt"/>
+      <line num="40" count="14" type="stmt"/>
+      <line num="50" count="21" type="stmt"/>
+    </file>
+    <file name="Registration.tsx" path="/Users/lucywu/Desktop/Code Stuff/Revature/.net-fullstack/React/react-jest-demo/src/components/Registration.tsx">
+      <metrics statements="15" coveredstatements="15" conditionals="13" coveredconditionals="13" methods="4" coveredmethods="4"/>
+      <line num="1" count="1" type="stmt"/>
+      <line num="13" count="1" type="stmt"/>
+      <line num="15" count="27" type="stmt"/>
+      <line num="24" count="27" type="stmt"/>
+      <line num="26" count="27" type="stmt"/>
+      <line num="30" count="22" type="stmt"/>
+      <line num="33" count="22" type="cond" truecount="4" falsecount="0"/>
+      <line num="40" count="22" type="stmt"/>
+      <line num="46" count="27" type="stmt"/>
+      <line num="47" count="2" type="stmt"/>
+      <line num="49" count="2" type="cond" truecount="2" falsecount="0"/>
+      <line num="56" count="1" type="stmt"/>
+      <line num="57" count="1" type="stmt"/>
+      <line num="60" count="1" type="stmt"/>
+      <line num="63" count="27" type="stmt"/>
+    </file>
+  </project>
+</coverage>
