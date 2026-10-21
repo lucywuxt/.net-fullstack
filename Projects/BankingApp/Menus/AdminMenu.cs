@@ -20,7 +20,7 @@ public class AdminMenu : MenuBase
         ConsoleHelper.AdminInfo("3. Edit Account Details");
         ConsoleHelper.AdminInfo("4. Display Summary");
         ConsoleHelper.AdminInfo("5. Reset Customer Password");
-        ConsoleHelper.AdminInfo("6. Approve Cheque book request");
+        ConsoleHelper.AdminInfo("6. Approve Check Book Request");
         ConsoleHelper.AdminInfo("7. Exit");
     }
 
@@ -33,7 +33,7 @@ public class AdminMenu : MenuBase
             case "3": EditAccount(); break;
             case "4": ShowSummary(); break;
             case "5": ResetPassword(); break;
-            case "6": ApproveChequeRequests(); break;
+            case "6": ApproveCheckBookRequests(); break;
             case "7": return false;
             default: ConsoleHelper.Invalid("Invalid choice."); break;
         }
@@ -160,7 +160,7 @@ public class AdminMenu : MenuBase
         ConsoleHelper.Header("Bank Summary");
         ConsoleHelper.AdminInfo($"Total customers        : {accounts.Count}");
         ConsoleHelper.AdminInfo($"Total deposits held    : {accounts.Sum(a => a.Balance):C}");
-        ConsoleHelper.AdminInfo($"Pending cheque requests: {_db.ServiceRequests.Count(s => s.Status == RequestStatus.Pending)}");
+        ConsoleHelper.AdminInfo($"Pending check book requests: {_db.ServiceRequests.Count(s => s.Status == RequestStatus.Pending)}");
         Console.WriteLine();
 
         if (accounts.Count == 0) return;
@@ -191,16 +191,16 @@ public class AdminMenu : MenuBase
         ConsoleHelper.Success($"Password reset for {account.Customer.FullName}.");
     }
 
-    // ---------- 6. Approve cheque book ----------
-    private void ApproveChequeRequests()
+    // ---------- 6. Approve check book ----------
+    private void ApproveCheckBookRequests()
     {
         var pending = _db.ServiceRequests
             .Include(s => s.Account).ThenInclude(a => a!.Customer)
-            .Where(s => s.Status == RequestStatus.Pending && s.RequestType == "Cheque Book")
+            .Where(s => s.Status == RequestStatus.Pending && s.RequestType == "Check Book")
             .OrderBy(s => s.Id)
             .ToList();
 
-        ConsoleHelper.Header("Pending Cheque Book Requests");
+        ConsoleHelper.Header("Pending Check Book Requests");
         if (pending.Count == 0)
         {
             Console.WriteLine("No pending requests.");

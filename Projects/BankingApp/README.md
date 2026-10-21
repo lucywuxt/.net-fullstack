@@ -4,7 +4,7 @@ Console banking app with a Customer menu and an Admin menu.
 
 ## Run it (VS Code)
 
-1. Install the **.NET 8 SDK** and the **C# Dev Kit** extension for VS Code.
+1. Install the **.NET 10 SDK** and the **C# Dev Kit** extension for VS Code.
 2. Have SQL Server available. The default connection string in `appsettings.json` uses **LocalDB**
 3. In the VS Code terminal:
    ```

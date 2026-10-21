@@ -26,7 +26,7 @@ public class CustomerMenu : MenuBase
         ConsoleHelper.CustomerInfo("3. Deposit");
         ConsoleHelper.CustomerInfo("4. Transfer");
         ConsoleHelper.CustomerInfo("5. Last 5 transactions");
-        ConsoleHelper.CustomerInfo("6. Request Cheque Book");
+        ConsoleHelper.CustomerInfo("6. Request Check Book");
         ConsoleHelper.CustomerInfo("7. Change Password");
         ConsoleHelper.CustomerInfo("8. Exit");
     }
@@ -40,7 +40,7 @@ public class CustomerMenu : MenuBase
             case "3": Deposit(); break;
             case "4": Transfer(); break;
             case "5": ShowLastTransactions(); break;
-            case "6": RequestChequeBook(); break;
+            case "6": RequestCheckBook(); break;
             case "7": ChangePassword(); break;
             case "8": return false;
             default: ConsoleHelper.Invalid("Invalid choice."); break;
@@ -156,19 +156,19 @@ public class CustomerMenu : MenuBase
         }
     }
 
-    private void RequestChequeBook()
+    private void RequestCheckBook()
     {
         var request = new ServiceRequest
         {
             AccountId = Account.Id,
-            RequestType = "Cheque Book",
+            RequestType = "Check Book",
             Status = RequestStatus.Pending
         };
 
         _db.ServiceRequests.Add(request);
         _db.SaveChanges();
 
-        ConsoleHelper.Success($"Cheque book requested. Your request ID is: {request.Id}");
+        ConsoleHelper.Success($"Check book requested. Your request ID is: {request.Id}");
     }
 
     private void ChangePassword()
