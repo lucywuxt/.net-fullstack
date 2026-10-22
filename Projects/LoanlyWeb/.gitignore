@@ -1,0 +1,21 @@
+# .NET
+bin/
+obj/
+*.user
+
+# Node / frontend
+node_modules/
+dist/
+*.tsbuildinfo
+.vite/
+
+# Local secrets (never commit real connection strings / keys)
+Loanly.Api/appsettings.Development.json
+Loanly.Api/appsettings.*.Local.json
+.env
+.env.local
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/

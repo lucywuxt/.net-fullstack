@@ -17,13 +17,27 @@ builder.Services.AddControllers()
 builder.Services.AddOpenApi();
 builder.Services.AddMemoryCache();
 
-var connectionString = builder.Configuration.GetConnectionString("LoanlyDb")
-    ?? "Server=localhost,1434;Database=LoanlyDb;User Id=SA;Password=LWxt1234;TrustServerCertificate=True;";
+var connectionString = builder.Configuration.GetConnectionString("LoanlyDb");
+if (string.IsNullOrWhiteSpace(connectionString))
+{
+    throw new InvalidOperationException(
+        "Missing ConnectionStrings:LoanlyDb. Set it via appsettings.Development.json locally, " +
+        "or the ConnectionStrings__LoanlyDb app setting in Azure.");
+}
 
 builder.Services.AddDbContext<LoanlyDbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseSqlServer(connectionString, sqlOptions =>
+        sqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 6,
+            maxRetryDelay: TimeSpan.FromSeconds(15),
+            errorNumbersToAdd: null)));
 
-var jwtKey = builder.Configuration["Jwt:Key"] ?? "LoanlySovereignFinancingSuperSecretJwtKey2026_WorldBankClientConnection!";
+var jwtKey = builder.Configuration["Jwt:Key"];
+if (string.IsNullOrWhiteSpace(jwtKey))
+{
+    throw new InvalidOperationException(
+        "Missing Jwt:Key. Set it via appsettings.Development.json locally, or the Jwt__Key app setting in Azure.");
+}
 var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "loanly.wiki";
 var jwtAudience = builder.Configuration["Jwt:Audience"] ?? "loanly.wiki";
 
@@ -52,7 +66,8 @@ builder.Services.AddCors(options =>
                 "http://localhost:5173",
                 "http://127.0.0.1:5173",
                 "https://loanly.wiki",
-                "https://www.loanly.wiki")
+                "https://www.loanly.wiki",
+                "https://agreeable-field-0f4462f10.4.azurestaticapps.net")
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
