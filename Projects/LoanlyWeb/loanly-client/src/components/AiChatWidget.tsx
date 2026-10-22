@@ -81,7 +81,7 @@ export const AiChatWidget: React.FC<AiChatWidgetProps> = ({ selectedProjectId, s
         <button
           onClick={() => setIsOpen(true)}
           title="Open Gemini 3.6 Flash Operations Assistant"
-          className="liquid-glass flex items-center gap-2 rounded-full border-emerald-500/30 px-4 py-2.5 text-sm font-medium text-foreground shadow-lg transition-colors hover:border-emerald-500/60"
+          className="liquid-glass liquid-glass-lift flex items-center gap-2 rounded-full border-emerald-500/30 px-4 py-2.5 text-sm font-medium text-foreground shadow-lg hover:border-emerald-500/60"
         >
           <Sparkles className="h-4 w-4 text-emerald-400" />
           Client Connection AI

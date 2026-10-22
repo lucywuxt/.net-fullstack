@@ -35,6 +35,7 @@ import { TabBar } from '../components/ui/tabs';
 import { Alert } from '../components/ui/alert';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table';
 import { PROJECT_STATUS_TONE, WITHDRAWAL_STATUS_TONE } from '../lib/status';
+import { SECTOR_BADGE_CLASSES } from '../lib/sector';
 
 const NEXT_STAGE_MAP: Partial<Record<ProjectStatus, ProjectStatus>> = {
   Concept: 'Appraisal',
@@ -209,7 +210,7 @@ export const AdminPortalPage: React.FC = () => {
                       <Badge>{p.projectCode}</Badge>
                       <Badge variant="muted">{p.countryName} ({p.countryIso3})</Badge>
                       <Badge variant="muted">{p.financingInstrument}</Badge>
-                      <Badge variant="muted">{p.sector}</Badge>
+                      <Badge variant="muted" className={SECTOR_BADGE_CLASSES[p.sector]}>{p.sector}</Badge>
                       <Badge variant={PROJECT_STATUS_TONE[p.status] ?? 'default'}>{p.status}</Badge>
                     </div>
                     <h3 className="text-sm font-semibold text-foreground">{p.title}</h3>

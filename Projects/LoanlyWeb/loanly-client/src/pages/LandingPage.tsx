@@ -10,6 +10,7 @@ import type {
 import { GlobeComparisonPanel } from '../components/GlobeComparisonPanel';
 import { CountryIntelPanel } from '../components/CountryIntelPanel';
 import { ImpactSections } from '../components/landing/ImpactSections';
+import { WelcomeHero } from '../components/landing/WelcomeHero';
 import { Button } from '../components/ui/button';
 import { ThemeToggle } from '../components/ThemeToggle';
 
@@ -135,15 +136,18 @@ export const LandingPage: React.FC = () => {
 
   const showSearchDropdown = searchFocused && searchTerm.trim().length > 0;
 
+  const scrollToDashboard = () => {
+    document.getElementById('dashboard')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <div className="flex flex-col bg-background text-foreground">
-    <div className="flex flex-col md:h-screen md:overflow-hidden">
-      {/* Slim header */}
-      <header className="flex h-14 shrink-0 items-center justify-between border-b border-border px-4">
+      {/* Slim header, persistent across the welcome + dashboard sections */}
+      <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center justify-between border-b border-border bg-background/80 px-4 backdrop-blur-md">
         <Link to="/" className="flex items-center gap-2">
           <Globe2 className="h-5 w-5 text-emerald-500" />
           <span className="font-mono text-sm font-semibold tracking-tight">
-            LOANLY <span className="text-muted-foreground">loanly.wiki</span>
+            LOANLY
           </span>
         </Link>
         <div className="flex items-center gap-2">
@@ -157,6 +161,9 @@ export const LandingPage: React.FC = () => {
         </div>
       </header>
 
+      <WelcomeHero onExplore={scrollToDashboard} />
+
+    <div id="dashboard" className="scroll-mt-14 flex flex-col md:h-[calc(100vh-56px)] md:overflow-hidden">
       {/* Main split */}
       <div className="flex flex-1 flex-col md:flex-row md:overflow-hidden">
         {/* Left: globe stage */}

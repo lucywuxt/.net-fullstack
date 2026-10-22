@@ -4,6 +4,7 @@ import {
   ResponsiveContainer,
   BarChart,
   Bar,
+  Cell,
   XAxis,
   YAxis,
   Tooltip,
@@ -27,6 +28,7 @@ import { Button } from '../ui/button';
 import { StatCard } from '../ui/stat-card';
 import { ProgressBar } from '../ui/progress';
 import { PROJECT_STATUS_TONE } from '../../lib/status';
+import { SECTOR_BADGE_CLASSES, SECTOR_HEX } from '../../lib/sector';
 
 const ICON_TONE_CLASSES = {
   emerald: 'bg-emerald-500/10 text-emerald-400',
@@ -170,8 +172,9 @@ export const ImpactSections: React.FC = () => {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {stories.map((s) => (
               <Card key={s.projectCode} className="flex flex-col p-5">
-                <div className="mb-2 flex items-center gap-1.5">
+                <div className="mb-2 flex flex-wrap items-center gap-1.5">
                   <Badge variant="muted">{s.countryIso3}</Badge>
+                  <Badge variant="muted" className={SECTOR_BADGE_CLASSES[s.sector]}>{s.sector}</Badge>
                   <Badge variant={PROJECT_STATUS_TONE[s.status] ?? 'default'}>{s.status}</Badge>
                 </div>
                 <h3 className="text-sm font-semibold text-foreground">{s.title}</h3>
@@ -217,7 +220,11 @@ export const ImpactSections: React.FC = () => {
                     <XAxis dataKey="name" stroke="var(--muted-foreground)" fontSize={11} />
                     <YAxis stroke="var(--muted-foreground)" fontSize={11} />
                     <Tooltip contentStyle={tooltipStyle} />
-                    <Bar dataKey="Committed ($M)" fill="#10b981" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="Committed ($M)" radius={[4, 4, 0, 0]}>
+                      {sectorData.map((d, i) => (
+                        <Cell key={i} fill={SECTOR_HEX[d.name] ?? '#10b981'} />
+                      ))}
+                    </Bar>
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>

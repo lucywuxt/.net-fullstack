@@ -22,7 +22,7 @@ export const Navbar: React.FC = () => {
         <Link to="/" className="flex shrink-0 items-center gap-2">
           <Globe2 className="h-5 w-5 text-emerald-500" />
           <span className="font-mono text-sm font-semibold tracking-tight text-foreground">
-            LOANLY <span className="text-muted-foreground">loanly.wiki</span>
+            LOANLY
           </span>
         </Link>
 

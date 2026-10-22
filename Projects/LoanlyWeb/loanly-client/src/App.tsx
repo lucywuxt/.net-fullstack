@@ -59,7 +59,7 @@ const Shell: React.FC = () => {
       <main className="mx-auto w-full max-w-[1440px] flex-1 px-4 py-6">{routes}</main>
       <footer className="flex flex-wrap items-center justify-between gap-2 border-t border-border px-4 py-4 text-xs text-muted-foreground">
         <div>
-          <strong className="text-muted-foreground">LOANLY (loanly.wiki)</strong> — Sovereign Development Financing &amp; Client Connection Operations Platform
+          <strong className="text-muted-foreground">LOANLY</strong> — Sovereign Development Financing &amp; Client Connection Operations Platform
         </div>
         <div>
           Powered by World Bank Open Data API v2 • ASP.NET Core 10 • EF Core 10 • Gemini 3.6 Flash
