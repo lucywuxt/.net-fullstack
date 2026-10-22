@@ -4,6 +4,12 @@ import { ShieldCheck, Building2, KeyRound, ArrowRight } from 'lucide-react';
 import { api } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import type { AccountType, DemoCredential } from '../types/api';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { Badge } from '../components/ui/badge';
+import { Button } from '../components/ui/button';
+import { Input, Label } from '../components/ui/input';
+import { Alert } from '../components/ui/alert';
+import { cn } from '@/lib/utils';
 
 export const LoginPage: React.FC = () => {
   const { setUser } = useAuth();
@@ -53,101 +59,97 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="login-page-container">
-      <div className="login-grid">
-        <div className="login-card">
-          <div className="login-card-header">
-            <h2>Client Connection Authentication</h2>
-            <p>Sign in as a Member Country Borrower Official or World Bank Task Team / WFACS Officer.</p>
-          </div>
+    <div className="mx-auto grid max-w-4xl gap-6 py-6 lg:grid-cols-2">
+      <Card className="p-0">
+        <CardHeader className="flex-col items-start gap-1 border-b border-border p-5">
+          <CardTitle className="text-sm normal-case text-foreground">Client Connection Authentication</CardTitle>
+          <p className="text-xs text-muted-foreground">
+            Sign in as a Member Country Borrower Official or World Bank Task Team / WFACS Officer.
+          </p>
+        </CardHeader>
 
-          <div className="role-toggle-tabs">
+        <CardContent className="space-y-4 p-5">
+          <div className="grid grid-cols-2 gap-1 rounded-lg border border-border bg-card p-1">
             <button
               type="button"
-              className={`role-tab ${accountType === 'Country' ? 'active' : ''}`}
               onClick={() => {
                 setAccountType('Country');
                 setEmail('treasury@kenya.go.ke');
               }}
+              className={cn(
+                'flex items-center justify-center gap-1.5 rounded-md py-2 text-xs font-medium transition-colors',
+                accountType === 'Country' ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-foreground'
+              )}
             >
-              <Building2 size={16} />
-              <span>Country (Borrower) Portal</span>
+              <Building2 className="h-3.5 w-3.5" />
+              Country (Borrower)
             </button>
             <button
               type="button"
-              className={`role-tab ${accountType === 'Admin' ? 'active' : ''}`}
               onClick={() => {
                 setAccountType('Admin');
                 setEmail('elena.vance@worldbank.org');
               }}
+              className={cn(
+                'flex items-center justify-center gap-1.5 rounded-md py-2 text-xs font-medium transition-colors',
+                accountType === 'Admin' ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-foreground'
+              )}
             >
-              <ShieldCheck size={16} />
-              <span>Admin (Task Team / WFACS)</span>
+              <ShieldCheck className="h-3.5 w-3.5" />
+              Admin (WFACS)
             </button>
           </div>
 
-          {error && <div className="alert-error">{error}</div>}
+          {error && <Alert variant="error">{error}</Alert>}
 
-          <form onSubmit={handleLogin} className="login-form">
-            <div className="form-field">
-              <label>Official Email Address</label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
+          <form onSubmit={handleLogin} className="space-y-3">
+            <div>
+              <Label>Official Email Address</Label>
+              <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
             </div>
-
-            <div className="form-field">
-              <label>Password</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
+            <div>
+              <Label>Password</Label>
+              <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
             </div>
-
-            <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
-              <KeyRound size={16} />
-              <span>{loading ? 'Authenticating...' : `Sign In to ${accountType} Portal`}</span>
-            </button>
+            <Button type="submit" className="w-full" disabled={loading}>
+              <KeyRound className="h-4 w-4" />
+              {loading ? 'Authenticating…' : `Sign In to ${accountType} Portal`}
+            </Button>
           </form>
-        </div>
+        </CardContent>
+      </Card>
 
-        <div className="demo-credentials-panel">
-          <h3>Instant One-Click Portfolio Demo Accounts</h3>
-          <p className="text-muted">
-            Click any pre-seeded sovereign borrower or World Bank staff account below to sign in immediately:
+      <Card className="p-0">
+        <CardHeader className="flex-col items-start gap-1 border-b border-border p-5">
+          <CardTitle className="text-sm normal-case text-foreground">Instant Demo Accounts</CardTitle>
+          <p className="text-xs text-muted-foreground">
+            Click any pre-seeded sovereign borrower or World Bank staff account to sign in immediately.
           </p>
-          <div className="demo-list">
-            {demoAccounts.map((cred, idx) => (
-              <div key={idx} className="demo-account-item">
-                <div>
-                  <div className="demo-badge-row">
-                    <span className={`badge badge-${cred.accountType.toLowerCase()}`}>
-                      {cred.accountType === 'Country' ? 'BORROWER' : 'WB STAFF'}
-                    </span>
-                    <strong>{cred.label}</strong>
-                  </div>
-                  <div className="demo-desc">{cred.roleDescription}</div>
-                  <code className="demo-email">{cred.email}</code>
+        </CardHeader>
+        <CardContent className="space-y-2 p-3">
+          {demoAccounts.map((cred, idx) => (
+            <div
+              key={idx}
+              className="flex items-center justify-between gap-3 rounded-lg border border-border bg-card p-3"
+            >
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <Badge variant={cred.accountType === 'Country' ? 'active' : 'pipeline'}>
+                    {cred.accountType === 'Country' ? 'BORROWER' : 'WB STAFF'}
+                  </Badge>
+                  <strong className="truncate text-sm text-foreground">{cred.label}</strong>
                 </div>
-                <button
-                  type="button"
-                  className="btn btn-outline btn-sm"
-                  onClick={() => handleQuickDemo(cred)}
-                  disabled={loading}
-                >
-                  <span>Launch</span>
-                  <ArrowRight size={14} />
-                </button>
+                <div className="mt-1 text-xs text-muted-foreground">{cred.roleDescription}</div>
+                <code className="text-[11px] text-muted-foreground">{cred.email}</code>
               </div>
-            ))}
-          </div>
-        </div>
-      </div>
+              <Button size="sm" variant="outline" onClick={() => handleQuickDemo(cred)} disabled={loading}>
+                Launch
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Button>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
     </div>
   );
 };

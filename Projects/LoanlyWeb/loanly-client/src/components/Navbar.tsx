@@ -2,6 +2,9 @@ import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Globe2, ShieldCheck, Building2, LogOut, LogIn } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { Button } from './ui/button';
+import { ThemeToggle } from './ThemeToggle';
+import { cn } from '@/lib/utils';
 
 export const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
@@ -14,76 +17,86 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <header className="top-navbar">
-      <div className="navbar-inner">
-        <Link to="/" className="brand-link">
-          <div className="brand-icon">
-            <Globe2 size={22} />
-          </div>
-          <div>
-            <div className="brand-title">
-              LOANLY <span className="brand-domain">loanly.wiki</span>
-            </div>
-            <div className="brand-subtitle">World Bank Operations &amp; Client Connection</div>
-          </div>
+    <header className="liquid-glass sticky top-0 z-40 h-14 rounded-none border-x-0 border-t-0">
+      <div className="mx-auto flex h-full max-w-[1440px] items-center justify-between gap-4 px-4">
+        <Link to="/" className="flex shrink-0 items-center gap-2">
+          <Globe2 className="h-5 w-5 text-emerald-500" />
+          <span className="font-mono text-sm font-semibold tracking-tight text-foreground">
+            LOANLY <span className="text-muted-foreground">loanly.wiki</span>
+          </span>
         </Link>
 
-        <nav className="nav-links">
+        <nav className="flex items-center gap-1">
           <Link
             to="/"
-            className={`nav-item ${location.pathname === '/' ? 'active' : ''}`}
+            className={cn(
+              'flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors',
+              location.pathname === '/' ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-foreground'
+            )}
           >
-            <Globe2 size={16} />
-            <span>Global Data Observatory</span>
+            <Globe2 className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">Global Data Observatory</span>
           </Link>
 
           {user?.accountType === 'Country' && (
             <Link
               to="/country"
-              className={`nav-item ${location.pathname.startsWith('/country') ? 'active' : ''}`}
+              className={cn(
+                'flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors',
+                location.pathname.startsWith('/country')
+                  ? 'bg-muted text-foreground'
+                  : 'text-muted-foreground hover:text-foreground'
+              )}
             >
-              <Building2 size={16} />
-              <span>Borrower Portal ({user.isoAlpha3 || user.name})</span>
+              <Building2 className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Borrower Portal ({user.isoAlpha3 || user.name})</span>
             </Link>
           )}
 
           {user?.accountType === 'Admin' && (
             <Link
               to="/admin"
-              className={`nav-item ${location.pathname.startsWith('/admin') ? 'active' : ''}`}
+              className={cn(
+                'flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors',
+                location.pathname.startsWith('/admin')
+                  ? 'bg-muted text-foreground'
+                  : 'text-muted-foreground hover:text-foreground'
+              )}
             >
-              <ShieldCheck size={16} />
-              <span>Task Team &amp; WFACS Portal</span>
+              <ShieldCheck className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Task Team &amp; WFACS Portal</span>
             </Link>
           )}
         </nav>
 
-        <div className="nav-actions">
+        <div className="flex shrink-0 items-center gap-3">
+          <ThemeToggle />
           {user ? (
-            <div className="user-pill-group">
-              <div className="user-badge">
-                <span className={`role-dot ${user.accountType.toLowerCase()}`} />
-                <div className="user-meta">
-                  <span className="user-name">{user.name}</span>
-                  <span className="user-subrole">
-                    {user.accountType === 'Admin'
-                      ? `WB ${user.subRoleOrRegion}`
-                      : `${user.subRoleOrRegion} • ${user.incomeLevel}`}
-                  </span>
+            <div className="flex items-center gap-2.5">
+              <div className="hidden text-right sm:block">
+                <div className="text-xs font-medium text-foreground">{user.name}</div>
+                <div className="text-[10px] text-muted-foreground">
+                  {user.accountType === 'Admin' ? `WB ${user.subRoleOrRegion}` : `${user.subRoleOrRegion} • ${user.incomeLevel}`}
                 </div>
               </div>
-              <button className="btn btn-outline btn-sm" onClick={handleLogout}>
-                <LogOut size={15} />
+              <span
+                className={cn(
+                  'h-2 w-2 rounded-full',
+                  user.accountType === 'Admin' ? 'bg-sky-400' : 'bg-emerald-400'
+                )}
+              />
+              <Button size="sm" variant="outline" onClick={handleLogout}>
+                <LogOut className="h-3.5 w-3.5" />
                 <span>Sign Out</span>
-              </button>
+              </Button>
             </div>
           ) : (
-            <div className="auth-cta-group">
-              <Link to="/login" className="btn btn-primary btn-sm">
-                <LogIn size={15} />
+            <Button asChild size="sm">
+              <Link to="/login">
+                <LogIn className="h-3.5 w-3.5" />
                 <span>Client Connection Sign In</span>
               </Link>
-            </div>
+            </Button>
           )}
         </div>
       </div>

@@ -26,6 +26,15 @@ import { AdminPortfolioCharts } from '../components/AdminPortfolioCharts';
 import { AdminProjectModal } from '../components/AdminProjectModal';
 import { AdminIndicatorModal } from '../components/AdminIndicatorModal';
 import { AiChatWidget } from '../components/AiChatWidget';
+import { Card, CardContent } from '../components/ui/card';
+import { Badge } from '../components/ui/badge';
+import { Button } from '../components/ui/button';
+import { StatCard } from '../components/ui/stat-card';
+import { ProgressBar } from '../components/ui/progress';
+import { TabBar } from '../components/ui/tabs';
+import { Alert } from '../components/ui/alert';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table';
+import { PROJECT_STATUS_TONE, WITHDRAWAL_STATUS_TONE } from '../lib/status';
 
 const NEXT_STAGE_MAP: Partial<Record<ProjectStatus, ProjectStatus>> = {
   Concept: 'Appraisal',
@@ -121,220 +130,222 @@ export const AdminPortalPage: React.FC = () => {
   };
 
   return (
-    <div className="portal-page">
-      <section className="portal-header-banner">
+    <div className="space-y-6">
+      <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <span className="eyebrow-pill">
+          <Badge variant="pipeline" className="mb-2">
             WORLD BANK INTERNAL OPERATIONS • {user?.subRoleOrRegion?.toUpperCase()}
-          </span>
-          <h1>Task Team &amp; WFACS Disbursement Control Center</h1>
-          <p>
-            Manage sovereign project lifecycles, enforce financing ceilings on Withdrawal Applications,
-            record Designated Account disbursements, and track PDO Results Indicators.
+          </Badge>
+          <h1 className="text-xl font-semibold text-foreground">Task Team &amp; WFACS Disbursement Control Center</h1>
+          <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
+            Manage sovereign project lifecycles, enforce financing ceilings on Withdrawal Applications, record
+            Designated Account disbursements, and track PDO Results Indicators.
           </p>
         </div>
-        <button className="btn btn-primary" onClick={() => setShowCreateProject(true)}>
-          <FolderPlus size={16} />
-          <span>Create New Project</span>
-        </button>
-      </section>
-
-      {actionError && <div className="alert-error">{actionError}</div>}
-      {actionBanner && <div className="alert-success">{actionBanner}</div>}
-
-      {analytics && (
-        <section className="kpi-grid kpi-grid-4">
-          <div className="kpi-card">
-            <div className="kpi-icon sky"><Landmark size={20} /></div>
-            <div>
-              <div className="kpi-label">Total Portfolio Committed</div>
-              <div className="kpi-value">${analytics.totalCommitted.toLocaleString()}</div>
-              <div className="kpi-sub">{analytics.totalProjectsCount} Projects ({analytics.activeProjectsCount} Active)</div>
-            </div>
-          </div>
-          <div className="kpi-card">
-            <div className="kpi-icon emerald"><CheckCircle2 size={20} /></div>
-            <div>
-              <div className="kpi-label">Total Disbursed</div>
-              <div className="kpi-value">${analytics.totalDisbursed.toLocaleString()}</div>
-              <div className="kpi-sub">{analytics.disbursementRatePercent}% Portfolio Disbursement Rate</div>
-            </div>
-          </div>
-          <div className="kpi-card">
-            <div className="kpi-icon amber"><Banknote size={20} /></div>
-            <div>
-              <div className="kpi-label">Total Undisbursed Ceiling</div>
-              <div className="kpi-value">${analytics.totalUndisbursed.toLocaleString()}</div>
-              <div className="kpi-sub">Available Across Approved Portfolio</div>
-            </div>
-          </div>
-          <div className="kpi-card">
-            <div className="kpi-icon violet"><Clock size={20} /></div>
-            <div>
-              <div className="kpi-label">Actionable Withdrawal Queue</div>
-              <div className="kpi-value">{analytics.pendingWithdrawalsCount} WAs</div>
-              <div className="kpi-sub">${analytics.pendingWithdrawalsVolume.toLocaleString()} Pending Volume</div>
-            </div>
-          </div>
-        </section>
-      )}
-
-      <div className="portal-tabs">
-        <button className={`tab-btn ${activeTab === 'dashboard' ? 'active' : ''}`} onClick={() => setActiveTab('dashboard')}>
-          <PieChartIcon size={15} /> Portfolio Analytics
-        </button>
-        <button className={`tab-btn ${activeTab === 'projects' ? 'active' : ''}`} onClick={() => setActiveTab('projects')}>
-          <Landmark size={15} /> Project Lifecycle ({projects.length})
-        </button>
-        <button className={`tab-btn ${activeTab === 'withdrawals' ? 'active' : ''}`} onClick={() => setActiveTab('withdrawals')}>
-          <Banknote size={15} /> Withdrawal Review &amp; Disbursements ({withdrawals.length})
-        </button>
-        <button className={`tab-btn ${activeTab === 'indicators' ? 'active' : ''}`} onClick={() => setActiveTab('indicators')}>
-          <Target size={15} /> Results Indicators (PDO)
-        </button>
+        <Button onClick={() => setShowCreateProject(true)}>
+          <FolderPlus className="h-4 w-4" />
+          Create New Project
+        </Button>
       </div>
 
-      {activeTab === 'dashboard' && analytics && (
-        <AdminPortfolioCharts analytics={analytics} />
+      {actionError && <Alert variant="error">{actionError}</Alert>}
+      {actionBanner && <Alert variant="success">{actionBanner}</Alert>}
+
+      {analytics && (
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <StatCard
+            icon={<Landmark className="h-4 w-4" />}
+            tone="sky"
+            label="Total Portfolio Committed"
+            value={`$${analytics.totalCommitted.toLocaleString()}`}
+            sub={`${analytics.totalProjectsCount} Projects (${analytics.activeProjectsCount} Active)`}
+          />
+          <StatCard
+            icon={<CheckCircle2 className="h-4 w-4" />}
+            tone="emerald"
+            label="Total Disbursed"
+            value={`$${analytics.totalDisbursed.toLocaleString()}`}
+            sub={`${analytics.disbursementRatePercent}% Portfolio Disbursement Rate`}
+          />
+          <StatCard
+            icon={<Banknote className="h-4 w-4" />}
+            tone="amber"
+            label="Total Undisbursed Ceiling"
+            value={`$${analytics.totalUndisbursed.toLocaleString()}`}
+            sub="Available Across Approved Portfolio"
+          />
+          <StatCard
+            icon={<Clock className="h-4 w-4" />}
+            tone="violet"
+            label="Actionable Withdrawal Queue"
+            value={`${analytics.pendingWithdrawalsCount} WAs`}
+            sub={`$${analytics.pendingWithdrawalsVolume.toLocaleString()} Pending Volume`}
+          />
+        </div>
       )}
 
+      <TabBar
+        active={activeTab}
+        onChange={(id) => setActiveTab(id as typeof activeTab)}
+        tabs={[
+          { id: 'dashboard', label: 'Portfolio Analytics', icon: <PieChartIcon className="h-3.5 w-3.5" /> },
+          { id: 'projects', label: `Project Lifecycle (${projects.length})`, icon: <Landmark className="h-3.5 w-3.5" /> },
+          { id: 'withdrawals', label: `Withdrawal Review & Disbursements (${withdrawals.length})`, icon: <Banknote className="h-3.5 w-3.5" /> },
+          { id: 'indicators', label: 'Results Indicators (PDO)', icon: <Target className="h-3.5 w-3.5" /> },
+        ]}
+      />
+
+      {activeTab === 'dashboard' && analytics && <AdminPortfolioCharts analytics={analytics} />}
+
       {activeTab === 'projects' && (
-        <div className="projects-stack">
+        <div className="space-y-3">
           {projects.map((p) => {
             const nextStage = NEXT_STAGE_MAP[p.status];
             return (
-              <div key={p.id} className="project-detail-card">
-                <div className="project-top-row">
+              <Card key={p.id} className="p-4">
+                <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
-                    <div className="badge-cluster">
-                      <span className="code-pill">{p.projectCode}</span>
-                      <span className="iso-badge">{p.countryName} ({p.countryIso3})</span>
-                      <span className="instrument-pill">{p.financingInstrument}</span>
-                      <span className="sector-pill">{p.sector}</span>
-                      <span className={`status-pill status-${p.status.toLowerCase()}`}>{p.status}</span>
+                    <div className="mb-1.5 flex flex-wrap items-center gap-1.5">
+                      <Badge>{p.projectCode}</Badge>
+                      <Badge variant="muted">{p.countryName} ({p.countryIso3})</Badge>
+                      <Badge variant="muted">{p.financingInstrument}</Badge>
+                      <Badge variant="muted">{p.sector}</Badge>
+                      <Badge variant={PROJECT_STATUS_TONE[p.status] ?? 'default'}>{p.status}</Badge>
                     </div>
-                    <h3>{p.title}</h3>
-                    <p className="pdo-text">{p.projectDevelopmentObjective}</p>
+                    <h3 className="text-sm font-semibold text-foreground">{p.title}</h3>
+                    <p className="mt-1 max-w-2xl text-xs text-muted-foreground">{p.projectDevelopmentObjective}</p>
                   </div>
-                  <div className="admin-card-actions">
+                  <div className="flex shrink-0 gap-2">
                     {nextStage && (
-                      <button className="btn btn-primary btn-sm" onClick={() => handleAdvanceLifecycle(p)}>
-                        <span>Advance to {nextStage}</span>
-                        <ArrowRight size={14} />
-                      </button>
+                      <Button size="sm" onClick={() => handleAdvanceLifecycle(p)}>
+                        Advance to {nextStage}
+                        <ArrowRight className="h-3.5 w-3.5" />
+                      </Button>
                     )}
-                    <button
-                      className="btn btn-outline btn-sm"
-                      onClick={() => setIndicatorModal({ project: p })}
-                    >
-                      <Target size={14} />
-                      <span>+ Indicator</span>
-                    </button>
+                    <Button size="sm" variant="outline" onClick={() => setIndicatorModal({ project: p })}>
+                      <Target className="h-3.5 w-3.5" />
+                      Indicator
+                    </Button>
                   </div>
                 </div>
-                <div className="financial-metrics-row">
-                  <span>Ceiling: <strong>${p.approvedAmount.toLocaleString()}</strong></span>
-                  <span>Disbursed: <strong className="text-emerald">${p.totalDisbursed.toLocaleString()}</strong></span>
-                  <span>Approved Pending: <strong className="text-amber">${p.committedPendingDisbursement.toLocaleString()}</strong></span>
-                  <span>Remaining Undisbursed: <strong className="text-sky">${p.remainingUndisbursedAmount.toLocaleString()}</strong></span>
+                <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[11px] text-muted-foreground">
+                  <span>Ceiling: <strong className="text-foreground">${p.approvedAmount.toLocaleString()}</strong></span>
+                  <span>Disbursed: <strong className="text-emerald-400">${p.totalDisbursed.toLocaleString()}</strong></span>
+                  <span>Pending: <strong className="text-amber-400">${p.committedPendingDisbursement.toLocaleString()}</strong></span>
+                  <span>Remaining: <strong className="text-sky-400">${p.remainingUndisbursedAmount.toLocaleString()}</strong></span>
                 </div>
-              </div>
+              </Card>
             );
           })}
         </div>
       )}
 
       {activeTab === 'withdrawals' && (
-        <div className="table-card">
-          <h3>Withdrawal Application Review &amp; Disbursement Execution Desk</h3>
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>WA Number</th>
-                <th>Country / Project</th>
-                <th>Category</th>
-                <th>Requested</th>
-                <th>Status</th>
-                <th>Supporting Documentation</th>
-                <th>WFACS / TTL Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {withdrawals.map((w) => (
-                <tr key={w.id}>
-                  <td><strong>{w.applicationNumber}</strong></td>
-                  <td>
-                    <div><strong>{w.countryName}</strong></div>
-                    <small>{w.projectCode} — {w.projectTitle}</small>
-                  </td>
-                  <td><span className="sector-pill">{w.category}</span></td>
-                  <td><strong>${w.amountRequested.toLocaleString()}</strong></td>
-                  <td><span className={`status-pill status-${w.status.toLowerCase()}`}>{w.status}</span></td>
-                  <td>
-                    <div>{w.supportingDocumentsNote}</div>
-                    {w.disbursement && (
-                      <small className="text-emerald">
-                        Disbursed Ref: {w.disbursement.transactionReference} (Bal After: ${w.disbursement.designatedAccountBalanceAfter.toLocaleString()})
-                      </small>
-                    )}
-                  </td>
-                  <td>
-                    <div className="row-actions">
-                      {w.status === 'Submitted' && (
-                        <button className="btn btn-outline btn-xs" onClick={() => handleReviewWA(w, 'UnderReview')}>
-                          Mark Under Review
-                        </button>
+        <Card>
+          <CardContent className="overflow-x-auto p-4">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>WA Number</TableHead>
+                  <TableHead>Country / Project</TableHead>
+                  <TableHead>Category</TableHead>
+                  <TableHead>Requested</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Documentation</TableHead>
+                  <TableHead>Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {withdrawals.map((w) => (
+                  <TableRow key={w.id}>
+                    <TableCell className="font-mono text-foreground">{w.applicationNumber}</TableCell>
+                    <TableCell>
+                      <div className="font-medium text-foreground">{w.countryName}</div>
+                      <div className="text-[11px] text-muted-foreground">{w.projectCode} — {w.projectTitle}</div>
+                    </TableCell>
+                    <TableCell><Badge variant="muted">{w.category}</Badge></TableCell>
+                    <TableCell className="font-mono">${w.amountRequested.toLocaleString()}</TableCell>
+                    <TableCell><Badge variant={WITHDRAWAL_STATUS_TONE[w.status] ?? 'default'}>{w.status}</Badge></TableCell>
+                    <TableCell className="max-w-[200px]">
+                      <div className="truncate text-xs">{w.supportingDocumentsNote}</div>
+                      {w.disbursement && (
+                        <div className="mt-0.5 text-[11px] text-emerald-400">
+                          Ref: {w.disbursement.transactionReference} (Bal: ${w.disbursement.designatedAccountBalanceAfter.toLocaleString()})
+                        </div>
                       )}
-                      {(w.status === 'Submitted' || w.status === 'UnderReview') && (
-                        <>
-                          <button className="btn btn-primary btn-xs" onClick={() => handleReviewWA(w, 'Approved')}>
-                            <CheckCircle2 size={13} /> Approve
-                          </button>
-                          <button className="btn btn-danger btn-xs" onClick={() => handleReviewWA(w, 'Rejected')}>
-                            <XCircle size={13} /> Reject
-                          </button>
-                        </>
-                      )}
-                      {w.status === 'Approved' && !w.disbursement && (
-                        <button className="btn btn-emerald btn-xs" onClick={() => handleRecordDisbursement(w)}>
-                          <Banknote size={13} /> Record Disbursement
-                        </button>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex flex-wrap gap-1.5">
+                        {w.status === 'Submitted' && (
+                          <Button size="sm" variant="outline" onClick={() => handleReviewWA(w, 'UnderReview')}>
+                            Under Review
+                          </Button>
+                        )}
+                        {(w.status === 'Submitted' || w.status === 'UnderReview') && (
+                          <>
+                            <Button size="sm" onClick={() => handleReviewWA(w, 'Approved')}>
+                              <CheckCircle2 className="h-3 w-3" /> Approve
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="border-rose-500/30 text-rose-400 hover:bg-rose-500/10"
+                              onClick={() => handleReviewWA(w, 'Rejected')}
+                            >
+                              <XCircle className="h-3 w-3" /> Reject
+                            </Button>
+                          </>
+                        )}
+                        {w.status === 'Approved' && !w.disbursement && (
+                          <Button
+                            size="sm"
+                            className="bg-sky-500 text-zinc-950 hover:bg-sky-400"
+                            onClick={() => handleRecordDisbursement(w)}
+                          >
+                            <Banknote className="h-3 w-3" /> Disburse
+                          </Button>
+                        )}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
       )}
 
-
       {activeTab === 'indicators' && (
-        <div className="indicators-grid">
+        <div className="grid gap-3 sm:grid-cols-2">
           {projects.flatMap((p) =>
             p.resultsIndicators.map((ind) => (
-              <div key={ind.id} className="indicator-card">
-                <div className="indicator-card-top">
-                  <span className="code-pill">{p.projectCode} ({p.countryName})</span>
-                  <button
-                    className="btn btn-outline btn-xs"
-                    onClick={() => setIndicatorModal({ project: p, existing: ind })}
-                  >
-                    Update Value
-                  </button>
+              <Card key={ind.id} className="p-4">
+                <div className="mb-2 flex items-center justify-between gap-2">
+                  <Badge variant="muted">{p.projectCode} ({p.countryName})</Badge>
+                  <Button size="sm" variant="outline" onClick={() => setIndicatorModal({ project: p, existing: ind })}>
+                    Update
+                  </Button>
                 </div>
-                <h4>{ind.indicatorName}</h4>
-                <div className="indicator-values-row">
-                  <div><span>Baseline</span><strong>{ind.baselineValue.toLocaleString()} {ind.unit}</strong></div>
-                  <div><span>Current</span><strong className="text-sky">{ind.currentValue.toLocaleString()} {ind.unit}</strong></div>
-                  <div><span>Target</span><strong className="text-emerald">{ind.targetValue.toLocaleString()} {ind.unit}</strong></div>
+                <h4 className="text-sm font-semibold text-foreground">{ind.indicatorName}</h4>
+                <div className="my-3 grid grid-cols-3 gap-2 font-mono text-xs">
+                  <div>
+                    <div className="text-[10px] text-muted-foreground">Baseline</div>
+                    <div className="text-foreground">{ind.baselineValue.toLocaleString()} {ind.unit}</div>
+                  </div>
+                  <div>
+                    <div className="text-[10px] text-muted-foreground">Current</div>
+                    <div className="text-sky-400">{ind.currentValue.toLocaleString()} {ind.unit}</div>
+                  </div>
+                  <div>
+                    <div className="text-[10px] text-muted-foreground">Target</div>
+                    <div className="text-emerald-400">{ind.targetValue.toLocaleString()} {ind.unit}</div>
+                  </div>
                 </div>
-                <div className="progress-track">
-                  <div className="progress-fill sky" style={{ width: `${ind.progressPercent}%` }} />
+                <ProgressBar percent={ind.progressPercent} tone="sky" />
+                <div className="mt-1.5 text-[11px] text-muted-foreground">
+                  {ind.progressPercent}% of PDO target ({disbursements.filter((d) => d.projectId === p.id).length} disbursements)
                 </div>
-                <small>{ind.progressPercent}% of PDO target achieved ({disbursements.filter(d => d.projectId === p.id).length} disbursements)</small>
-              </div>
+              </Card>
             ))
           )}
         </div>

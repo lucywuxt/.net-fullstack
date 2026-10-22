@@ -71,7 +71,18 @@ const InteractiveGlobe: React.FC<InteractiveGlobeProps> = ({
       controls.autoRotateSpeed = isMobile ? 0.65 : 0.45;
       controls.enableZoom = true;
     }
-  }, [selectedIso3, isMobile, features.length]);
+
+    if (selectedIso3 && features.length > 0) {
+      const feat = features.find((f) => resolveIso3(f) === selectedIso3);
+      if (feat) {
+        const center = computeFeatureCenter(feat);
+        globeRef.current.pointOfView(
+          { lat: center.lat, lng: center.lng, altitude: isMobile ? 1.85 : 1.55 },
+          900
+        );
+      }
+    }
+  }, [selectedIso3, isMobile, features]);
 
   const compareSet = useMemo(() => new Set(compareIso3List), [compareIso3List]);
 

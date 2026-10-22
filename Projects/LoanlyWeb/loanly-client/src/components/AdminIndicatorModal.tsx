@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
-import { X, Target } from 'lucide-react';
+import { Target } from 'lucide-react';
 import { api } from '../services/api';
 import type { Project, ResultsIndicator } from '../types/api';
+import { Dialog, DialogHeader } from './ui/dialog';
+import { Badge } from './ui/badge';
+import { Button } from './ui/button';
+import { Input, Label } from './ui/input';
+import { Alert } from './ui/alert';
 
 interface AdminIndicatorModalProps {
   project: Project;
@@ -46,89 +51,65 @@ export const AdminIndicatorModal: React.FC<AdminIndicatorModalProps> = ({
   };
 
   return (
-    <div className="modal-backdrop">
-      <div className="modal-card">
-        <div className="modal-header">
-          <div>
-            <span className="badge badge-admin">{project.projectCode}</span>
-            <h3>{existing ? 'Update Results Indicator' : 'Add PDO Results Indicator'}</h3>
-          </div>
-          <button className="icon-btn" onClick={onClose}>
-            <X size={18} />
-          </button>
+    <Dialog onClose={onClose}>
+      <DialogHeader
+        title={existing ? 'Update Results Indicator' : 'Add PDO Results Indicator'}
+        badge={<Badge variant="pipeline">{project.projectCode}</Badge>}
+        onClose={onClose}
+      />
+
+      <form onSubmit={handleSubmit} className="space-y-3 p-4">
+        {error && <Alert variant="error">{error}</Alert>}
+
+        <div>
+          <Label>Indicator Name</Label>
+          <Input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="e.g., Rural households connected to clean grid electricity"
+            required
+          />
         </div>
 
-        {error && <div className="alert-error">{error}</div>}
-
-        <form onSubmit={handleSubmit} className="modal-form">
-          <div className="form-field">
-            <label>Indicator Name</label>
-            <input
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <Label>Unit of Measure</Label>
+            <Input
               type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="e.g., Rural households connected to clean grid electricity"
+              value={unit}
+              onChange={(e) => setUnit(e.target.value)}
+              placeholder="e.g., %, MW, beneficiaries"
               required
             />
           </div>
-
-          <div className="form-row-2">
-            <div className="form-field">
-              <label>Unit of Measure</label>
-              <input
-                type="text"
-                value={unit}
-                onChange={(e) => setUnit(e.target.value)}
-                placeholder="e.g., %, MW, beneficiaries"
-                required
-              />
-            </div>
-            <div className="form-field">
-              <label>Baseline Value</label>
-              <input
-                type="number"
-                step="0.1"
-                value={baseline}
-                onChange={(e) => setBaseline(e.target.value)}
-                required
-              />
-            </div>
+          <div>
+            <Label>Baseline Value</Label>
+            <Input type="number" step="0.1" value={baseline} onChange={(e) => setBaseline(e.target.value)} required />
           </div>
+        </div>
 
-          <div className="form-row-2">
-            <div className="form-field">
-              <label>Current Measured Value</label>
-              <input
-                type="number"
-                step="0.1"
-                value={current}
-                onChange={(e) => setCurrent(e.target.value)}
-                required
-              />
-            </div>
-            <div className="form-field">
-              <label>Target Value</label>
-              <input
-                type="number"
-                step="0.1"
-                value={target}
-                onChange={(e) => setTarget(e.target.value)}
-                required
-              />
-            </div>
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <Label>Current Measured Value</Label>
+            <Input type="number" step="0.1" value={current} onChange={(e) => setCurrent(e.target.value)} required />
           </div>
+          <div>
+            <Label>Target Value</Label>
+            <Input type="number" step="0.1" value={target} onChange={(e) => setTarget(e.target.value)} required />
+          </div>
+        </div>
 
-          <div className="modal-actions">
-            <button type="button" className="btn btn-outline" onClick={onClose}>
-              Cancel
-            </button>
-            <button type="submit" className="btn btn-primary" disabled={saving}>
-              <Target size={16} />
-              <span>{saving ? 'Saving...' : 'Save Results Indicator'}</span>
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+        <div className="flex justify-end gap-2 pt-1">
+          <Button type="button" variant="outline" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button type="submit" disabled={saving}>
+            <Target className="h-4 w-4" />
+            {saving ? 'Saving…' : 'Save Results Indicator'}
+          </Button>
+        </div>
+      </form>
+    </Dialog>
   );
 };

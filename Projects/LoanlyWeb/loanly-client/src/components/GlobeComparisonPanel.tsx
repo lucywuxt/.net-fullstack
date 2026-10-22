@@ -55,7 +55,7 @@ export const GlobeComparisonPanel: React.FC<GlobeComparisonPanelProps> = ({
       <CardHeader className="flex-col items-start gap-2">
         <div className="flex items-center gap-2">
           <BarChart3 className="h-4 w-4 text-sky-400" />
-          <CardTitle className="normal-case text-sm text-zinc-200">
+          <CardTitle className="normal-case text-sm text-foreground">
             Comparing {indicatorName} ({unit})
           </CardTitle>
         </div>
@@ -63,7 +63,7 @@ export const GlobeComparisonPanel: React.FC<GlobeComparisonPanelProps> = ({
           {comparedSeries.map((cs, i) => (
             <span
               key={cs.countryIso3}
-              className="flex items-center gap-1 rounded-md border px-1.5 py-0.5 text-[11px] font-mono text-zinc-300"
+              className="flex items-center gap-1 rounded-md border px-1.5 py-0.5 text-[11px] font-mono text-muted-foreground"
               style={{ borderColor: COMPARE_COLORS[i % COMPARE_COLORS.length] }}
             >
               <span
@@ -72,7 +72,7 @@ export const GlobeComparisonPanel: React.FC<GlobeComparisonPanelProps> = ({
               />
               {cs.countryIso3}
               <button onClick={() => onRemoveCountry(cs.countryIso3)} title="Remove">
-                <X className="h-3 w-3 text-zinc-500 hover:text-zinc-200" />
+                <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
               </button>
             </span>
           ))}
@@ -84,15 +84,16 @@ export const GlobeComparisonPanel: React.FC<GlobeComparisonPanelProps> = ({
       <CardContent className="pt-0">
         <ResponsiveContainer width="100%" height={220}>
           <LineChart data={chartData} margin={{ top: 10, right: 12, left: 0, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
-            <XAxis dataKey="year" stroke="#71717a" fontSize={11} />
-            <YAxis stroke="#71717a" fontSize={11} width={48} />
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+            <XAxis dataKey="year" stroke="var(--muted-foreground)" fontSize={11} />
+            <YAxis stroke="var(--muted-foreground)" fontSize={11} width={48} />
             <Tooltip
               contentStyle={{
-                backgroundColor: '#18181b',
-                border: '1px solid #27272a',
+                backgroundColor: 'var(--card)',
+                border: '1px solid var(--border)',
                 borderRadius: '8px',
                 fontSize: '12px',
+                color: 'var(--foreground)',
               }}
             />
             <Legend wrapperStyle={{ fontSize: '11px' }} />

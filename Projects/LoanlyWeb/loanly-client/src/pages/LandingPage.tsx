@@ -9,7 +9,9 @@ import type {
 } from '../types/api';
 import { GlobeComparisonPanel } from '../components/GlobeComparisonPanel';
 import { CountryIntelPanel } from '../components/CountryIntelPanel';
+import { ImpactSections } from '../components/landing/ImpactSections';
 import { Button } from '../components/ui/button';
+import { ThemeToggle } from '../components/ThemeToggle';
 
 const LazyInteractiveGlobe = React.lazy(() => import('../components/InteractiveGlobe'));
 
@@ -134,21 +136,25 @@ export const LandingPage: React.FC = () => {
   const showSearchDropdown = searchFocused && searchTerm.trim().length > 0;
 
   return (
-    <div className="flex flex-col bg-zinc-950 text-zinc-50 md:h-screen md:overflow-hidden">
+    <div className="flex flex-col bg-background text-foreground">
+    <div className="flex flex-col md:h-screen md:overflow-hidden">
       {/* Slim header */}
-      <header className="flex h-14 shrink-0 items-center justify-between border-b border-zinc-800 px-4">
+      <header className="flex h-14 shrink-0 items-center justify-between border-b border-border px-4">
         <Link to="/" className="flex items-center gap-2">
           <Globe2 className="h-5 w-5 text-emerald-500" />
           <span className="font-mono text-sm font-semibold tracking-tight">
-            LOANLY <span className="text-zinc-500">loanly.wiki</span>
+            LOANLY <span className="text-muted-foreground">loanly.wiki</span>
           </span>
         </Link>
-        <Button asChild size="sm">
-          <Link to="/login">
-            Client Connection Sign In
-            <ArrowUpRight className="h-3.5 w-3.5" />
-          </Link>
-        </Button>
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <Button asChild size="sm">
+            <Link to="/login">
+              Client Connection Sign In
+              <ArrowUpRight className="h-3.5 w-3.5" />
+            </Link>
+          </Button>
+        </div>
       </header>
 
       {/* Main split */}
@@ -157,7 +163,7 @@ export const LandingPage: React.FC = () => {
         <div className="relative h-[55vh] w-full shrink-0 md:h-auto md:w-[65%] md:flex-1">
           <Suspense
             fallback={
-              <div className="absolute inset-0 flex items-center justify-center text-sm text-zinc-500">
+              <div className="absolute inset-0 flex items-center justify-center text-sm text-muted-foreground">
                 Initializing 3D WebGL choropleth globe…
               </div>
             }
@@ -177,36 +183,36 @@ export const LandingPage: React.FC = () => {
 
           {/* Floating control bar */}
           <div className="pointer-events-none absolute left-3 right-3 top-3 z-10 flex flex-col gap-2">
-            <div className="pointer-events-auto flex flex-wrap items-center gap-3 rounded-xl border border-zinc-800 bg-zinc-900/60 p-2.5 backdrop-blur-md">
+            <div className="liquid-glass pointer-events-auto flex flex-wrap items-center gap-3 rounded-xl p-2.5">
               <div className="relative min-w-[160px] flex-1">
-                <Search className="pointer-events-none absolute left-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-500" />
+                <Search className="pointer-events-none absolute left-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
                 <input
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   onFocus={() => setSearchFocused(true)}
                   onBlur={() => setTimeout(() => setSearchFocused(false), 120)}
                   placeholder="Search countries or indicators…"
-                  className="w-full rounded-md bg-transparent py-1 pl-7 pr-2 text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none"
+                  className="w-full rounded-md bg-transparent py-1 pl-7 pr-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
                 />
                 {showSearchDropdown && (countryMatches.length > 0 || indicatorMatches.length > 0) && (
-                  <div className="absolute left-0 top-full mt-1 w-64 rounded-lg border border-zinc-800 bg-zinc-900/95 p-1 text-sm shadow-xl backdrop-blur-md">
+                  <div className="liquid-glass absolute left-0 top-full mt-1 w-64 rounded-lg p-1 text-sm shadow-xl">
                     {countryMatches.map((c) => (
                       <button
                         key={c.iso3}
-                        className="flex w-full items-center justify-between rounded-md px-2 py-1.5 text-left text-zinc-200 hover:bg-zinc-800"
+                        className="flex w-full items-center justify-between rounded-md px-2 py-1.5 text-left text-foreground hover:bg-muted"
                         onClick={() => {
                           setSelectedIso3(c.iso3);
                           setSearchTerm('');
                         }}
                       >
                         <span>{c.name}</span>
-                        <span className="font-mono text-xs text-zinc-500">{c.iso3}</span>
+                        <span className="font-mono text-xs text-muted-foreground">{c.iso3}</span>
                       </button>
                     ))}
                     {indicatorMatches.map((i) => (
                       <button
                         key={i.code}
-                        className="flex w-full items-center justify-between rounded-md px-2 py-1.5 text-left text-zinc-300 hover:bg-zinc-800"
+                        className="flex w-full items-center justify-between rounded-md px-2 py-1.5 text-left text-muted-foreground hover:bg-muted"
                         onClick={() => {
                           setSelectedIndicator(i.code);
                           setSearchTerm('');
@@ -222,7 +228,7 @@ export const LandingPage: React.FC = () => {
               <select
                 value={selectedIndicator}
                 onChange={(e) => setSelectedIndicator(e.target.value)}
-                className="rounded-md border border-zinc-800 bg-zinc-900 px-2 py-1 text-xs text-zinc-200 focus:outline-none"
+                className="rounded-md border border-border bg-card px-2 py-1 text-xs text-foreground focus:outline-none"
               >
                 {indicators.map((ind) => (
                   <option key={ind.code} value={ind.code}>
@@ -243,7 +249,7 @@ export const LandingPage: React.FC = () => {
                   onChange={(e) => setSelectedYear(Number(e.target.value))}
                   className="w-28 accent-emerald-500"
                 />
-                <span className="w-10 font-mono text-xs text-zinc-400">{selectedYear}</span>
+                <span className="w-10 font-mono text-xs text-muted-foreground">{selectedYear}</span>
               </div>
             </div>
 
@@ -253,10 +259,10 @@ export const LandingPage: React.FC = () => {
                 {dataset.highlights.map((h, i) => (
                   <div
                     key={i}
-                    className="shrink-0 rounded-lg border border-zinc-800 bg-zinc-900/60 px-3 py-1.5 backdrop-blur-md"
+                    className="liquid-glass shrink-0 rounded-lg px-3 py-1.5"
                   >
-                    <div className="text-[10px] uppercase tracking-wide text-zinc-500">{h.label}</div>
-                    <div className="font-mono text-sm text-zinc-100">{h.formattedValue}</div>
+                    <div className="text-[10px] uppercase tracking-wide text-muted-foreground">{h.label}</div>
+                    <div className="font-mono text-sm text-foreground">{h.formattedValue}</div>
                   </div>
                 ))}
               </div>
@@ -272,7 +278,7 @@ export const LandingPage: React.FC = () => {
                 className={`pointer-events-auto rounded-md border px-2 py-1 font-mono text-[11px] backdrop-blur-md transition-colors ${
                   selectedIso3 === iso
                     ? 'border-emerald-500/50 bg-emerald-500/15 text-emerald-400'
-                    : 'border-zinc-800 bg-zinc-900/60 text-zinc-400 hover:border-zinc-700 hover:text-zinc-200'
+                    : 'border-border bg-card text-muted-foreground hover:border-border hover:text-foreground'
                 }`}
               >
                 {iso}
@@ -282,7 +288,7 @@ export const LandingPage: React.FC = () => {
         </div>
 
         {/* Right: country intel panel */}
-        <aside className="w-full overflow-y-auto border-t border-zinc-800 md:w-[380px] md:border-l md:border-t-0 lg:w-[35%]">
+        <aside className="w-full overflow-y-auto border-t border-border md:w-[380px] md:border-l md:border-t-0 lg:w-[35%]">
           <CountryIntelPanel
             iso3={selectedIso3}
             region={selectedRegion}
@@ -307,6 +313,9 @@ export const LandingPage: React.FC = () => {
           )}
         </aside>
       </div>
+    </div>
+
+      <ImpactSections />
     </div>
   );
 };

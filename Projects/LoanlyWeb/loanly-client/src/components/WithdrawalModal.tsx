@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
-import { X, FileCheck2 } from 'lucide-react';
+import { FileCheck2 } from 'lucide-react';
 import type { ExpenditureCategory, Project } from '../types/api';
 import { api } from '../services/api';
+import { Dialog, DialogHeader } from './ui/dialog';
+import { Badge } from './ui/badge';
+import { Button } from './ui/button';
+import { Input, Label, Select, Textarea } from './ui/input';
+import { Alert } from './ui/alert';
 
 interface WithdrawalModalProps {
   project: Project;
@@ -17,11 +22,7 @@ const CATEGORIES: { value: ExpenditureCategory; label: string; hint: string }[] 
   { value: 'OperatingCosts', label: 'Operating Costs (PIU Operations & Supervision)', hint: 'Requires quarterly Interim Unaudited Financial Report (IFR).' },
 ];
 
-export const WithdrawalModal: React.FC<WithdrawalModalProps> = ({
-  project,
-  onClose,
-  onSubmitted,
-}) => {
+export const WithdrawalModal: React.FC<WithdrawalModalProps> = ({ project, onClose, onSubmitted }) => {
   const [category, setCategory] = useState<ExpenditureCategory>('Goods');
   const [amount, setAmount] = useState<string>('2500000');
   const [docsNote, setDocsNote] = useState<string>(
@@ -52,86 +53,77 @@ export const WithdrawalModal: React.FC<WithdrawalModalProps> = ({
   };
 
   return (
-    <div className="modal-backdrop">
-      <div className="modal-card">
-        <div className="modal-header">
-          <div>
-            <span className="badge badge-country">{project.projectCode}</span>
-            <h3>Submit Withdrawal Application (Client Connection)</h3>
-          </div>
-          <button className="icon-btn" onClick={onClose}>
-            <X size={18} />
-          </button>
+    <Dialog onClose={onClose}>
+      <DialogHeader
+        title="Submit Withdrawal Application"
+        badge={<Badge variant="active">{project.projectCode}</Badge>}
+        onClose={onClose}
+      />
+
+      <div className="grid grid-cols-3 gap-3 border-b border-border p-4">
+        <div>
+          <div className="text-[11px] text-muted-foreground">Approved Ceiling</div>
+          <div className="font-mono text-sm text-foreground">${project.approvedAmount.toLocaleString()}</div>
         </div>
-
-        <div className="ceiling-summary-banner">
-          <div>
-            <span>Approved Ceiling</span>
-            <strong>${project.approvedAmount.toLocaleString()}</strong>
-          </div>
-          <div>
-            <span>Remaining Undisbursed</span>
-            <strong>${project.remainingUndisbursedAmount.toLocaleString()}</strong>
-          </div>
-          <div>
-            <span>Uncommitted Available</span>
-            <strong className="text-emerald">${project.availableToRequestAmount.toLocaleString()}</strong>
-          </div>
+        <div>
+          <div className="text-[11px] text-muted-foreground">Remaining Undisbursed</div>
+          <div className="font-mono text-sm text-foreground">${project.remainingUndisbursedAmount.toLocaleString()}</div>
         </div>
-
-        {error && <div className="alert-error">{error}</div>}
-
-        <form onSubmit={handleSubmit} className="modal-form">
-          <div className="form-field">
-            <label>Expenditure Category</label>
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value as ExpenditureCategory)}
-            >
-              {CATEGORIES.map((c) => (
-                <option key={c.value} value={c.value}>
-                  {c.label}
-                </option>
-              ))}
-            </select>
-            {selectedCatMeta && <small className="field-hint">{selectedCatMeta.hint}</small>}
-          </div>
-
-          <div className="form-field">
-            <label>Amount Requested (USD)</label>
-            <input
-              type="number"
-              step="1000"
-              min="1"
-              max={project.availableToRequestAmount}
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              required
-            />
-          </div>
-
-          <div className="form-field">
-            <label>Supporting Documentation &amp; Procurement Reference Note</label>
-            <textarea
-              rows={3}
-              value={docsNote}
-              onChange={(e) => setDocsNote(e.target.value)}
-              placeholder="Reference IPCs, commercial invoices, SOE, or IFR numbers..."
-              required
-            />
-          </div>
-
-          <div className="modal-actions">
-            <button type="button" className="btn btn-outline" onClick={onClose}>
-              Cancel
-            </button>
-            <button type="submit" className="btn btn-primary" disabled={submitting}>
-              <FileCheck2 size={16} />
-              <span>{submitting ? 'Submitting to WFACS...' : 'Submit Withdrawal Application'}</span>
-            </button>
-          </div>
-        </form>
+        <div>
+          <div className="text-[11px] text-muted-foreground">Uncommitted Available</div>
+          <div className="font-mono text-sm text-emerald-400">${project.availableToRequestAmount.toLocaleString()}</div>
+        </div>
       </div>
-    </div>
+
+      <form onSubmit={handleSubmit} className="space-y-3 p-4">
+        {error && <Alert variant="error">{error}</Alert>}
+
+        <div>
+          <Label>Expenditure Category</Label>
+          <Select value={category} onChange={(e) => setCategory(e.target.value as ExpenditureCategory)}>
+            {CATEGORIES.map((c) => (
+              <option key={c.value} value={c.value}>
+                {c.label}
+              </option>
+            ))}
+          </Select>
+          {selectedCatMeta && <p className="mt-1 text-[11px] text-muted-foreground">{selectedCatMeta.hint}</p>}
+        </div>
+
+        <div>
+          <Label>Amount Requested (USD)</Label>
+          <Input
+            type="number"
+            step="1000"
+            min="1"
+            max={project.availableToRequestAmount}
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            required
+          />
+        </div>
+
+        <div>
+          <Label>Supporting Documentation &amp; Procurement Reference Note</Label>
+          <Textarea
+            rows={3}
+            value={docsNote}
+            onChange={(e) => setDocsNote(e.target.value)}
+            placeholder="Reference IPCs, commercial invoices, SOE, or IFR numbers..."
+            required
+          />
+        </div>
+
+        <div className="flex justify-end gap-2 pt-1">
+          <Button type="button" variant="outline" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button type="submit" disabled={submitting}>
+            <FileCheck2 className="h-4 w-4" />
+            {submitting ? 'Submitting to WFACS…' : 'Submit Withdrawal Application'}
+          </Button>
+        </div>
+      </form>
+    </Dialog>
   );
 };

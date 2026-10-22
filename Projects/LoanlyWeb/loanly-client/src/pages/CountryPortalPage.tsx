@@ -13,6 +13,15 @@ import { useAuth } from '../context/AuthContext';
 import type { Disbursement, Project, ProjectStatus, WithdrawalApplication } from '../types/api';
 import { WithdrawalModal } from '../components/WithdrawalModal';
 import { AiChatWidget } from '../components/AiChatWidget';
+import { Card, CardContent } from '../components/ui/card';
+import { Badge } from '../components/ui/badge';
+import { Button } from '../components/ui/button';
+import { StatCard } from '../components/ui/stat-card';
+import { ProgressBar } from '../components/ui/progress';
+import { Stepper } from '../components/ui/stepper';
+import { TabBar } from '../components/ui/tabs';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table';
+import { PROJECT_STATUS_TONE, WITHDRAWAL_STATUS_TONE } from '../lib/status';
 
 const LIFECYCLE_STAGES: ProjectStatus[] = [
   'Concept',
@@ -58,204 +67,204 @@ export const CountryPortalPage: React.FC = () => {
   const activeProjects = projects.filter((p) => p.status === 'Active');
 
   return (
-    <div className="portal-page">
-      <section className="portal-header-banner">
+    <div className="space-y-6">
+      <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <span className="eyebrow-pill">
+          <Badge variant="pipeline" className="mb-2">
             BORROWER CLIENT CONNECTION • {user?.isoAlpha3} ({user?.subRoleOrRegion})
-          </span>
-          <h1>{user?.name} — Sovereign Project Financing Portal</h1>
-          <p>
-            Manage approved World Bank IBRD/IDA project ceilings, submit Withdrawal Applications,
-            and monitor Designated Account disbursements and PDO Results Indicators.
+          </Badge>
+          <h1 className="text-xl font-semibold text-foreground">{user?.name} — Sovereign Project Financing Portal</h1>
+          <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
+            Manage approved World Bank IBRD/IDA project ceilings, submit Withdrawal Applications, and monitor
+            Designated Account disbursements and PDO Results Indicators.
           </p>
         </div>
         {activeProjects.length > 0 && (
-          <button className="btn btn-primary" onClick={() => setModalProject(activeProjects[0])}>
-            <FilePlus2 size={16} />
-            <span>New Withdrawal Application</span>
-          </button>
+          <Button onClick={() => setModalProject(activeProjects[0])}>
+            <FilePlus2 className="h-4 w-4" />
+            New Withdrawal Application
+          </Button>
         )}
-      </section>
-
-      <section className="kpi-grid">
-        <div className="kpi-card">
-          <div className="kpi-icon sky"><Landmark size={20} /></div>
-          <div>
-            <div className="kpi-label">Approved Financing Ceiling</div>
-            <div className="kpi-value">${totalApproved.toLocaleString()}</div>
-            <div className="kpi-sub">{projects.length} Total Projects ({activeProjects.length} Active)</div>
-          </div>
-        </div>
-        <div className="kpi-card">
-          <div className="kpi-icon emerald"><CheckCircle2 size={20} /></div>
-          <div>
-            <div className="kpi-label">Cumulative Disbursed</div>
-            <div className="kpi-value">${totalDisbursed.toLocaleString()}</div>
-            <div className="kpi-sub">{disbursements.length} Recorded Tranches</div>
-          </div>
-        </div>
-        <div className="kpi-card">
-          <div className="kpi-icon amber"><TrendingUp size={20} /></div>
-          <div>
-            <div className="kpi-label">Remaining Undisbursed Ceiling</div>
-            <div className="kpi-value">${totalRemaining.toLocaleString()}</div>
-            <div className="kpi-sub">Available for Drawdown on Active Projects</div>
-          </div>
-        </div>
-      </section>
-
-      <div className="portal-tabs">
-        <button className={`tab-btn ${activeTab === 'projects' ? 'active' : ''}`} onClick={() => setActiveTab('projects')}>
-          <Landmark size={15} /> Projects &amp; Ceilings ({projects.length})
-        </button>
-        <button className={`tab-btn ${activeTab === 'withdrawals' ? 'active' : ''}`} onClick={() => setActiveTab('withdrawals')}>
-          <Clock size={15} /> Withdrawal Applications ({withdrawals.length})
-        </button>
-        <button className={`tab-btn ${activeTab === 'disbursements' ? 'active' : ''}`} onClick={() => setActiveTab('disbursements')}>
-          <Receipt size={15} /> Disbursement Ledger ({disbursements.length})
-        </button>
-        <button className={`tab-btn ${activeTab === 'results' ? 'active' : ''}`} onClick={() => setActiveTab('results')}>
-          <Target size={15} /> Results Indicators (PDO)
-        </button>
       </div>
 
+      <div className="grid gap-3 sm:grid-cols-3">
+        <StatCard
+          icon={<Landmark className="h-4 w-4" />}
+          tone="sky"
+          label="Approved Financing Ceiling"
+          value={`$${totalApproved.toLocaleString()}`}
+          sub={`${projects.length} Total Projects (${activeProjects.length} Active)`}
+        />
+        <StatCard
+          icon={<CheckCircle2 className="h-4 w-4" />}
+          tone="emerald"
+          label="Cumulative Disbursed"
+          value={`$${totalDisbursed.toLocaleString()}`}
+          sub={`${disbursements.length} Recorded Tranches`}
+        />
+        <StatCard
+          icon={<TrendingUp className="h-4 w-4" />}
+          tone="amber"
+          label="Remaining Undisbursed Ceiling"
+          value={`$${totalRemaining.toLocaleString()}`}
+          sub="Available for Drawdown on Active Projects"
+        />
+      </div>
+
+      <TabBar
+        active={activeTab}
+        onChange={(id) => setActiveTab(id as typeof activeTab)}
+        tabs={[
+          { id: 'projects', label: `Projects & Ceilings (${projects.length})`, icon: <Landmark className="h-3.5 w-3.5" /> },
+          { id: 'withdrawals', label: `Withdrawal Applications (${withdrawals.length})`, icon: <Clock className="h-3.5 w-3.5" /> },
+          { id: 'disbursements', label: `Disbursement Ledger (${disbursements.length})`, icon: <Receipt className="h-3.5 w-3.5" /> },
+          { id: 'results', label: 'Results Indicators (PDO)', icon: <Target className="h-3.5 w-3.5" /> },
+        ]}
+      />
+
       {loading ? (
-        <div className="loading-box">Loading borrower portfolio...</div>
+        <div className="py-16 text-center text-sm text-muted-foreground">Loading borrower portfolio…</div>
       ) : activeTab === 'projects' ? (
-        <div className="projects-stack">
+        <div className="space-y-3">
           {projects.map((p) => {
             const pct = p.approvedAmount > 0 ? Math.round((p.totalDisbursed / p.approvedAmount) * 100) : 0;
             return (
-              <div key={p.id} className="project-detail-card">
-                <div className="project-top-row">
+              <Card key={p.id} className="p-4">
+                <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
-                    <div className="badge-cluster">
-                      <span className="code-pill">{p.projectCode}</span>
-                      <span className="instrument-pill">{p.financingInstrument}</span>
-                      <span className="sector-pill">{p.sector}</span>
-                      <span className={`status-pill status-${p.status.toLowerCase()}`}>{p.status}</span>
+                    <div className="mb-1.5 flex flex-wrap items-center gap-1.5">
+                      <Badge>{p.projectCode}</Badge>
+                      <Badge variant="muted">{p.financingInstrument}</Badge>
+                      <Badge variant="muted">{p.sector}</Badge>
+                      <Badge variant={PROJECT_STATUS_TONE[p.status] ?? 'default'}>{p.status}</Badge>
                     </div>
-                    <h3>{p.title}</h3>
-                    <p className="pdo-text"><strong>PDO:</strong> {p.projectDevelopmentObjective}</p>
+                    <h3 className="text-sm font-semibold text-foreground">{p.title}</h3>
+                    <p className="mt-1 max-w-2xl text-xs text-muted-foreground">
+                      <strong className="text-muted-foreground">PDO:</strong> {p.projectDevelopmentObjective}
+                    </p>
                   </div>
                   {p.status === 'Active' && (
-                    <button className="btn btn-primary btn-sm" onClick={() => setModalProject(p)}>
-                      <FilePlus2 size={15} />
-                      <span>Submit Withdrawal</span>
-                    </button>
+                    <Button size="sm" onClick={() => setModalProject(p)}>
+                      <FilePlus2 className="h-3.5 w-3.5" />
+                      Submit Withdrawal
+                    </Button>
                   )}
                 </div>
 
-                <div className="lifecycle-stepper">
-                  {LIFECYCLE_STAGES.map((stage, i) => {
-                    const currentIdx = LIFECYCLE_STAGES.indexOf(p.status);
-                    const done = i <= currentIdx;
-                    return (
-                      <div key={stage} className={`step-node ${done ? 'done' : ''} ${p.status === stage ? 'current' : ''}`}>
-                        <span className="step-dot">{i + 1}</span>
-                        <span className="step-label">{stage}</span>
-                      </div>
-                    );
-                  })}
+                <div className="my-4 overflow-x-auto">
+                  <Stepper stages={LIFECYCLE_STAGES} currentIndex={LIFECYCLE_STAGES.indexOf(p.status)} />
                 </div>
 
-                <div className="financial-bar-block">
-                  <div className="financial-metrics-row">
-                    <span>Approved Ceiling: <strong>${p.approvedAmount.toLocaleString()}</strong></span>
-                    <span>Disbursed: <strong className="text-emerald">${p.totalDisbursed.toLocaleString()} ({pct}%)</strong></span>
-                    <span>Approved Pending Disb: <strong className="text-amber">${p.committedPendingDisbursement.toLocaleString()}</strong></span>
-                    <span>Remaining Undisbursed: <strong className="text-sky">${p.remainingUndisbursedAmount.toLocaleString()}</strong></span>
+                <div className="space-y-1.5">
+                  <div className="flex flex-wrap gap-x-4 gap-y-1 font-mono text-[11px] text-muted-foreground">
+                    <span>Ceiling: <strong className="text-foreground">${p.approvedAmount.toLocaleString()}</strong></span>
+                    <span>Disbursed: <strong className="text-emerald-400">${p.totalDisbursed.toLocaleString()} ({pct}%)</strong></span>
+                    <span>Pending: <strong className="text-amber-400">${p.committedPendingDisbursement.toLocaleString()}</strong></span>
+                    <span>Remaining: <strong className="text-sky-400">${p.remainingUndisbursedAmount.toLocaleString()}</strong></span>
                   </div>
-                  <div className="progress-track">
-                    <div className="progress-fill emerald" style={{ width: `${pct}%` }} />
-                  </div>
+                  <ProgressBar percent={pct} />
                 </div>
-              </div>
+              </Card>
             );
           })}
         </div>
       ) : activeTab === 'withdrawals' ? (
-        <div className="table-card">
-          <h3>Withdrawal Applications Status Tracker</h3>
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>WA Number</th>
-                <th>Project</th>
-                <th>Category</th>
-                <th>Requested</th>
-                <th>Status</th>
-                <th>Supporting Documents &amp; Reviewer Notes</th>
-                <th>Submitted</th>
-              </tr>
-            </thead>
-            <tbody>
-              {withdrawals.map((w) => (
-                <tr key={w.id}>
-                  <td><strong>{w.applicationNumber}</strong></td>
-                  <td>{w.projectCode} — {w.projectTitle}</td>
-                  <td><span className="sector-pill">{w.category}</span></td>
-                  <td><strong>${w.amountRequested.toLocaleString()}</strong></td>
-                  <td><span className={`status-pill status-${w.status.toLowerCase()}`}>{w.status}</span></td>
-                  <td>
-                    <div>{w.supportingDocumentsNote}</div>
-                    {w.reviewNotes && <small className="text-sky">Reviewer ({w.reviewedByAdminName}): {w.reviewNotes}</small>}
-                  </td>
-                  <td>{new Date(w.submittedAt).toLocaleDateString()}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
+        <Card>
+          <CardContent className="overflow-x-auto p-4">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>WA Number</TableHead>
+                  <TableHead>Project</TableHead>
+                  <TableHead>Category</TableHead>
+                  <TableHead>Requested</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Documentation &amp; Notes</TableHead>
+                  <TableHead>Submitted</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {withdrawals.map((w) => (
+                  <TableRow key={w.id}>
+                    <TableCell className="font-mono text-foreground">{w.applicationNumber}</TableCell>
+                    <TableCell>{w.projectCode} — {w.projectTitle}</TableCell>
+                    <TableCell><Badge variant="muted">{w.category}</Badge></TableCell>
+                    <TableCell className="font-mono">${w.amountRequested.toLocaleString()}</TableCell>
+                    <TableCell><Badge variant={WITHDRAWAL_STATUS_TONE[w.status] ?? 'default'}>{w.status}</Badge></TableCell>
+                    <TableCell className="max-w-[220px]">
+                      <div className="truncate text-xs">{w.supportingDocumentsNote}</div>
+                      {w.reviewNotes && (
+                        <div className="mt-0.5 text-[11px] text-sky-400">
+                          Reviewer ({w.reviewedByAdminName}): {w.reviewNotes}
+                        </div>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">{new Date(w.submittedAt).toLocaleDateString()}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
       ) : activeTab === 'disbursements' ? (
-        <div className="table-card">
-          <h3>Designated Account Disbursement Running Ledger</h3>
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Transaction Ref</th>
-                <th>WA Number</th>
-                <th>Project</th>
-                <th>Category</th>
-                <th>Amount Disbursed</th>
-                <th>Remaining Ceiling Balance After</th>
-                <th>Disbursed Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {disbursements.map((d) => (
-                <tr key={d.id}>
-                  <td><code>{d.transactionReference}</code></td>
-                  <td>{d.applicationNumber}</td>
-                  <td>{d.projectCode} — {d.projectTitle}</td>
-                  <td>{d.category}</td>
-                  <td className="text-emerald"><strong>+${d.amountDisbursed.toLocaleString()}</strong></td>
-                  <td className="text-sky"><strong>${d.designatedAccountBalanceAfter.toLocaleString()}</strong></td>
-                  <td>{new Date(d.disbursedAt).toLocaleDateString()}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <Card>
+          <CardContent className="overflow-x-auto p-4">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Transaction Ref</TableHead>
+                  <TableHead>WA Number</TableHead>
+                  <TableHead>Project</TableHead>
+                  <TableHead>Category</TableHead>
+                  <TableHead className="text-right">Amount</TableHead>
+                  <TableHead className="text-right">Balance After</TableHead>
+                  <TableHead>Date</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {disbursements.map((d) => (
+                  <TableRow key={d.id}>
+                    <TableCell className="font-mono text-muted-foreground">{d.transactionReference}</TableCell>
+                    <TableCell>{d.applicationNumber}</TableCell>
+                    <TableCell>{d.projectCode} — {d.projectTitle}</TableCell>
+                    <TableCell><Badge variant="muted">{d.category}</Badge></TableCell>
+                    <TableCell className="text-right font-mono text-emerald-400">
+                      +${d.amountDisbursed.toLocaleString()}
+                    </TableCell>
+                    <TableCell className="text-right font-mono text-sky-400">
+                      ${d.designatedAccountBalanceAfter.toLocaleString()}
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">{new Date(d.disbursedAt).toLocaleDateString()}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
       ) : (
-        <div className="indicators-grid">
+        <div className="grid gap-3 sm:grid-cols-2">
           {projects.flatMap((p) =>
             p.resultsIndicators.map((ind) => (
-              <div key={ind.id} className="indicator-card">
-                <span className="code-pill">{p.projectCode} — {p.title}</span>
-                <h4>{ind.indicatorName}</h4>
-                <div className="indicator-values-row">
-                  <div><span>Baseline</span><strong>{ind.baselineValue.toLocaleString()} {ind.unit}</strong></div>
-                  <div><span>Current</span><strong className="text-sky">{ind.currentValue.toLocaleString()} {ind.unit}</strong></div>
-                  <div><span>Target</span><strong className="text-emerald">{ind.targetValue.toLocaleString()} {ind.unit}</strong></div>
+              <Card key={ind.id} className="p-4">
+                <Badge variant="muted" className="mb-2">{p.projectCode} — {p.title}</Badge>
+                <h4 className="text-sm font-semibold text-foreground">{ind.indicatorName}</h4>
+                <div className="my-3 grid grid-cols-3 gap-2 font-mono text-xs">
+                  <div>
+                    <div className="text-[10px] text-muted-foreground">Baseline</div>
+                    <div className="text-foreground">{ind.baselineValue.toLocaleString()} {ind.unit}</div>
+                  </div>
+                  <div>
+                    <div className="text-[10px] text-muted-foreground">Current</div>
+                    <div className="text-sky-400">{ind.currentValue.toLocaleString()} {ind.unit}</div>
+                  </div>
+                  <div>
+                    <div className="text-[10px] text-muted-foreground">Target</div>
+                    <div className="text-emerald-400">{ind.targetValue.toLocaleString()} {ind.unit}</div>
+                  </div>
                 </div>
-                <div className="progress-track">
-                  <div className="progress-fill sky" style={{ width: `${ind.progressPercent}%` }} />
-                </div>
-                <small>{ind.progressPercent}% toward PDO target</small>
-              </div>
+                <ProgressBar percent={ind.progressPercent} tone="sky" />
+                <div className="mt-1.5 text-[11px] text-muted-foreground">{ind.progressPercent}% toward PDO target</div>
+              </Card>
             ))
           )}
         </div>

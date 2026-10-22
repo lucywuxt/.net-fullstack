@@ -24,14 +24,38 @@ public record DemoCredentialDto(
     string RoleDescription
 );
 
+// Public (unauthenticated) aggregate impact summary — portfolio-wide totals only
+public record PublicImpactSummaryDto(
+    int CountriesServedCount,
+    decimal TotalCommitted,
+    decimal TotalDisbursed,
+    int TotalProjectsCount,
+    int ActiveProjectsCount,
+    List<BreakdownItemDto> BySector,
+    List<BreakdownItemDto> ByRegion,
+    List<BreakdownItemDto> ByInstrument
+);
+
 // Public (unauthenticated) project summary — only non-sensitive fields
 public record PublicProjectSummaryDto(
     string ProjectCode,
     string Title,
+    string CountryName,
+    string CountryIso3,
     ProjectSector Sector,
     FinancingInstrument FinancingInstrument,
     decimal ApprovedAmount,
-    ProjectStatus Status
+    ProjectStatus Status,
+    string ProjectDevelopmentObjective,
+    PublicIndicatorHighlightDto? TopIndicator
+);
+
+public record PublicIndicatorHighlightDto(
+    string IndicatorName,
+    string Unit,
+    decimal CurrentValue,
+    decimal TargetValue,
+    decimal ProgressPercent
 );
 
 // Country DTO

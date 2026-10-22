@@ -179,13 +179,36 @@ export interface CountryIndicatorSeries {
   series: YearPoint[];
 }
 
+export interface PublicImpactSummary {
+  countriesServedCount: number;
+  totalCommitted: number;
+  totalDisbursed: number;
+  totalProjectsCount: number;
+  activeProjectsCount: number;
+  bySector: BreakdownItem[];
+  byRegion: BreakdownItem[];
+  byInstrument: BreakdownItem[];
+}
+
+export interface PublicIndicatorHighlight {
+  indicatorName: string;
+  unit: string;
+  currentValue: number;
+  targetValue: number;
+  progressPercent: number;
+}
+
 export interface PublicProjectSummary {
   projectCode: string;
   title: string;
+  countryName: string;
+  countryIso3: string;
   sector: ProjectSector;
   financingInstrument: FinancingInstrument;
   approvedAmount: number;
   status: ProjectStatus;
+  projectDevelopmentObjective: string;
+  topIndicator: PublicIndicatorHighlight | null;
 }
 
 export interface ChatResponse {

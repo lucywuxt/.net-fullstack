@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
+import { PROJECT_STATUS_TONE } from '../lib/status';
 
 interface KpiDef {
   label: string;
@@ -27,15 +28,6 @@ function formatCount(v: number): string {
   if (v >= 1e3) return `${(v / 1e3).toFixed(0)}K`;
   return v.toFixed(0);
 }
-
-const statusVariant: Record<string, 'active' | 'pipeline' | 'risk' | 'muted'> = {
-  Active: 'active',
-  BoardApproval: 'pipeline',
-  Negotiation: 'pipeline',
-  Appraisal: 'pipeline',
-  Concept: 'muted',
-  Closed: 'risk',
-};
 
 interface CountryIntelPanelProps {
   iso3: string | null;
@@ -88,8 +80,8 @@ export const CountryIntelPanel: React.FC<CountryIntelPanelProps> = ({
   if (!iso3) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-3 p-8 text-center">
-        <Globe2 className="h-8 w-8 text-zinc-600" />
-        <p className="max-w-[220px] text-sm text-zinc-500">
+        <Globe2 className="h-8 w-8 text-muted-foreground" />
+        <p className="max-w-[220px] text-sm text-muted-foreground">
           Click any country on the globe to inspect its development metrics.
         </p>
       </div>
@@ -102,10 +94,10 @@ export const CountryIntelPanel: React.FC<CountryIntelPanelProps> = ({
       <div className="flex items-start justify-between gap-2">
         <div>
           <div className="flex items-center gap-2">
-            <span className="font-mono text-2xl font-semibold tracking-tight text-zinc-50">{iso3}</span>
+            <span className="font-mono text-2xl font-semibold tracking-tight text-foreground">{iso3}</span>
             {region && <Badge variant="muted">{region}</Badge>}
           </div>
-          <h2 className="mt-0.5 text-sm text-zinc-400">
+          <h2 className="mt-0.5 text-sm text-muted-foreground">
             {selectedCountrySeries?.countryName ?? '—'}
           </h2>
         </div>
@@ -121,8 +113,8 @@ export const CountryIntelPanel: React.FC<CountryIntelPanelProps> = ({
           const raw = kpiValues[k.code];
           return (
             <Card key={k.code} className="p-3">
-              <div className="text-xs text-zinc-400">{k.label}</div>
-              <div className="mt-1 font-mono text-lg text-zinc-50">
+              <div className="text-xs text-muted-foreground">{k.label}</div>
+              <div className="mt-1 font-mono text-lg text-foreground">
                 {loadingKpis ? '…' : raw !== null && raw !== undefined ? k.format(raw) : 'N/A'}
               </div>
             </Card>
@@ -144,7 +136,7 @@ export const CountryIntelPanel: React.FC<CountryIntelPanelProps> = ({
             </span>
           </CardHeader>
           <CardContent className="pt-0">
-            <div className="mb-1 text-[11px] text-zinc-500">
+            <div className="mb-1 text-[11px] text-muted-foreground">
               Selected year {selectedYear} · api.worldbank.org/v2
             </div>
             <ResponsiveContainer width="100%" height={110}>
@@ -155,14 +147,15 @@ export const CountryIntelPanel: React.FC<CountryIntelPanelProps> = ({
                     <stop offset="95%" stopColor="#10b981" stopOpacity={0.02} />
                   </linearGradient>
                 </defs>
-                <XAxis dataKey="year" stroke="#71717a" fontSize={10} tickLine={false} axisLine={false} />
+                <XAxis dataKey="year" stroke="var(--muted-foreground)" fontSize={10} tickLine={false} axisLine={false} />
                 <YAxis hide />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#18181b',
-                    border: '1px solid #27272a',
+                    backgroundColor: 'var(--card)',
+                    border: '1px solid var(--border)',
                     borderRadius: '8px',
                     fontSize: '12px',
+                    color: 'var(--foreground)',
                   }}
                 />
                 <Area type="monotone" dataKey="value" stroke="#10b981" strokeWidth={2} fill="url(#sparkGrad)" />
@@ -179,7 +172,7 @@ export const CountryIntelPanel: React.FC<CountryIntelPanelProps> = ({
         </CardHeader>
         <CardContent className="pt-0">
           {projects.length === 0 ? (
-            <p className="py-4 text-center text-xs text-zinc-500">
+            <p className="py-4 text-center text-xs text-muted-foreground">
               No active Loanly Client Connection engagement for {iso3}.
             </p>
           ) : (
@@ -198,13 +191,13 @@ export const CountryIntelPanel: React.FC<CountryIntelPanelProps> = ({
                       <div className="truncate" title={p.title}>
                         {p.title}
                       </div>
-                      <div className="font-mono text-[10px] text-zinc-500">{p.financingInstrument}</div>
+                      <div className="font-mono text-[10px] text-muted-foreground">{p.financingInstrument}</div>
                     </TableCell>
                     <TableCell className="text-right font-mono">
                       ${(p.approvedAmount / 1e6).toFixed(0)}M
                     </TableCell>
                     <TableCell className="text-right">
-                      <Badge variant={statusVariant[p.status] ?? 'default'}>{p.status}</Badge>
+                      <Badge variant={PROJECT_STATUS_TONE[p.status] ?? 'default'}>{p.status}</Badge>
                     </TableCell>
                   </TableRow>
                 ))}

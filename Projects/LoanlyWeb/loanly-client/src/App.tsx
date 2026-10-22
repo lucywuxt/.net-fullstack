@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { Navbar } from './components/Navbar';
 import { LandingPage } from './pages/LandingPage';
 import { LoginPage } from './pages/LoginPage';
@@ -53,12 +54,12 @@ const Shell: React.FC = () => {
   }
 
   return (
-    <div className="app-shell">
+    <div className="flex min-h-screen flex-col bg-background text-foreground">
       <Navbar />
-      <main className="main-content">{routes}</main>
-      <footer className="app-footer">
+      <main className="mx-auto w-full max-w-[1440px] flex-1 px-4 py-6">{routes}</main>
+      <footer className="flex flex-wrap items-center justify-between gap-2 border-t border-border px-4 py-4 text-xs text-muted-foreground">
         <div>
-          <strong>LOANLY (loanly.wiki)</strong> — Sovereign Development Financing &amp; Client Connection Operations Platform
+          <strong className="text-muted-foreground">LOANLY (loanly.wiki)</strong> — Sovereign Development Financing &amp; Client Connection Operations Platform
         </div>
         <div>
           Powered by World Bank Open Data API v2 • ASP.NET Core 10 • EF Core 10 • Gemini 3.6 Flash
@@ -70,11 +71,13 @@ const Shell: React.FC = () => {
 
 export const App: React.FC = () => {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Shell />
-      </BrowserRouter>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          <Shell />
+        </BrowserRouter>
+      </AuthProvider>
+    </ThemeProvider>
   );
 };
 
