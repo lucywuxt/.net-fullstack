@@ -15,7 +15,9 @@ public partial class WorldBankService
         new("EG.ELC.ACCS.ZS", "Access to Electricity (% of Population)", "%", "Percentage of population with access to reliable household electricity.", "amber"),
         new("SP.DYN.LE00.IN", "Life Expectancy at Birth (Years)", "years", "Average number of years a newborn infant would live under prevailing patterns.", "cyan"),
         new("SI.POV.DDAY", "Poverty Headcount Ratio ($2.15/day, % of Pop)", "%", "Percentage of population living on less than $2.15/day (2017 PPP).", "rose"),
-        new("EN.GHG.CO2.PC.CE.AR5", "CO2 Emissions per Capita (t CO2e/capita)", "t CO2e", "Carbon dioxide emissions per capita excluding LULUCF.", "violet")
+        new("EN.GHG.CO2.PC.CE.AR5", "CO2 Emissions per Capita (t CO2e/capita)", "t CO2e", "Carbon dioxide emissions per capita excluding LULUCF.", "violet"),
+        new("NY.GDP.MKTP.CD", "GDP, Total (Current US$)", "USD", "Gross domestic product at purchaser's prices in current US dollars.", "sky"),
+        new("SP.POP.TOTL", "Population, Total", "people", "Total population based on the de facto definition of population.", "indigo")
     };
 
     private static readonly HashSet<string> AggregateIso3Codes = new(StringComparer.OrdinalIgnoreCase)

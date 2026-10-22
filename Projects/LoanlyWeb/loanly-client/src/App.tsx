@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { Navbar } from './components/Navbar';
 import { LandingPage } from './pages/LandingPage';
@@ -19,44 +19,60 @@ const ProtectedRoute: React.FC<{
   return children;
 };
 
+const Shell: React.FC = () => {
+  const location = useLocation();
+  const isDashboard = location.pathname === '/';
+
+  const routes = (
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route
+        path="/country"
+        element={
+          <ProtectedRoute allowedRole="Country">
+            <CountryPortalPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute allowedRole="Admin">
+            <AdminPortalPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  );
+
+  if (isDashboard) {
+    // Full-bleed dashboard: the landing page owns its own header/layout.
+    return routes;
+  }
+
+  return (
+    <div className="app-shell">
+      <Navbar />
+      <main className="main-content">{routes}</main>
+      <footer className="app-footer">
+        <div>
+          <strong>LOANLY (loanly.wiki)</strong> — Sovereign Development Financing &amp; Client Connection Operations Platform
+        </div>
+        <div>
+          Powered by World Bank Open Data API v2 • ASP.NET Core 10 • EF Core 10 • Gemini 3.6 Flash
+        </div>
+      </footer>
+    </div>
+  );
+};
+
 export const App: React.FC = () => {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <div className="app-shell">
-          <Navbar />
-          <main className="main-content">
-            <Routes>
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route
-                path="/country"
-                element={
-                  <ProtectedRoute allowedRole="Country">
-                    <CountryPortalPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/admin"
-                element={
-                  <ProtectedRoute allowedRole="Admin">
-                    <AdminPortalPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </main>
-          <footer className="app-footer">
-            <div>
-              <strong>LOANLY (loanly.wiki)</strong> — Sovereign Development Financing &amp; Client Connection Operations Platform
-            </div>
-            <div>
-              Powered by World Bank Open Data API v2 • ASP.NET Core 10 • EF Core 10 • Gemini 3.6 Flash
-            </div>
-          </footer>
-        </div>
+        <Shell />
       </BrowserRouter>
     </AuthProvider>
   );

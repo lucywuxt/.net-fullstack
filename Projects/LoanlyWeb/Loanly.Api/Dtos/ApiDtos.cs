@@ -24,6 +24,16 @@ public record DemoCredentialDto(
     string RoleDescription
 );
 
+// Public (unauthenticated) project summary — only non-sensitive fields
+public record PublicProjectSummaryDto(
+    string ProjectCode,
+    string Title,
+    ProjectSector Sector,
+    FinancingInstrument FinancingInstrument,
+    decimal ApprovedAmount,
+    ProjectStatus Status
+);
+
 // Country DTO
 public record CountrySummaryDto(
     int Id,

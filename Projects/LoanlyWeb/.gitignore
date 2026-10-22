@@ -19,3 +19,4 @@ Loanly.Api/appsettings.*.Local.json
 .DS_Store
 .vscode/
 .idea/
+.claude/

@@ -179,6 +179,15 @@ export interface CountryIndicatorSeries {
   series: YearPoint[];
 }
 
+export interface PublicProjectSummary {
+  projectCode: string;
+  title: string;
+  sector: ProjectSector;
+  financingInstrument: FinancingInstrument;
+  approvedAmount: number;
+  status: ProjectStatus;
+}
+
 export interface ChatResponse {
   reply: string;
   modelUsed: string;

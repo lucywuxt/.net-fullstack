@@ -13,6 +13,7 @@ import type {
   Project,
   ProjectSector,
   ProjectStatus,
+  PublicProjectSummary,
   ResultsIndicator,
   WithdrawalApplication,
   WithdrawalStatus,
@@ -78,6 +79,8 @@ export const api = {
     request<CountryIndicatorSeries>(
       `/public/worldbank/country/${encodeURIComponent(countryCode)}/indicator/${encodeURIComponent(indicatorCode)}`
     ),
+  getPublicProjects: (countryIso3: string) =>
+    request<PublicProjectSummary[]>(`/public/worldbank/country/${encodeURIComponent(countryIso3)}/projects`),
 
   // Projects & Portfolio
   getCountries: () => request<CountrySummary[]>('/projects/countries'),

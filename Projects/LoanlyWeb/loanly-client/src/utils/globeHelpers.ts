@@ -64,5 +64,11 @@ export function getChoroplethColor(
   if (scale === 'cyan') {
     return `rgba(${Math.round(20 + 40 * t)}, ${Math.round(80 + 145 * t)}, ${Math.round(130 + 115 * t)}, 0.84)`;
   }
+  if (scale === 'sky') {
+    return `rgba(${Math.round(30 + 25 * t)}, ${Math.round(100 + 90 * t)}, ${Math.round(160 + 80 * t)}, 0.84)`;
+  }
+  if (scale === 'indigo') {
+    return `rgba(${Math.round(60 + 40 * t)}, ${Math.round(55 + 50 * t)}, ${Math.round(150 + 90 * t)}, 0.84)`;
+  }
   return `rgba(${Math.round(16 + 35 * t)}, ${Math.round(75 + 155 * t)}, ${Math.round(90 + 75 * t)}, 0.85)`;
 }

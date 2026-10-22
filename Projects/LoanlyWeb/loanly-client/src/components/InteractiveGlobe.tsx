@@ -48,18 +48,19 @@ const InteractiveGlobe: React.FC<InteractiveGlobeProps> = ({
   }, []);
 
   useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
     const updateSize = () => {
-      if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
-        setDimensions({
-          width: Math.max(300, Math.floor(rect.width)),
-          height: isMobile ? 390 : 550,
-        });
-      }
+      const rect = el.getBoundingClientRect();
+      setDimensions({
+        width: Math.max(300, Math.floor(rect.width)),
+        height: Math.max(isMobile ? 320 : 400, Math.floor(rect.height)),
+      });
     };
     updateSize();
-    window.addEventListener('resize', updateSize);
-    return () => window.removeEventListener('resize', updateSize);
+    const observer = new ResizeObserver(updateSize);
+    observer.observe(el);
+    return () => observer.disconnect();
   }, [isMobile]);
 
   useEffect(() => {
@@ -91,7 +92,7 @@ const InteractiveGlobe: React.FC<InteractiveGlobeProps> = ({
   };
 
   return (
-    <div ref={containerRef} className="globe-canvas-container">
+    <div ref={containerRef} className="absolute inset-0 overflow-hidden">
       <Globe
         ref={globeRef}
         width={dimensions.width}
