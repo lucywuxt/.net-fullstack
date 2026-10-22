@@ -59,10 +59,18 @@ public partial class FinancingService
 
         await _db.SaveChangesAsync();
 
+        var admin = await _db.Admins.FindAsync(adminId);
+        var noteSuffix = string.IsNullOrWhiteSpace(request.ReviewNotes) ? "" : $" Note: {request.ReviewNotes.Trim()}";
+        await LogAuditAsync(
+            "WithdrawalApplication", application.Id, "StatusChanged",
+            $"{application.ApplicationNumber} marked {request.DecisionStatus} by {admin?.Name ?? "Admin"}.{noteSuffix}",
+            admin?.Name ?? "Admin", admin?.Role.ToString() ?? "Admin", project.CountryId);
+
         var updated = await _db.WithdrawalApplications
             .Include(w => w.Project).ThenInclude(p => p!.Country)
             .Include(w => w.ReviewedByAdmin)
             .Include(w => w.Disbursement)
+            .Include(w => w.SupportingDocuments)
             .FirstAsync(w => w.Id == application.Id);
 
         return MapWithdrawalToDto(updated);

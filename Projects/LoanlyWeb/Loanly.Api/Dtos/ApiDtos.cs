@@ -128,14 +128,44 @@ public record WithdrawalApplicationDto(
     int? ReviewedByAdminId,
     string? ReviewedByAdminName,
     string? ReviewNotes,
-    DisbursementDto? Disbursement
+    DisbursementDto? Disbursement,
+    List<SupportingDocumentDto> Documents
 );
 
 public record CreateWithdrawalApplicationRequestDto(
     int ProjectId,
     ExpenditureCategory Category,
     decimal AmountRequested,
-    string SupportingDocumentsNote
+    string SupportingDocumentsNote,
+    List<SupportingDocumentInputDto>? Documents
+);
+
+// Supporting Document DTOs — metadata only (filename/size/type captured from
+// the browser File API client-side); no file bytes are stored or uploaded.
+public record SupportingDocumentDto(
+    int Id,
+    string FileName,
+    long FileSizeBytes,
+    SupportingDocumentType DocumentType,
+    DateTime UploadedAt
+);
+
+public record SupportingDocumentInputDto(
+    string FileName,
+    long FileSizeBytes,
+    SupportingDocumentType DocumentType
+);
+
+// Audit / activity log DTOs
+public record AuditLogEntryDto(
+    int Id,
+    string EntityType,
+    int EntityId,
+    string Action,
+    string Summary,
+    string PerformedByName,
+    string PerformedByRole,
+    DateTime CreatedAt
 );
 
 public record ReviewWithdrawalApplicationRequestDto(

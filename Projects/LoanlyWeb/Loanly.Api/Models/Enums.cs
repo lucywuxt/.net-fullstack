@@ -56,3 +56,14 @@ public enum WithdrawalStatus
     Disbursed,
     Rejected
 }
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum SupportingDocumentType
+{
+    Invoice,
+    InterimPaymentCertificate,
+    StatementOfExpenditures,
+    AuditReport,
+    Contract,
+    Other
+}

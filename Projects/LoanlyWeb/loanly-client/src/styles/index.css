@@ -32,3 +32,42 @@ h1, h2, h3, h4 {
 .globe-tooltip small {
   color: var(--muted-foreground);
 }
+
+/* Floating labels that track cobe globe markers (see CobeGlobe.tsx).
+   Gated behind @supports since CSS anchor positioning isn't universal
+   yet — unsupported browsers just never render these, and fall back to
+   the always-visible legend row instead. */
+@supports (anchor-name: --a) {
+  .cobe-marker-label {
+    position: absolute;
+    bottom: anchor(top);
+    left: anchor(center);
+    translate: -50% 0;
+    margin-bottom: 6px;
+    padding: 2px 8px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--foreground);
+    font-size: 11px;
+    font-weight: 500;
+    font-family: inherit;
+    border-radius: 6px;
+    white-space: nowrap;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: opacity 0.3s ease, background-color 0.15s ease, border-color 0.15s ease, translate 0.15s ease;
+    z-index: 5;
+  }
+
+  .cobe-marker-label:hover {
+    background: color-mix(in srgb, #10b981 15%, var(--card));
+    border-color: color-mix(in srgb, #10b981 50%, transparent);
+    translate: -50% -2px;
+  }
+}
+
+@supports not (anchor-name: --a) {
+  .cobe-marker-label {
+    display: none;
+  }
+}

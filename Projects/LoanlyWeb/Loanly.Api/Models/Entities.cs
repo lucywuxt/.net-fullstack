@@ -110,6 +110,59 @@ public class WithdrawalApplication
     public string? ReviewNotes { get; set; }
 
     public Disbursement? Disbursement { get; set; }
+
+    public ICollection<SupportingDocument> SupportingDocuments { get; set; } = new List<SupportingDocument>();
+}
+
+public class SupportingDocument
+{
+    public int Id { get; set; }
+
+    public int WithdrawalApplicationId { get; set; }
+    public WithdrawalApplication? WithdrawalApplication { get; set; }
+
+    [Required, MaxLength(260)]
+    public string FileName { get; set; } = string.Empty;
+
+    public long FileSizeBytes { get; set; }
+
+    public SupportingDocumentType DocumentType { get; set; }
+
+    public DateTime UploadedAt { get; set; } = DateTime.UtcNow;
+}
+
+/// <summary>
+/// A generic activity-log row covering both WithdrawalApplication and Project
+/// lifecycle events, so one feed/history mechanism serves the audit trail
+/// view, the notification bell, and future entity types without a schema
+/// change. CountryId is denormalized here specifically so the "recent
+/// activity for my country" query doesn't need a different join per
+/// EntityType.
+/// </summary>
+public class AuditLogEntry
+{
+    public int Id { get; set; }
+
+    [Required, MaxLength(40)]
+    public string EntityType { get; set; } = string.Empty; // "WithdrawalApplication" | "Project"
+
+    public int EntityId { get; set; }
+
+    [Required, MaxLength(40)]
+    public string Action { get; set; } = string.Empty; // "Created" | "StatusChanged" | "Disbursed" | "DocumentAttached" | "IndicatorUpdated"
+
+    [Required, MaxLength(500)]
+    public string Summary { get; set; } = string.Empty;
+
+    [Required, MaxLength(120)]
+    public string PerformedByName { get; set; } = string.Empty;
+
+    [Required, MaxLength(40)]
+    public string PerformedByRole { get; set; } = string.Empty;
+
+    public int? CountryId { get; set; }
+
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }
 
 public class Disbursement

@@ -140,6 +140,11 @@ export const LandingPage: React.FC = () => {
     document.getElementById('dashboard')?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const handleHeroSelectCountry = (iso3: string) => {
+    setSelectedIso3(iso3);
+    scrollToDashboard();
+  };
+
   return (
     <div className="flex flex-col bg-background text-foreground">
       {/* Slim header, persistent across the welcome + dashboard sections */}
@@ -161,7 +166,7 @@ export const LandingPage: React.FC = () => {
         </div>
       </header>
 
-      <WelcomeHero onExplore={scrollToDashboard} />
+      <WelcomeHero onExplore={scrollToDashboard} onSelectCountry={handleHeroSelectCountry} />
 
     <div id="dashboard" className="scroll-mt-14 flex flex-col md:h-[calc(100vh-56px)] md:overflow-hidden">
       {/* Main split */}

@@ -1,4 +1,5 @@
 import React from 'react';
+import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export const Table: React.FC<React.TableHTMLAttributes<HTMLTableElement>> = ({ className, ...props }) => (
@@ -29,4 +30,23 @@ export const TableHead: React.FC<React.ThHTMLAttributes<HTMLTableCellElement>> =
 
 export const TableCell: React.FC<React.TdHTMLAttributes<HTMLTableCellElement>> = ({ className, ...props }) => (
   <td className={cn('py-2.5 pl-3 pr-3 text-foreground first:pl-0', className)} {...props} />
+);
+
+interface SortableHeadProps extends React.ThHTMLAttributes<HTMLTableCellElement> {
+  active: boolean;
+  direction: 'asc' | 'desc';
+  onSort: () => void;
+}
+
+export const SortableHead: React.FC<SortableHeadProps> = ({ active, direction, onSort, className, children, ...props }) => (
+  <TableHead className={cn('cursor-pointer select-none hover:text-foreground', className)} onClick={onSort} {...props}>
+    <span className="inline-flex items-center gap-1">
+      {children}
+      {active ? (
+        direction === 'asc' ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />
+      ) : (
+        <ArrowUpDown className="h-3 w-3 opacity-40" />
+      )}
+    </span>
+  </TableHead>
 );

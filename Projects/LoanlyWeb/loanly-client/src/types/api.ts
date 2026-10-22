@@ -6,6 +6,13 @@ export type FinancingInstrument = 'IBRDLoan' | 'IDACredit' | 'IDAGrant';
 export type ProjectStatus = 'Concept' | 'Appraisal' | 'Negotiation' | 'BoardApproval' | 'Active' | 'Closed';
 export type ExpenditureCategory = 'Works' | 'Goods' | 'ConsultingServices' | 'Training' | 'OperatingCosts';
 export type WithdrawalStatus = 'Submitted' | 'UnderReview' | 'Approved' | 'Disbursed' | 'Rejected';
+export type SupportingDocumentType =
+  | 'Invoice'
+  | 'InterimPaymentCertificate'
+  | 'StatementOfExpenditures'
+  | 'AuditReport'
+  | 'Contract'
+  | 'Other';
 
 export interface AuthUser {
   token: string;
@@ -65,6 +72,31 @@ export interface Disbursement {
   transactionReference: string;
 }
 
+export interface SupportingDocument {
+  id: number;
+  fileName: string;
+  fileSizeBytes: number;
+  documentType: SupportingDocumentType;
+  uploadedAt: string;
+}
+
+export interface SupportingDocumentInput {
+  fileName: string;
+  fileSizeBytes: number;
+  documentType: SupportingDocumentType;
+}
+
+export interface AuditLogEntry {
+  id: number;
+  entityType: string;
+  entityId: number;
+  action: string;
+  summary: string;
+  performedByName: string;
+  performedByRole: string;
+  createdAt: string;
+}
+
 export interface WithdrawalApplication {
   id: number;
   applicationNumber: string;
@@ -83,6 +115,7 @@ export interface WithdrawalApplication {
   reviewedByAdminName?: string | null;
   reviewNotes?: string | null;
   disbursement?: Disbursement | null;
+  documents: SupportingDocument[];
 }
 
 export interface Project {

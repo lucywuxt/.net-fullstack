@@ -15,6 +15,8 @@ public class LoanlyDbContext : DbContext
     public DbSet<WithdrawalApplication> WithdrawalApplications => Set<WithdrawalApplication>();
     public DbSet<Disbursement> Disbursements => Set<Disbursement>();
     public DbSet<ResultsIndicator> ResultsIndicators => Set<ResultsIndicator>();
+    public DbSet<SupportingDocument> SupportingDocuments => Set<SupportingDocument>();
+    public DbSet<AuditLogEntry> AuditLogEntries => Set<AuditLogEntry>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -86,6 +88,22 @@ public class LoanlyDbContext : DbContext
                 .WithMany(p => p.ResultsIndicators)
                 .HasForeignKey(r => r.ProjectId)
                 .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<SupportingDocument>(entity =>
+        {
+            entity.Property(d => d.DocumentType).HasConversion<string>().HasMaxLength(40);
+
+            entity.HasOne(d => d.WithdrawalApplication)
+                .WithMany(w => w.SupportingDocuments)
+                .HasForeignKey(d => d.WithdrawalApplicationId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<AuditLogEntry>(entity =>
+        {
+            entity.HasIndex(a => new { a.EntityType, a.EntityId });
+            entity.HasIndex(a => new { a.CountryId, a.CreatedAt });
         });
     }
 }

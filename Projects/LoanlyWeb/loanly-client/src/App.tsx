@@ -22,7 +22,11 @@ const ProtectedRoute: React.FC<{
 
 const Shell: React.FC = () => {
   const location = useLocation();
-  const isDashboard = location.pathname === '/';
+  // Landing page and the authenticated portals each own their full-bleed
+  // layout (landing: its own header; portals: a vertical sidebar shell),
+  // so they skip the shared top-nav + footer wrapper used elsewhere.
+  const isFullBleed =
+    location.pathname === '/' || location.pathname.startsWith('/country') || location.pathname.startsWith('/admin');
 
   const routes = (
     <Routes>
@@ -48,8 +52,7 @@ const Shell: React.FC = () => {
     </Routes>
   );
 
-  if (isDashboard) {
-    // Full-bleed dashboard: the landing page owns its own header/layout.
+  if (isFullBleed) {
     return routes;
   }
 

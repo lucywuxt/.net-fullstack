@@ -42,25 +42,25 @@ const WHY_PARTNER = [
     icon: HandCoins,
     tone: 'emerald' as const,
     title: 'Concessional Financing',
-    body: 'Access IBRD loans and IDA credits/grants at below-market rates, structured against a transparent approved ceiling.',
+    body: 'Below-market IBRD/IDA rates.',
   },
   {
     icon: Lightbulb,
     tone: 'sky' as const,
     title: 'Global Technical Expertise',
-    body: 'Draw on decades of cross-sector delivery experience in infrastructure, health, education, and climate resilience.',
+    body: 'Decades of cross-sector delivery.',
   },
   {
     icon: LineChartIcon,
     tone: 'amber' as const,
     title: 'Transparent Results Tracking',
-    body: 'Every project is measured against baseline, current, and target PDO indicators — visible to your team in real time.',
+    body: 'Baseline-to-target, in real time.',
   },
   {
     icon: Network,
     tone: 'violet' as const,
     title: 'Global Convening Network',
-    body: 'Join a network of member economies collaborating on shared development challenges and regional integration.',
+    body: 'Shared challenges, shared solutions.',
   },
 ];
 
@@ -103,10 +103,6 @@ export const ImpactSections: React.FC = () => {
         <div className="mb-6 text-center">
           <Badge variant="pipeline" className="mb-3">GLOBAL IMPACT</Badge>
           <h2 className="text-2xl font-semibold text-foreground">Financing Development at Scale</h2>
-          <p className="mx-auto mt-2 max-w-2xl text-sm text-muted-foreground">
-            Real portfolio data from Loanly Client Connection — the same operational model used across World Bank
-            member economies.
-          </p>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <StatCard
@@ -164,10 +160,6 @@ export const ImpactSections: React.FC = () => {
           <div className="mb-6 text-center">
             <Badge variant="pipeline" className="mb-3">SUCCESS STORIES</Badge>
             <h2 className="text-2xl font-semibold text-foreground">Results From Member Countries</h2>
-            <p className="mx-auto mt-2 max-w-2xl text-sm text-muted-foreground">
-              Real project development objectives and measured results indicators from active Client Connection
-              engagements.
-            </p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {stories.map((s) => (
@@ -179,7 +171,7 @@ export const ImpactSections: React.FC = () => {
                 </div>
                 <h3 className="text-sm font-semibold text-foreground">{s.title}</h3>
                 <p className="mt-1 text-xs text-muted-foreground">{s.countryName}</p>
-                <p className="mt-2 line-clamp-3 flex-1 text-xs leading-relaxed text-muted-foreground">
+                <p className="mt-2 line-clamp-2 flex-1 text-xs leading-relaxed text-muted-foreground">
                   {s.projectDevelopmentObjective}
                 </p>
                 {s.topIndicator && (
@@ -256,10 +248,6 @@ export const ImpactSections: React.FC = () => {
           <h2 className="max-w-2xl text-2xl font-semibold text-foreground">
             Ready to finance your country's next development priority?
           </h2>
-          <p className="max-w-xl text-sm text-muted-foreground">
-            Sign in to Client Connection to manage project ceilings, submit Withdrawal Applications, and track
-            disbursements in real time.
-          </p>
           <Button asChild size="default">
             <Link to="/login">
               Access Client Connection Portal

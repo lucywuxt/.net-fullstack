@@ -54,13 +54,36 @@ public partial class FinancingService
             SubmittedAt = DateTime.UtcNow
         };
 
+        if (request.Documents != null)
+        {
+            foreach (var doc in request.Documents)
+            {
+                if (string.IsNullOrWhiteSpace(doc.FileName) || doc.FileSizeBytes <= 0)
+                    continue;
+
+                application.SupportingDocuments.Add(new SupportingDocument
+                {
+                    FileName = doc.FileName.Trim(),
+                    FileSizeBytes = doc.FileSizeBytes,
+                    DocumentType = doc.DocumentType,
+                    UploadedAt = DateTime.UtcNow
+                });
+            }
+        }
+
         _db.WithdrawalApplications.Add(application);
         await _db.SaveChangesAsync();
+
+        await LogAuditAsync(
+            "WithdrawalApplication", application.Id, "Created",
+            $"{application.ApplicationNumber} submitted for {project.ProjectCode} requesting {application.AmountRequested:C0} ({application.Category}).",
+            project.Country?.Name ?? "Country", "Country", project.CountryId);
 
         var reloaded = await _db.WithdrawalApplications
             .Include(w => w.Project).ThenInclude(p => p!.Country)
             .Include(w => w.ReviewedByAdmin)
             .Include(w => w.Disbursement)
+            .Include(w => w.SupportingDocuments)
             .FirstAsync(w => w.Id == application.Id);
 
         return MapWithdrawalToDto(reloaded);

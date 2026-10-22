@@ -1,7 +1,7 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 
-interface TabItem {
+export interface TabItem {
   id: string;
   label: React.ReactNode;
   icon?: React.ReactNode;

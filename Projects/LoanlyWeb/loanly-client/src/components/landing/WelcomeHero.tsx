@@ -1,47 +1,66 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronDown, Globe2, ArrowRight } from 'lucide-react';
+import { ChevronDown, ArrowRight } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
+import { CobeGlobe } from './CobeGlobe';
+import { useTypewriterLoop } from '../../hooks/useTypewriter';
 
 interface WelcomeHeroProps {
   onExplore: () => void;
+  onSelectCountry: (iso3: string) => void;
 }
 
-export const WelcomeHero: React.FC<WelcomeHeroProps> = ({ onExplore }) => {
+const ROTATING_PHRASES = [
+  'Tracked in Real Time',
+  'Across 205 Economies',
+  'From Approval to Disbursement',
+  'Fully Transparent',
+];
+
+export const WelcomeHero: React.FC<WelcomeHeroProps> = ({ onExplore, onSelectCountry }) => {
+  const typed = useTypewriterLoop(ROTATING_PHRASES);
+
   return (
-    <section className="relative flex min-h-[85vh] flex-col items-center justify-center px-4 py-16 text-center md:min-h-[calc(100vh-56px)]">
+    <section className="relative flex min-h-[90vh] flex-col justify-center overflow-hidden px-4 py-16 md:min-h-[calc(100vh-56px)]">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute left-1/2 top-1/3 h-[480px] w-[480px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-500/10 blur-[120px]" />
+        <div className="absolute left-1/4 top-1/3 h-[480px] w-[480px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-500/10 blur-[120px]" />
         <div className="absolute right-1/4 top-1/4 h-[320px] w-[320px] rounded-full bg-sky-500/10 blur-[100px]" />
       </div>
 
-      <div className="relative z-10 flex max-w-3xl flex-col items-center">
-        <div className="liquid-glass mb-6 flex h-16 w-16 items-center justify-center rounded-2xl text-emerald-500">
-          <Globe2 className="h-8 w-8" />
+      <div className="relative z-10 mx-auto grid w-full max-w-6xl items-center gap-10 lg:grid-cols-2 lg:gap-6">
+        {/* Left: headline with a looping typed phrase */}
+        <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
+          <Badge variant="pipeline" className="mb-4">
+            WORLD BANK OPEN DATA OBSERVATORY
+          </Badge>
+
+          <h1 className="text-4xl font-semibold leading-tight text-foreground sm:text-5xl">
+            Global Development Financing,
+          </h1>
+          <h1 className="mt-1 min-h-[1.2em] text-4xl font-semibold leading-tight text-emerald-500 sm:text-5xl">
+            {typed}
+            <span className="ml-0.5 inline-block w-[3px] animate-pulse bg-emerald-500 align-middle" style={{ height: '0.85em' }} />
+          </h1>
+
+          <p className="mt-5 max-w-md text-base text-muted-foreground">
+            Real indicator data. Real project lifecycles. One platform.
+          </p>
+
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
+            <Button size="default" onClick={onExplore}>
+              Explore the Global Dashboard
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+            <Button asChild size="default" variant="outline">
+              <Link to="/login">Client Connection Sign In</Link>
+            </Button>
+          </div>
         </div>
 
-        <Badge variant="pipeline" className="mb-4">
-          WORLD BANK OPEN DATA OBSERVATORY
-        </Badge>
-
-        <h1 className="text-4xl font-semibold leading-tight text-foreground sm:text-5xl">
-          See Where Development Financing Moves the World
-        </h1>
-
-        <p className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground">
-          Loanly tracks real World Bank indicator data across 205 economies and models the full IBRD/IDA project
-          financing lifecycle — from board approval through disbursement — in one transparent, real-time platform.
-        </p>
-
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <Button size="default" onClick={onExplore}>
-            Explore the Global Dashboard
-            <ArrowRight className="h-4 w-4" />
-          </Button>
-          <Button asChild size="default" variant="outline">
-            <Link to="/login">Client Connection Sign In</Link>
-          </Button>
+        {/* Right: interactive decorative globe */}
+        <div className="flex items-center justify-center">
+          <CobeGlobe onSelectCountry={onSelectCountry} />
         </div>
       </div>
 

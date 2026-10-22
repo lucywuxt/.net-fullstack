@@ -52,6 +52,7 @@ public partial class FinancingService
             .Include(p => p.ResultsIndicators)
             .Include(p => p.WithdrawalApplications).ThenInclude(w => w.ReviewedByAdmin)
             .Include(p => p.WithdrawalApplications).ThenInclude(w => w.Disbursement)
+            .Include(p => p.WithdrawalApplications).ThenInclude(w => w.SupportingDocuments)
             .AsQueryable();
 
         if (countryId.HasValue)
@@ -74,12 +75,13 @@ public partial class FinancingService
             .Include(p => p.ResultsIndicators)
             .Include(p => p.WithdrawalApplications).ThenInclude(w => w.ReviewedByAdmin)
             .Include(p => p.WithdrawalApplications).ThenInclude(w => w.Disbursement)
+            .Include(p => p.WithdrawalApplications).ThenInclude(w => w.SupportingDocuments)
             .FirstOrDefaultAsync(p => p.Id == projectId);
 
         return project == null ? null : MapProjectToDto(project);
     }
 
-    public async Task<ProjectDto> CreateProjectAsync(CreateProjectRequestDto request)
+    public async Task<ProjectDto> CreateProjectAsync(int adminId, CreateProjectRequestDto request)
     {
         if (string.IsNullOrWhiteSpace(request.Title))
             throw new ServiceValidationException("Project title is required.");
@@ -108,10 +110,16 @@ public partial class FinancingService
         _db.Projects.Add(project);
         await _db.SaveChangesAsync();
 
+        var admin = await _db.Admins.FindAsync(adminId);
+        await LogAuditAsync(
+            "Project", project.Id, "Created",
+            $"{project.ProjectCode} \"{project.Title}\" created for {country.Name} ({project.Sector}, {project.ApprovedAmount:C0}).",
+            admin?.Name ?? "Admin", admin?.Role.ToString() ?? "Admin", country.Id);
+
         return (await GetProjectByIdAsync(project.Id))!;
     }
 
-    public async Task<ProjectDto> UpdateProjectStatusAsync(int projectId, ProjectStatus newStatus)
+    public async Task<ProjectDto> UpdateProjectStatusAsync(int adminId, int projectId, ProjectStatus newStatus)
     {
         var project = await _db.Projects
             .Include(p => p.WithdrawalApplications)
@@ -139,8 +147,15 @@ public partial class FinancingService
         if (newStatus >= ProjectStatus.BoardApproval && project.BoardApprovalDate == null)
             project.BoardApprovalDate = DateTime.UtcNow;
 
+        var oldStatus = project.Status;
         project.Status = newStatus;
         await _db.SaveChangesAsync();
+
+        var admin = await _db.Admins.FindAsync(adminId);
+        await LogAuditAsync(
+            "Project", project.Id, "StatusChanged",
+            $"Project {project.ProjectCode} moved from {oldStatus} to {newStatus} by {admin?.Name ?? "Admin"}.",
+            admin?.Name ?? "Admin", admin?.Role.ToString() ?? "Admin", project.CountryId);
 
         return (await GetProjectByIdAsync(project.Id))!;
     }

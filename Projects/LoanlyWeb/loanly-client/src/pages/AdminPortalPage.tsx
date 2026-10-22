@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   FolderPlus,
   PieChart as PieChartIcon,
@@ -9,6 +9,8 @@ import {
   Target,
   ArrowRight,
   Clock,
+  History,
+  Paperclip,
 } from 'lucide-react';
 import { api } from '../services/api';
 import { useAuth } from '../context/AuthContext';
@@ -25,17 +27,23 @@ import type {
 import { AdminPortfolioCharts } from '../components/AdminPortfolioCharts';
 import { AdminProjectModal } from '../components/AdminProjectModal';
 import { AdminIndicatorModal } from '../components/AdminIndicatorModal';
+import { HistoryModal } from '../components/HistoryModal';
 import { AiChatWidget } from '../components/AiChatWidget';
+import { SidebarShell } from '../components/SidebarShell';
 import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { StatCard } from '../components/ui/stat-card';
 import { ProgressBar } from '../components/ui/progress';
-import { TabBar } from '../components/ui/tabs';
 import { Alert } from '../components/ui/alert';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table';
+import { Input, Select } from '../components/ui/input';
+import { Pagination } from '../components/ui/pagination';
+import { Table, TableBody, TableCell, TableHead, SortableHead, TableHeader, TableRow } from '../components/ui/table';
+import { usePagination } from '../hooks/usePagination';
 import { PROJECT_STATUS_TONE, WITHDRAWAL_STATUS_TONE } from '../lib/status';
 import { SECTOR_BADGE_CLASSES } from '../lib/sector';
+
+type WaSortKey = 'submittedAt' | 'amountRequested' | 'status';
 
 const NEXT_STAGE_MAP: Partial<Record<ProjectStatus, ProjectStatus>> = {
   Concept: 'Appraisal',
@@ -57,6 +65,12 @@ export const AdminPortalPage: React.FC = () => {
   const [indicatorModal, setIndicatorModal] = useState<{ project: Project; existing?: ResultsIndicator } | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [actionBanner, setActionBanner] = useState<string | null>(null);
+  const [historyTarget, setHistoryTarget] = useState<WithdrawalApplication | null>(null);
+  const [projectHistoryTarget, setProjectHistoryTarget] = useState<Project | null>(null);
+
+  const [waSearch, setWaSearch] = useState('');
+  const [waStatusFilter, setWaStatusFilter] = useState<WithdrawalStatus | 'All'>('All');
+  const [waSort, setWaSort] = useState<{ key: WaSortKey; dir: 'asc' | 'desc' }>({ key: 'submittedAt', dir: 'desc' });
 
   const loadPortfolio = async () => {
     try {
@@ -130,7 +144,44 @@ export const AdminPortalPage: React.FC = () => {
     }
   };
 
+  const toggleWaSort = (key: WaSortKey) =>
+    setWaSort((prev) => (prev.key === key ? { key, dir: prev.dir === 'asc' ? 'desc' : 'asc' } : { key, dir: 'desc' }));
+
+  const filteredWithdrawals = useMemo(() => {
+    const q = waSearch.trim().toLowerCase();
+    let list = withdrawals.filter((w) => {
+      if (waStatusFilter !== 'All' && w.status !== waStatusFilter) return false;
+      if (!q) return true;
+      return (
+        w.applicationNumber.toLowerCase().includes(q) ||
+        w.countryName.toLowerCase().includes(q) ||
+        w.projectCode.toLowerCase().includes(q) ||
+        w.projectTitle.toLowerCase().includes(q)
+      );
+    });
+    list = [...list].sort((a, b) => {
+      const dir = waSort.dir === 'asc' ? 1 : -1;
+      if (waSort.key === 'amountRequested') return (a.amountRequested - b.amountRequested) * dir;
+      if (waSort.key === 'status') return a.status.localeCompare(b.status) * dir;
+      return (new Date(a.submittedAt).getTime() - new Date(b.submittedAt).getTime()) * dir;
+    });
+    return list;
+  }, [withdrawals, waSearch, waStatusFilter, waSort]);
+
+  const waPage = usePagination(filteredWithdrawals, 8);
+
   return (
+    <SidebarShell
+      portalLabel="Task Team Portal"
+      active={activeTab}
+      onChange={(id) => setActiveTab(id as typeof activeTab)}
+      tabs={[
+        { id: 'dashboard', label: 'Portfolio Analytics', icon: <PieChartIcon className="h-3.5 w-3.5" /> },
+        { id: 'projects', label: `Project Lifecycle (${projects.length})`, icon: <Landmark className="h-3.5 w-3.5" /> },
+        { id: 'withdrawals', label: `Withdrawal Review & Disbursements (${withdrawals.length})`, icon: <Banknote className="h-3.5 w-3.5" /> },
+        { id: 'indicators', label: 'Results Indicators (PDO)', icon: <Target className="h-3.5 w-3.5" /> },
+      ]}
+    >
     <div className="space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
@@ -185,17 +236,6 @@ export const AdminPortalPage: React.FC = () => {
         </div>
       )}
 
-      <TabBar
-        active={activeTab}
-        onChange={(id) => setActiveTab(id as typeof activeTab)}
-        tabs={[
-          { id: 'dashboard', label: 'Portfolio Analytics', icon: <PieChartIcon className="h-3.5 w-3.5" /> },
-          { id: 'projects', label: `Project Lifecycle (${projects.length})`, icon: <Landmark className="h-3.5 w-3.5" /> },
-          { id: 'withdrawals', label: `Withdrawal Review & Disbursements (${withdrawals.length})`, icon: <Banknote className="h-3.5 w-3.5" /> },
-          { id: 'indicators', label: 'Results Indicators (PDO)', icon: <Target className="h-3.5 w-3.5" /> },
-        ]}
-      />
-
       {activeTab === 'dashboard' && analytics && <AdminPortfolioCharts analytics={analytics} />}
 
       {activeTab === 'projects' && (
@@ -227,6 +267,9 @@ export const AdminPortalPage: React.FC = () => {
                       <Target className="h-3.5 w-3.5" />
                       Indicator
                     </Button>
+                    <Button size="sm" variant="outline" onClick={() => setProjectHistoryTarget(p)}>
+                      <History className="h-3.5 w-3.5" />
+                    </Button>
                   </div>
                 </div>
                 <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[11px] text-muted-foreground">
@@ -244,20 +287,45 @@ export const AdminPortalPage: React.FC = () => {
       {activeTab === 'withdrawals' && (
         <Card>
           <CardContent className="overflow-x-auto p-4">
+            <div className="mb-3 flex flex-wrap items-center gap-2">
+              <Input
+                placeholder="Search WA number, country, or project…"
+                value={waSearch}
+                onChange={(e) => setWaSearch(e.target.value)}
+                className="max-w-xs"
+              />
+              <Select
+                value={waStatusFilter}
+                onChange={(e) => setWaStatusFilter(e.target.value as WithdrawalStatus | 'All')}
+                className="w-auto"
+              >
+                <option value="All">All Statuses</option>
+                <option value="Submitted">Submitted</option>
+                <option value="UnderReview">UnderReview</option>
+                <option value="Approved">Approved</option>
+                <option value="Disbursed">Disbursed</option>
+                <option value="Rejected">Rejected</option>
+              </Select>
+            </div>
             <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead>WA Number</TableHead>
                   <TableHead>Country / Project</TableHead>
                   <TableHead>Category</TableHead>
-                  <TableHead>Requested</TableHead>
-                  <TableHead>Status</TableHead>
+                  <SortableHead active={waSort.key === 'amountRequested'} direction={waSort.dir} onSort={() => toggleWaSort('amountRequested')}>
+                    Requested
+                  </SortableHead>
+                  <SortableHead active={waSort.key === 'status'} direction={waSort.dir} onSort={() => toggleWaSort('status')}>
+                    Status
+                  </SortableHead>
                   <TableHead>Documentation</TableHead>
                   <TableHead>Actions</TableHead>
+                  <TableHead>History</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {withdrawals.map((w) => (
+                {waPage.pageItems.map((w) => (
                   <TableRow key={w.id}>
                     <TableCell className="font-mono text-foreground">{w.applicationNumber}</TableCell>
                     <TableCell>
@@ -269,6 +337,11 @@ export const AdminPortalPage: React.FC = () => {
                     <TableCell><Badge variant={WITHDRAWAL_STATUS_TONE[w.status] ?? 'default'}>{w.status}</Badge></TableCell>
                     <TableCell className="max-w-[200px]">
                       <div className="truncate text-xs">{w.supportingDocumentsNote}</div>
+                      {w.documents.length > 0 && (
+                        <div className="mt-0.5 flex items-center gap-1 text-[11px] text-muted-foreground">
+                          <Paperclip className="h-3 w-3" /> {w.documents.length} file{w.documents.length > 1 ? 's' : ''}
+                        </div>
+                      )}
                       {w.disbursement && (
                         <div className="mt-0.5 text-[11px] text-emerald-400">
                           Ref: {w.disbursement.transactionReference} (Bal: ${w.disbursement.designatedAccountBalanceAfter.toLocaleString()})
@@ -308,10 +381,29 @@ export const AdminPortalPage: React.FC = () => {
                         )}
                       </div>
                     </TableCell>
+                    <TableCell>
+                      <Button size="sm" variant="outline" onClick={() => setHistoryTarget(w)}>
+                        <History className="h-3.5 w-3.5" />
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 ))}
+                {waPage.pageItems.length === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={8} className="py-8 text-center text-muted-foreground">
+                      No Withdrawal Applications match the current filters.
+                    </TableCell>
+                  </TableRow>
+                )}
               </TableBody>
             </Table>
+            <Pagination
+              page={waPage.page}
+              pageCount={waPage.pageCount}
+              totalItems={waPage.totalItems}
+              pageSize={waPage.pageSize}
+              onPageChange={waPage.setPage}
+            />
           </CardContent>
         </Card>
       )}
@@ -377,7 +469,27 @@ export const AdminPortalPage: React.FC = () => {
         />
       )}
 
+      {historyTarget && (
+        <HistoryModal
+          entityType="WithdrawalApplication"
+          entityId={historyTarget.id}
+          title={`History — ${historyTarget.applicationNumber}`}
+          documents={historyTarget.documents}
+          onClose={() => setHistoryTarget(null)}
+        />
+      )}
+
+      {projectHistoryTarget && (
+        <HistoryModal
+          entityType="Project"
+          entityId={projectHistoryTarget.id}
+          title={`History — ${projectHistoryTarget.projectCode}`}
+          onClose={() => setProjectHistoryTarget(null)}
+        />
+      )}
+
       <AiChatWidget />
     </div>
+    </SidebarShell>
   );
 };

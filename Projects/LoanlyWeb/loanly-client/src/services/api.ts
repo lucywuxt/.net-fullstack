@@ -1,4 +1,5 @@
 import type {
+  AuditLogEntry,
   AuthUser,
   ChatResponse,
   CountryIndicatorSeries,
@@ -16,6 +17,7 @@ import type {
   PublicImpactSummary,
   PublicProjectSummary,
   ResultsIndicator,
+  SupportingDocumentInput,
   WithdrawalApplication,
   WithdrawalStatus,
 } from '../types/api';
@@ -133,6 +135,7 @@ export const api = {
     category: ExpenditureCategory;
     amountRequested: number;
     supportingDocumentsNote: string;
+    documents?: SupportingDocumentInput[];
   }) =>
     request<WithdrawalApplication>('/withdrawals', {
       method: 'POST',
@@ -160,6 +163,13 @@ export const api = {
     request<Disbursement[]>(
       projectId ? `/withdrawals/disbursements?projectId=${projectId}` : '/withdrawals/disbursements'
     ),
+
+  // Audit trail / activity feed
+  getWithdrawalHistory: (withdrawalId: number) =>
+    request<AuditLogEntry[]>(`/audit/withdrawal/${withdrawalId}`),
+  getProjectHistory: (projectId: number) =>
+    request<AuditLogEntry[]>(`/audit/project/${projectId}`),
+  getRecentActivity: (take = 50) => request<AuditLogEntry[]>(`/audit/recent?take=${take}`),
 
   // Gemini 3.6 Flash Embedded AI Assistant
   sendChatMessage: (payload: {

@@ -38,7 +38,16 @@ public partial class FinancingService
             w.Disbursement.Id, w.Id, w.ApplicationNumber, w.ProjectId,
             w.Project?.ProjectCode ?? string.Empty, w.Project?.Title ?? string.Empty, w.Project?.Country?.Name ?? string.Empty,
             w.Category, w.Disbursement.AmountDisbursed, w.Disbursement.DesignatedAccountBalanceAfter,
-            w.Disbursement.DisbursedAt, w.Disbursement.TransactionReference)
+            w.Disbursement.DisbursedAt, w.Disbursement.TransactionReference),
+        w.SupportingDocuments.OrderBy(d => d.Id).Select(MapDocumentToDto).ToList()
+    );
+
+    private static SupportingDocumentDto MapDocumentToDto(SupportingDocument d) => new(
+        d.Id, d.FileName, d.FileSizeBytes, d.DocumentType, d.UploadedAt
+    );
+
+    private static AuditLogEntryDto MapAuditLogToDto(AuditLogEntry a) => new(
+        a.Id, a.EntityType, a.EntityId, a.Action, a.Summary, a.PerformedByName, a.PerformedByRole, a.CreatedAt
     );
 
     private static ResultsIndicatorDto MapIndicatorToDto(ResultsIndicator r)

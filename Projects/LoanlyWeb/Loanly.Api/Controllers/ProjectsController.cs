@@ -59,7 +59,8 @@ public class ProjectsController : ControllerBase
     {
         try
         {
-            var created = await _financing.CreateProjectAsync(request);
+            int adminId = int.Parse(User.FindFirstValue("adminId") ?? "0");
+            var created = await _financing.CreateProjectAsync(adminId, request);
             return CreatedAtAction(nameof(GetProject), new { id = created.Id }, created);
         }
         catch (ServiceValidationException ex)
@@ -74,7 +75,8 @@ public class ProjectsController : ControllerBase
     {
         try
         {
-            var updated = await _financing.UpdateProjectStatusAsync(id, request.NewStatus);
+            int adminId = int.Parse(User.FindFirstValue("adminId") ?? "0");
+            var updated = await _financing.UpdateProjectStatusAsync(adminId, id, request.NewStatus);
             return Ok(updated);
         }
         catch (ServiceValidationException ex)
