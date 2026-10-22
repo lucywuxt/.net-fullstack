@@ -1,0 +1,6 @@
+@Loanly.Api_HostAddress = http://localhost:5106
+
+GET {{Loanly.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

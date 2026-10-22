@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Loanly.Api/Loanly.Api.csproj" />
+  <Project Path="Loanly.Tests/Loanly.Tests.csproj" />
+</Solution>
