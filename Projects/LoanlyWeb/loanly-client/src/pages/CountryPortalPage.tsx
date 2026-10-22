@@ -203,7 +203,6 @@ export const CountryPortalPage: React.FC = () => {
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
                     <div className="mb-1.5 flex flex-wrap items-center gap-1.5">
-                      <Badge>{p.projectCode}</Badge>
                       <Badge variant="muted">{p.financingInstrument}</Badge>
                       <Badge variant="muted" className={SECTOR_BADGE_CLASSES[p.sector]}>{p.sector}</Badge>
                       <Badge variant={PROJECT_STATUS_TONE[p.status] ?? 'default'}>{p.status}</Badge>
@@ -284,7 +283,7 @@ export const CountryPortalPage: React.FC = () => {
                 {waPage.pageItems.map((w) => (
                   <TableRow key={w.id}>
                     <TableCell className="font-mono text-foreground">{w.applicationNumber}</TableCell>
-                    <TableCell>{w.projectCode} — {w.projectTitle}</TableCell>
+                    <TableCell>{w.projectTitle}</TableCell>
                     <TableCell><Badge variant="muted">{w.category}</Badge></TableCell>
                     <TableCell className="font-mono">${w.amountRequested.toLocaleString()}</TableCell>
                     <TableCell><Badge variant={WITHDRAWAL_STATUS_TONE[w.status] ?? 'default'}>{w.status}</Badge></TableCell>
@@ -359,7 +358,7 @@ export const CountryPortalPage: React.FC = () => {
                   <TableRow key={d.id}>
                     <TableCell className="font-mono text-muted-foreground">{d.transactionReference}</TableCell>
                     <TableCell>{d.applicationNumber}</TableCell>
-                    <TableCell>{d.projectCode} — {d.projectTitle}</TableCell>
+                    <TableCell>{d.projectTitle}</TableCell>
                     <TableCell><Badge variant="muted">{d.category}</Badge></TableCell>
                     <TableCell className="text-right font-mono text-emerald-400">
                       +${d.amountDisbursed.toLocaleString()}
@@ -393,7 +392,7 @@ export const CountryPortalPage: React.FC = () => {
           {projects.flatMap((p) =>
             p.resultsIndicators.map((ind) => (
               <Card key={ind.id} className="p-4">
-                <Badge variant="muted" className="mb-2">{p.projectCode} — {p.title}</Badge>
+                <Badge variant="muted" className="mb-2">{p.title}</Badge>
                 <h4 className="text-sm font-semibold text-foreground">{ind.indicatorName}</h4>
                 <div className="my-3 grid grid-cols-3 gap-2 font-mono text-xs">
                   <div>

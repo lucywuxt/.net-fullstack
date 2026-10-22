@@ -88,7 +88,7 @@ export const LoginPage: React.FC = () => {
               type="button"
               onClick={() => {
                 setAccountType('Admin');
-                setEmail('elena.vance@worldbank.org');
+                setEmail('admin@worldbank.org');
               }}
               className={cn(
                 'flex items-center justify-center gap-1.5 rounded-md py-2 text-xs font-medium transition-colors',

@@ -63,6 +63,14 @@
     transform: translateY(-2px);
   }
 
+  /* Higher-opacity variant for floating popovers (notification dropdown,
+     menus) that sit directly over busy page content with no dimming
+     backdrop behind them, where the default 55% translucency reads as
+     barely-there text. */
+  .liquid-glass-solid {
+    background: color-mix(in srgb, var(--card) 97%, transparent);
+  }
+
   .liquid-glass::before {
     content: '';
     position: absolute;

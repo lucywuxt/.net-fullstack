@@ -15,9 +15,8 @@ public static partial class DbSeeder
 
         var hash = PasswordService.HashPassword(DefaultDemoPassword);
 
-        var ttl = new Admin { Name = "Dr. Elena Vance (TTL)", Email = "elena.vance@worldbank.org", PasswordHash = hash, Role = AdminRole.TaskTeam };
-        var disbOfficer = new Admin { Name = "Marcus Thorne (WFACS)", Email = "marcus.thorne@worldbank.org", PasswordHash = hash, Role = AdminRole.DisbursementOfficer };
-        db.Admins.AddRange(ttl, disbOfficer);
+        var admin = new Admin { Name = "Admin", Email = "admin@worldbank.org", PasswordHash = hash, Role = AdminRole.TaskTeam };
+        db.Admins.Add(admin);
 
         var kenya = new Country { Name = "Kenya", IsoAlpha3 = "KEN", Region = "Sub-Saharan Africa", IncomeLevel = "Lower middle income", ContactEmail = "treasury@kenya.go.ke", PasswordHash = hash };
         var india = new Country { Name = "India", IsoAlpha3 = "IND", Region = "South Asia", IncomeLevel = "Lower middle income", ContactEmail = "dea-finance@gov.in", PasswordHash = hash };
@@ -29,6 +28,6 @@ public static partial class DbSeeder
         db.Countries.AddRange(kenya, india, brazil, vietnam, nigeria, colombia);
         await db.SaveChangesAsync();
 
-        await SeedProjectsAsync(db, ttl, disbOfficer, kenya, india, brazil, vietnam, nigeria, colombia);
+        await SeedProjectsAsync(db, admin, kenya, india, brazil, vietnam, nigeria, colombia);
     }
 }

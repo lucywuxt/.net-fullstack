@@ -62,7 +62,7 @@ export const NotificationBell: React.FC = () => {
       {open && (
         <div
           className={cn(
-            'liquid-glass absolute right-0 top-10 z-50 w-80 max-h-96 overflow-y-auto rounded-xl p-2 shadow-2xl',
+            'liquid-glass liquid-glass-solid absolute right-0 top-10 z-50 w-80 max-h-96 overflow-y-auto rounded-xl p-2 shadow-2xl',
             'md:left-0 md:right-auto'
           )}
         >

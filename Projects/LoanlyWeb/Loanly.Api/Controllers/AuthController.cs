@@ -27,8 +27,7 @@ public class AuthController : ControllerBase
             new("Country", "Kenya — National Treasury (Borrower)", "treasury@kenya.go.ke", DbSeeder.DefaultDemoPassword, "2 Active Projects ($235M IDA Credit/Grant), 1 Negotiation"),
             new("Country", "India — Dept. of Economic Affairs", "dea-finance@gov.in", DbSeeder.DefaultDemoPassword, "1 Active Project ($320M IBRD Loan)"),
             new("Country", "Brazil — SEAIN Ministry of Finance", "seain@fazenda.gov.br", DbSeeder.DefaultDemoPassword, "1 Active Project ($210M IBRD Loan)"),
-            new("Admin", "Dr. Elena Vance — Task Team Leader (TTL)", "elena.vance@worldbank.org", DbSeeder.DefaultDemoPassword, "World Bank Task Team Lead (Project Lifecycle, Reviews & Results)"),
-            new("Admin", "Marcus Thorne — Disbursement Officer (WFACS)", "marcus.thorne@worldbank.org", DbSeeder.DefaultDemoPassword, "World Bank Finance & Accounting (Withdrawal Approvals & Disbursements)")
+            new("Admin", "Admin", "admin@worldbank.org", DbSeeder.DefaultDemoPassword, "World Bank Internal Operations (Project Lifecycle, Reviews & Disbursements)")
         });
     }
 

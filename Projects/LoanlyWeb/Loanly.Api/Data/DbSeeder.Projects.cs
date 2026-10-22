@@ -6,8 +6,7 @@ public static partial class DbSeeder
 {
     private static async Task SeedProjectsAsync(
         LoanlyDbContext db,
-        Admin ttl,
-        Admin disbOfficer,
+        Admin admin,
         Country kenya,
         Country india,
         Country brazil,
@@ -27,6 +26,80 @@ public static partial class DbSeeder
         db.Projects.AddRange(pKenyaGrid, pKenyaHealth, pKenyaDigital, pIndiaTransit, pBrazilAmazon, pVietnamDelta, pNigeriaEdu, pColombiaHealth);
         await db.SaveChangesAsync();
 
-        await SeedTransactionsAsync(db, ttl, disbOfficer, pKenyaGrid, pKenyaHealth, pIndiaTransit, pBrazilAmazon, pColombiaHealth);
+        SeedProjectAuditTrail(db, admin, pKenyaGrid, pKenyaHealth, pKenyaDigital, pIndiaTransit, pBrazilAmazon, pVietnamDelta, pNigeriaEdu, pColombiaHealth);
+        await db.SaveChangesAsync();
+
+        await SeedTransactionsAsync(db, admin, pKenyaGrid, pKenyaHealth, pIndiaTransit, pBrazilAmazon, pColombiaHealth);
+    }
+
+    /// <summary>
+    /// Projects seeded directly via db.Projects.Add bypass FinancingService.CreateProjectAsync,
+    /// so they'd otherwise have no audit trail. Backfill a plausible Created event (and a
+    /// lifecycle StatusChanged event for anything past Concept) so the History modal isn't
+    /// empty for demo data.
+    /// </summary>
+    private static void SeedProjectAuditTrail(LoanlyDbContext db, Admin admin, params Project[] projects)
+    {
+        foreach (var p in projects)
+        {
+            var createdAt = (p.BoardApprovalDate ?? DateTime.UtcNow).AddMonths(-2);
+
+            db.AuditLogEntries.Add(new AuditLogEntry
+            {
+                EntityType = "Project",
+                EntityId = p.Id,
+                Action = "Created",
+                Summary = $"{p.ProjectCode} \"{p.Title}\" created ({p.Sector}, {p.ApprovedAmount:C0}).",
+                PerformedByName = admin.Name,
+                PerformedByRole = admin.Role.ToString(),
+                CountryId = p.CountryId,
+                CreatedAt = createdAt
+            });
+
+            if (p.BoardApprovalDate.HasValue)
+            {
+                db.AuditLogEntries.Add(new AuditLogEntry
+                {
+                    EntityType = "Project",
+                    EntityId = p.Id,
+                    Action = "StatusChanged",
+                    Summary = $"Project {p.ProjectCode} reached BoardApproval.",
+                    PerformedByName = admin.Name,
+                    PerformedByRole = admin.Role.ToString(),
+                    CountryId = p.CountryId,
+                    CreatedAt = p.BoardApprovalDate.Value
+                });
+            }
+
+            if (p.Status == ProjectStatus.Active || p.Status == ProjectStatus.Closed)
+            {
+                db.AuditLogEntries.Add(new AuditLogEntry
+                {
+                    EntityType = "Project",
+                    EntityId = p.Id,
+                    Action = "StatusChanged",
+                    Summary = $"Project {p.ProjectCode} moved to Active.",
+                    PerformedByName = admin.Name,
+                    PerformedByRole = admin.Role.ToString(),
+                    CountryId = p.CountryId,
+                    CreatedAt = (p.BoardApprovalDate ?? createdAt).AddDays(5)
+                });
+            }
+
+            if (p.Status == ProjectStatus.Closed)
+            {
+                db.AuditLogEntries.Add(new AuditLogEntry
+                {
+                    EntityType = "Project",
+                    EntityId = p.Id,
+                    Action = "StatusChanged",
+                    Summary = $"Project {p.ProjectCode} moved to Closed.",
+                    PerformedByName = admin.Name,
+                    PerformedByRole = admin.Role.ToString(),
+                    CountryId = p.CountryId,
+                    CreatedAt = p.ClosingDate ?? DateTime.UtcNow
+                });
+            }
+        }
     }
 }

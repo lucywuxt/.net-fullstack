@@ -102,7 +102,7 @@ export const AdminPortalPage: React.FC = () => {
     setActionBanner(null);
     try {
       await api.updateProjectStatus(project.id, next);
-      setActionBanner(`Advanced ${project.projectCode} from ${project.status} → ${next}.`);
+      setActionBanner(`Advanced ${project.title} from ${project.status} → ${next}.`);
       await loadPortfolio();
     } catch (err) {
       setActionError(err instanceof Error ? err.message : 'Status transition failed');
@@ -247,7 +247,6 @@ export const AdminPortalPage: React.FC = () => {
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
                     <div className="mb-1.5 flex flex-wrap items-center gap-1.5">
-                      <Badge>{p.projectCode}</Badge>
                       <Badge variant="muted">{p.countryName} ({p.countryIso3})</Badge>
                       <Badge variant="muted">{p.financingInstrument}</Badge>
                       <Badge variant="muted" className={SECTOR_BADGE_CLASSES[p.sector]}>{p.sector}</Badge>
@@ -330,7 +329,7 @@ export const AdminPortalPage: React.FC = () => {
                     <TableCell className="font-mono text-foreground">{w.applicationNumber}</TableCell>
                     <TableCell>
                       <div className="font-medium text-foreground">{w.countryName}</div>
-                      <div className="text-[11px] text-muted-foreground">{w.projectCode} — {w.projectTitle}</div>
+                      <div className="text-[11px] text-muted-foreground">{w.projectTitle}</div>
                     </TableCell>
                     <TableCell><Badge variant="muted">{w.category}</Badge></TableCell>
                     <TableCell className="font-mono">${w.amountRequested.toLocaleString()}</TableCell>
@@ -414,7 +413,7 @@ export const AdminPortalPage: React.FC = () => {
             p.resultsIndicators.map((ind) => (
               <Card key={ind.id} className="p-4">
                 <div className="mb-2 flex items-center justify-between gap-2">
-                  <Badge variant="muted">{p.projectCode} ({p.countryName})</Badge>
+                  <Badge variant="muted">{p.title} ({p.countryName})</Badge>
                   <Button size="sm" variant="outline" onClick={() => setIndicatorModal({ project: p, existing: ind })}>
                     Update
                   </Button>
@@ -483,7 +482,7 @@ export const AdminPortalPage: React.FC = () => {
         <HistoryModal
           entityType="Project"
           entityId={projectHistoryTarget.id}
-          title={`History — ${projectHistoryTarget.projectCode}`}
+          title={`History — ${projectHistoryTarget.title}`}
           onClose={() => setProjectHistoryTarget(null)}
         />
       )}

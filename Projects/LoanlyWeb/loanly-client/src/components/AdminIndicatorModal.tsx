@@ -54,7 +54,7 @@ export const AdminIndicatorModal: React.FC<AdminIndicatorModalProps> = ({
     <Dialog onClose={onClose}>
       <DialogHeader
         title={existing ? 'Update Results Indicator' : 'Add PDO Results Indicator'}
-        badge={<Badge variant="pipeline">{project.projectCode}</Badge>}
+        badge={<Badge variant="pipeline">{project.title}</Badge>}
         onClose={onClose}
       />
 

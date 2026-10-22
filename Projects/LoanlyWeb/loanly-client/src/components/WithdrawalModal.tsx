@@ -98,7 +98,7 @@ export const WithdrawalModal: React.FC<WithdrawalModalProps> = ({ project, onClo
     <Dialog onClose={onClose}>
       <DialogHeader
         title="Submit Withdrawal Application"
-        badge={<Badge variant="active">{project.projectCode}</Badge>}
+        badge={<Badge variant="active">{project.title}</Badge>}
         onClose={onClose}
       />
 
