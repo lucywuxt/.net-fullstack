@@ -12,8 +12,9 @@ import {
   Pie,
   Cell,
 } from 'recharts';
-import type { PortfolioAnalytics } from '../types/api';
+import type { PortfolioAnalytics, Project } from '../types/api';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { AdminActiveProjectsGlobe } from './AdminActiveProjectsGlobe';
 
 const PIE_COLORS = ['#38bdf8', '#10b981', '#f59e0b', '#a78bfa', '#f472b6'];
 
@@ -25,7 +26,15 @@ const tooltipStyle = {
   color: 'var(--foreground)',
 };
 
-export const AdminPortfolioCharts: React.FC<{ analytics: PortfolioAnalytics }> = ({ analytics }) => {
+export const AdminPortfolioCharts: React.FC<{
+  analytics: PortfolioAnalytics;
+  projects: Project[];
+  onSelectCountry?: (iso3: string) => void;
+}> = ({
+  analytics,
+  projects,
+  onSelectCountry,
+}) => {
   const sectorData = analytics.bySector.map((s) => ({
     name: s.label,
     Committed: Math.round(s.committedAmount / 1_000_000),
@@ -83,12 +92,12 @@ export const AdminPortfolioCharts: React.FC<{ analytics: PortfolioAnalytics }> =
         </CardContent>
       </Card>
 
-      <Card className="lg:col-span-2">
+      <Card>
         <CardHeader>
           <CardTitle>Commitments by Financing Instrument ($M)</CardTitle>
         </CardHeader>
         <CardContent className="pt-0">
-          <ResponsiveContainer width="100%" height={260}>
+          <ResponsiveContainer width="100%" height={240}>
             <PieChart>
               <Pie
                 data={instrumentData}
@@ -96,7 +105,7 @@ export const AdminPortfolioCharts: React.FC<{ analytics: PortfolioAnalytics }> =
                 nameKey="name"
                 cx="50%"
                 cy="50%"
-                outerRadius={90}
+                outerRadius={80}
               >
                 {instrumentData.map((_, idx) => (
                   <Cell key={idx} fill={PIE_COLORS[idx % PIE_COLORS.length]} />
@@ -109,6 +118,15 @@ export const AdminPortfolioCharts: React.FC<{ analytics: PortfolioAnalytics }> =
               />
             </PieChart>
           </ResponsiveContainer>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Global Footprint — Active Projects</CardTitle>
+        </CardHeader>
+        <CardContent className="pt-0">
+          <AdminActiveProjectsGlobe projects={projects} onSelectCountry={onSelectCountry} />
         </CardContent>
       </Card>
     </div>

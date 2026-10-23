@@ -1,54 +1,44 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
-  FilePlus2,
   Landmark,
   TrendingUp,
   CheckCircle2,
   Clock,
   Receipt,
-  Target,
   History,
   Paperclip,
 } from 'lucide-react';
 import { api } from '../services/api';
 import { useAuth } from '../context/AuthContext';
-import type { Disbursement, Project, ProjectStatus, WithdrawalApplication, WithdrawalStatus } from '../types/api';
+import type { Disbursement, Project, WithdrawalApplication, WithdrawalStatus } from '../types/api';
 import { WithdrawalModal } from '../components/WithdrawalModal';
 import { HistoryModal } from '../components/HistoryModal';
 import { AiChatWidget } from '../components/AiChatWidget';
 import { SidebarShell } from '../components/SidebarShell';
+import { CountryFocusGlobe } from '../components/CountryFocusGlobe';
+import { ProjectTile } from '../components/ProjectTile';
+import { ProjectDetailView } from '../components/ProjectDetailView';
 import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Alert } from '../components/ui/alert';
 import { Input, Select } from '../components/ui/input';
 import { StatCard } from '../components/ui/stat-card';
-import { ProgressBar } from '../components/ui/progress';
-import { Stepper } from '../components/ui/stepper';
 import { Pagination } from '../components/ui/pagination';
 import { Table, TableBody, TableCell, TableHead, SortableHead, TableHeader, TableRow } from '../components/ui/table';
 import { usePagination } from '../hooks/usePagination';
-import { PROJECT_STATUS_TONE, WITHDRAWAL_STATUS_TONE } from '../lib/status';
-import { SECTOR_BADGE_CLASSES } from '../lib/sector';
+import { WITHDRAWAL_STATUS_TONE } from '../lib/status';
 
 type WaSortKey = 'submittedAt' | 'amountRequested' | 'status';
 type DisbSortKey = 'disbursedAt' | 'amountDisbursed';
-
-const LIFECYCLE_STAGES: ProjectStatus[] = [
-  'Concept',
-  'Appraisal',
-  'Negotiation',
-  'BoardApproval',
-  'Active',
-  'Closed',
-];
 
 export const CountryPortalPage: React.FC = () => {
   const { user } = useAuth();
   const [projects, setProjects] = useState<Project[]>([]);
   const [withdrawals, setWithdrawals] = useState<WithdrawalApplication[]>([]);
   const [disbursements, setDisbursements] = useState<Disbursement[]>([]);
-  const [activeTab, setActiveTab] = useState<'projects' | 'withdrawals' | 'disbursements' | 'results'>('projects');
+  const [activeTab, setActiveTab] = useState<'projects' | 'withdrawals' | 'disbursements'>('projects');
+  const [selectedProjectId, setSelectedProjectId] = useState<number | null>(null);
   const [modalProject, setModalProject] = useState<Project | null>(null);
   const [historyTarget, setHistoryTarget] = useState<WithdrawalApplication | null>(null);
   const [loading, setLoading] = useState(true);
@@ -80,6 +70,14 @@ export const CountryPortalPage: React.FC = () => {
   useEffect(() => {
     loadData();
   }, []);
+
+  // Guards against a stale selection (e.g. a notification pointing at a project
+  // that's no longer in the loaded list) leaving the detail view stuck blank.
+  useEffect(() => {
+    if (selectedProjectId != null && projects.length > 0 && !projects.some((p) => p.id === selectedProjectId)) {
+      setSelectedProjectId(null);
+    }
+  }, [projects, selectedProjectId]);
 
   const toggleWaSort = (key: WaSortKey) =>
     setWaSort((prev) => (prev.key === key ? { key, dir: prev.dir === 'asc' ? 'desc' : 'asc' } : { key, dir: 'desc' }));
@@ -139,103 +137,127 @@ export const CountryPortalPage: React.FC = () => {
       portalLabel="Borrower Portal"
       active={activeTab}
       onChange={(id) => setActiveTab(id as typeof activeTab)}
+      onNotificationClick={(entry) => {
+        const projectId =
+          entry.entityType === 'Project'
+            ? entry.entityId
+            : entry.entityType === 'WithdrawalApplication'
+            ? withdrawals.find((w) => w.id === entry.entityId)?.projectId
+            : undefined;
+        if (projectId == null) return;
+        setActiveTab('projects');
+        setSelectedProjectId(projectId);
+      }}
       tabs={[
-        { id: 'projects', label: `Projects & Ceilings (${projects.length})`, icon: <Landmark className="h-3.5 w-3.5" /> },
-        { id: 'withdrawals', label: `Withdrawal Applications (${withdrawals.length})`, icon: <Clock className="h-3.5 w-3.5" /> },
-        { id: 'disbursements', label: `Disbursement Ledger (${disbursements.length})`, icon: <Receipt className="h-3.5 w-3.5" /> },
-        { id: 'results', label: 'Results Indicators (PDO)', icon: <Target className="h-3.5 w-3.5" /> },
+        { id: 'projects', label: 'My Projects', icon: <Landmark className="h-3.5 w-3.5" /> },
+        { id: 'withdrawals', label: 'Withdrawal Applications', icon: <Clock className="h-3.5 w-3.5" /> },
+        { id: 'disbursements', label: 'Disbursement Ledger', icon: <Receipt className="h-3.5 w-3.5" /> },
       ]}
     >
     <div className="space-y-6">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <Badge variant="pipeline" className="mb-2">
-            BORROWER CLIENT CONNECTION • {user?.isoAlpha3} ({user?.subRoleOrRegion})
-          </Badge>
-          <h1 className="text-xl font-semibold text-foreground">{user?.name} — Sovereign Project Financing Portal</h1>
-          <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
-            Manage approved World Bank IBRD/IDA project ceilings, submit Withdrawal Applications, and monitor
-            Designated Account disbursements and PDO Results Indicators.
-          </p>
-        </div>
-        {activeProjects.length > 0 && (
-          <Button onClick={() => setModalProject(activeProjects[0])}>
-            <FilePlus2 className="h-4 w-4" />
-            New Withdrawal Application
-          </Button>
-        )}
-      </div>
+      {!(activeTab === 'projects' && selectedProjectId) && (
+        <>
+          <div>
+            <Badge variant="pipeline" className="mb-2">
+              BORROWER CLIENT CONNECTION • {user?.isoAlpha3} ({user?.subRoleOrRegion})
+            </Badge>
+            <h1 className="text-2xl font-bold text-foreground">{user?.name}</h1>
+            <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
+              Sovereign project financing, Withdrawal Applications, and Designated Account disbursements.
+            </p>
+          </div>
 
-      <div className="grid gap-3 sm:grid-cols-3">
-        <StatCard
-          icon={<Landmark className="h-4 w-4" />}
-          tone="sky"
-          label="Approved Financing Ceiling"
-          value={`$${totalApproved.toLocaleString()}`}
-          sub={`${projects.length} Total Projects (${activeProjects.length} Active)`}
-        />
-        <StatCard
-          icon={<CheckCircle2 className="h-4 w-4" />}
-          tone="emerald"
-          label="Cumulative Disbursed"
-          value={`$${totalDisbursed.toLocaleString()}`}
-          sub={`${disbursements.length} Recorded Tranches`}
-        />
-        <StatCard
-          icon={<TrendingUp className="h-4 w-4" />}
-          tone="amber"
-          label="Remaining Undisbursed Ceiling"
-          value={`$${totalRemaining.toLocaleString()}`}
-          sub="Available for Drawdown on Active Projects"
-        />
-      </div>
+          {activeTab !== 'projects' && (
+            <div className="grid gap-3 sm:grid-cols-3">
+              <StatCard
+                icon={<Landmark className="h-4 w-4" />}
+                tone="sky"
+                label="Approved Financing Ceiling"
+                value={`$${totalApproved.toLocaleString()}`}
+                sub={`${projects.length} Total Projects (${activeProjects.length} Active)`}
+              />
+              <StatCard
+                icon={<CheckCircle2 className="h-4 w-4" />}
+                tone="emerald"
+                label="Cumulative Disbursed"
+                value={`$${totalDisbursed.toLocaleString()}`}
+                sub={`${disbursements.length} Recorded Tranches`}
+              />
+              <StatCard
+                icon={<TrendingUp className="h-4 w-4" />}
+                tone="amber"
+                label="Remaining Undisbursed Ceiling"
+                value={`$${totalRemaining.toLocaleString()}`}
+                sub="Available for Drawdown on Active Projects"
+              />
+            </div>
+          )}
+        </>
+      )}
 
       {actionBanner && <Alert variant="success">{actionBanner}</Alert>}
 
       {loading ? (
         <div className="py-16 text-center text-sm text-muted-foreground">Loading borrower portfolio…</div>
+      ) : activeTab === 'projects' && selectedProjectId ? (
+        (() => {
+          const selected = projects.find((p) => p.id === selectedProjectId);
+          if (!selected) return null;
+          return (
+            <ProjectDetailView
+              project={selected}
+              withdrawals={withdrawals.filter((w) => w.projectId === selectedProjectId)}
+              disbursements={disbursements.filter((d) => d.projectId === selectedProjectId)}
+              onBack={() => setSelectedProjectId(null)}
+              onSubmitWithdrawal={() => setModalProject(selected)}
+              onShowHistory={setHistoryTarget}
+            />
+          );
+        })()
       ) : activeTab === 'projects' ? (
-        <div className="space-y-3">
-          {projects.map((p) => {
-            const pct = p.approvedAmount > 0 ? Math.round((p.totalDisbursed / p.approvedAmount) * 100) : 0;
-            return (
-              <Card key={p.id} className="p-4">
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div>
-                    <div className="mb-1.5 flex flex-wrap items-center gap-1.5">
-                      <Badge variant="muted">{p.financingInstrument}</Badge>
-                      <Badge variant="muted" className={SECTOR_BADGE_CLASSES[p.sector]}>{p.sector}</Badge>
-                      <Badge variant={PROJECT_STATUS_TONE[p.status] ?? 'default'}>{p.status}</Badge>
-                    </div>
-                    <h3 className="text-sm font-semibold text-foreground">{p.title}</h3>
-                    <p className="mt-1 max-w-2xl text-xs text-muted-foreground">
-                      <strong className="text-muted-foreground">PDO:</strong> {p.projectDevelopmentObjective}
-                    </p>
-                  </div>
-                  {p.status === 'Active' && (
-                    <Button size="sm" onClick={() => setModalProject(p)}>
-                      <FilePlus2 className="h-3.5 w-3.5" />
-                      Submit Withdrawal
-                    </Button>
-                  )}
-                </div>
+        <div className="space-y-5">
+          <Card className="grid gap-6 p-5 lg:grid-cols-2 lg:items-center">
+            <div className="grid gap-3">
+              <StatCard
+                icon={<Landmark className="h-4 w-4" />}
+                tone="sky"
+                label="Approved Financing Ceiling"
+                value={`$${totalApproved.toLocaleString()}`}
+                sub={`${projects.length} Total Projects (${activeProjects.length} Active)`}
+              />
+              <StatCard
+                icon={<CheckCircle2 className="h-4 w-4" />}
+                tone="emerald"
+                label="Cumulative Disbursed"
+                value={`$${totalDisbursed.toLocaleString()}`}
+                sub={`${disbursements.length} Recorded Tranches`}
+              />
+              <StatCard
+                icon={<TrendingUp className="h-4 w-4" />}
+                tone="amber"
+                label="Remaining Undisbursed Ceiling"
+                value={`$${totalRemaining.toLocaleString()}`}
+                sub="Available for Drawdown on Active Projects"
+              />
+            </div>
 
-                <div className="my-4 overflow-x-auto">
-                  <Stepper stages={LIFECYCLE_STAGES} currentIndex={LIFECYCLE_STAGES.indexOf(p.status)} />
-                </div>
+            {user?.isoAlpha3 && (
+              <div className="flex justify-center">
+                <CountryFocusGlobe
+                  isoAlpha3={user.isoAlpha3}
+                  committed={totalApproved}
+                  disbursed={totalDisbursed}
+                  remaining={totalRemaining}
+                />
+              </div>
+            )}
+          </Card>
 
-                <div className="space-y-1.5">
-                  <div className="flex flex-wrap gap-x-4 gap-y-1 font-mono text-[11px] text-muted-foreground">
-                    <span>Ceiling: <strong className="text-foreground">${p.approvedAmount.toLocaleString()}</strong></span>
-                    <span>Disbursed: <strong className="text-emerald-400">${p.totalDisbursed.toLocaleString()} ({pct}%)</strong></span>
-                    <span>Pending: <strong className="text-amber-400">${p.committedPendingDisbursement.toLocaleString()}</strong></span>
-                    <span>Remaining: <strong className="text-sky-400">${p.remainingUndisbursedAmount.toLocaleString()}</strong></span>
-                  </div>
-                  <ProgressBar percent={pct} />
-                </div>
-              </Card>
-            );
-          })}
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            {projects.map((p) => (
+              <ProjectTile key={p.id} project={p} onClick={() => setSelectedProjectId(p.id)} />
+            ))}
+          </div>
         </div>
       ) : activeTab === 'withdrawals' ? (
         <Card>
@@ -387,34 +409,7 @@ export const CountryPortalPage: React.FC = () => {
             />
           </CardContent>
         </Card>
-      ) : (
-        <div className="grid gap-3 sm:grid-cols-2">
-          {projects.flatMap((p) =>
-            p.resultsIndicators.map((ind) => (
-              <Card key={ind.id} className="p-4">
-                <Badge variant="muted" className="mb-2">{p.title}</Badge>
-                <h4 className="text-sm font-semibold text-foreground">{ind.indicatorName}</h4>
-                <div className="my-3 grid grid-cols-3 gap-2 font-mono text-xs">
-                  <div>
-                    <div className="text-[10px] text-muted-foreground">Baseline</div>
-                    <div className="text-foreground">{ind.baselineValue.toLocaleString()} {ind.unit}</div>
-                  </div>
-                  <div>
-                    <div className="text-[10px] text-muted-foreground">Current</div>
-                    <div className="text-sky-400">{ind.currentValue.toLocaleString()} {ind.unit}</div>
-                  </div>
-                  <div>
-                    <div className="text-[10px] text-muted-foreground">Target</div>
-                    <div className="text-emerald-400">{ind.targetValue.toLocaleString()} {ind.unit}</div>
-                  </div>
-                </div>
-                <ProgressBar percent={ind.progressPercent} tone="sky" />
-                <div className="mt-1.5 text-[11px] text-muted-foreground">{ind.progressPercent}% toward PDO target</div>
-              </Card>
-            ))
-          )}
-        </div>
-      )}
+      ) : null}
 
       {modalProject && (
         <WithdrawalModal

@@ -8,8 +8,6 @@ import type {
   Disbursement,
   ExpenditureCategory,
   FinancingInstrument,
-  GlobalIndicatorDataset,
-  IndicatorOption,
   PortfolioAnalytics,
   Project,
   ProjectSector,
@@ -62,7 +60,33 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
     throw new Error(errorMsg);
   }
 
+  if (res.status === 204) return undefined as T;
+
   return res.json() as Promise<T>;
+}
+
+async function requestBlob(path: string): Promise<{ blob: Blob; fileName: string }> {
+  const token = getToken();
+  const res = await fetch(`${API_BASE}${path}`, {
+    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+  });
+
+  if (!res.ok) {
+    let errorMsg = `Request failed (${res.status})`;
+    try {
+      const errJson = await res.json();
+      if (errJson?.message) errorMsg = errJson.message;
+    } catch {
+      // ignore json parse error
+    }
+    throw new Error(errorMsg);
+  }
+
+  const disposition = res.headers.get('content-disposition') ?? '';
+  const match = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(disposition);
+  const fileName = match ? decodeURIComponent(match[1].replace(/['"]/g, '')) : 'document';
+
+  return { blob: await res.blob(), fileName };
 }
 
 export const api = {
@@ -75,9 +99,6 @@ export const api = {
     }),
 
   // Public World Bank Open Data API Proxy
-  getIndicators: () => request<IndicatorOption[]>('/public/worldbank/indicators'),
-  getGlobalIndicator: (indicatorCode: string) =>
-    request<GlobalIndicatorDataset>(`/public/worldbank/global/${encodeURIComponent(indicatorCode)}`),
   getCountrySeries: (countryCode: string, indicatorCode: string) =>
     request<CountryIndicatorSeries>(
       `/public/worldbank/country/${encodeURIComponent(countryCode)}/indicator/${encodeURIComponent(indicatorCode)}`
@@ -110,6 +131,8 @@ export const api = {
       method: 'PATCH',
       body: JSON.stringify({ newStatus }),
     }),
+  deleteProject: (projectId: number) =>
+    request<void>(`/projects/${projectId}`, { method: 'DELETE' }),
   upsertIndicator: (
     projectId: number,
     payload: {
@@ -141,6 +164,7 @@ export const api = {
       method: 'POST',
       body: JSON.stringify(payload),
     }),
+  getDocumentContent: (documentId: number) => requestBlob(`/withdrawals/documents/${documentId}/content`),
   reviewWithdrawal: (
     withdrawalId: number,
     decisionStatus: WithdrawalStatus,

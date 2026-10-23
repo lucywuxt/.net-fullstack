@@ -129,6 +129,16 @@ public class SupportingDocument
     public SupportingDocumentType DocumentType { get; set; }
 
     public DateTime UploadedAt { get; set; } = DateTime.UtcNow;
+
+    [MaxLength(100)]
+    public string? ContentType { get; set; }
+
+    /// <summary>
+    /// Actual file bytes, stored inline (varbinary(max)) rather than in external
+    /// blob storage — kept simple since documents here are small (IPCs, invoices,
+    /// SOEs). Null for documents uploaded before this column existed.
+    /// </summary>
+    public byte[]? FileContent { get; set; }
 }
 
 /// <summary>

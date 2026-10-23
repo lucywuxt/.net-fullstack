@@ -106,8 +106,6 @@ export const AdminProjectModal: React.FC<AdminProjectModalProps> = ({ countries,
             <Label>Approved Ceiling (USD)</Label>
             <Input
               type="number"
-              min="100000"
-              step="500000"
               value={approvedAmount}
               onChange={(e) => setApprovedAmount(e.target.value)}
               required

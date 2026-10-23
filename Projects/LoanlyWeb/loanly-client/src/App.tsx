@@ -65,7 +65,7 @@ const Shell: React.FC = () => {
           <strong className="text-muted-foreground">LOANLY</strong> — Sovereign Development Financing &amp; Client Connection Operations Platform
         </div>
         <div>
-          Powered by World Bank Open Data API v2 • ASP.NET Core 10 • EF Core 10 • Gemini 3.6 Flash
+          Powered by World Bank Open Data API v2 • ASP.NET Core 10 • EF Core 10
         </div>
       </footer>
     </div>

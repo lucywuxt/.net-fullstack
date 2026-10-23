@@ -8,7 +8,11 @@ import { cn } from '@/lib/utils';
 const LAST_SEEN_KEY = 'loanly_notifications_last_seen';
 const POLL_INTERVAL_MS = 30_000;
 
-export const NotificationBell: React.FC = () => {
+interface NotificationBellProps {
+  onEntryClick?: (entry: AuditLogEntry) => void;
+}
+
+export const NotificationBell: React.FC<NotificationBellProps> = ({ onEntryClick }) => {
   const [entries, setEntries] = useState<AuditLogEntry[]>([]);
   const [open, setOpen] = useState(false);
   const [lastSeen, setLastSeen] = useState<string>(() => localStorage.getItem(LAST_SEEN_KEY) ?? '');
@@ -49,7 +53,7 @@ export const NotificationBell: React.FC = () => {
     <div ref={containerRef} className="relative">
       <button
         onClick={handleToggle}
-        className="relative flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+        className="relative flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground"
       >
         <Bell className="h-4 w-4" />
         {unreadCount > 0 && (
@@ -74,12 +78,22 @@ export const NotificationBell: React.FC = () => {
           ) : (
             <ul className="space-y-1">
               {entries.map((e) => (
-                <li key={e.id} className="rounded-lg px-2 py-1.5 hover:bg-muted/60">
-                  <div className="flex flex-wrap items-center gap-1.5">
-                    <Badge variant="muted">{e.action}</Badge>
-                    <span className="text-[10px] text-muted-foreground">{new Date(e.createdAt).toLocaleString()}</span>
-                  </div>
-                  <p className="mt-0.5 text-xs text-foreground">{e.summary}</p>
+                <li key={e.id}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setOpen(false);
+                      onEntryClick?.(e);
+                    }}
+                    disabled={!onEntryClick}
+                    className="w-full rounded-lg px-2 py-1.5 text-left disabled:cursor-default"
+                  >
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <Badge variant="muted">{e.action}</Badge>
+                      <span className="text-[10px] text-muted-foreground">{new Date(e.createdAt).toLocaleString()}</span>
+                    </div>
+                    <p className="mt-0.5 text-xs text-foreground">{e.summary}</p>
+                  </button>
                 </li>
               ))}
             </ul>

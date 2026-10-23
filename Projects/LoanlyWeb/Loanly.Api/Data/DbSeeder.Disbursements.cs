@@ -6,6 +6,11 @@ public static partial class DbSeeder
 {
     private static async Task SeedDisbursementsAndIndicatorsAsync(
         LoanlyDbContext db,
+        Admin admin,
+        Country kenya,
+        Country india,
+        Country brazil,
+        Country colombia,
         Project pKenyaGrid,
         Project pKenyaHealth,
         Project pIndiaTransit,
@@ -17,14 +22,38 @@ public static partial class DbSeeder
         WithdrawalApplication wa9,
         WithdrawalApplication wa10)
     {
-        db.Disbursements.AddRange(
+        var disbursements = new[]
+        {
             new Disbursement { WithdrawalApplicationId = wa1.Id, AmountDisbursed = 28_000_000m, DesignatedAccountBalanceAfter = 122_000_000m, DisbursedAt = DateTime.UtcNow.AddMonths(-14).AddDays(6), TransactionReference = "IDA-DISB-202508-0091" },
             new Disbursement { WithdrawalApplicationId = wa2.Id, AmountDisbursed = 22_000_000m, DesignatedAccountBalanceAfter = 100_000_000m, DisbursedAt = DateTime.UtcNow.AddMonths(-8).AddDays(5), TransactionReference = "IDA-DISB-202602-0095" },
             new Disbursement { WithdrawalApplicationId = wa5.Id, AmountDisbursed = 19_500_000m, DesignatedAccountBalanceAfter = 65_500_000m, DisbursedAt = DateTime.UtcNow.AddMonths(-5).AddDays(4), TransactionReference = "IDA-GRANT-202605-0093" },
             new Disbursement { WithdrawalApplicationId = wa7.Id, AmountDisbursed = 95_000_000m, DesignatedAccountBalanceAfter = 225_000_000m, DisbursedAt = DateTime.UtcNow.AddMonths(-11).AddDays(7), TransactionReference = "IBRD-DISB-202511-0092" },
             new Disbursement { WithdrawalApplicationId = wa9.Id, AmountDisbursed = 60_000_000m, DesignatedAccountBalanceAfter = 150_000_000m, DisbursedAt = DateTime.UtcNow.AddMonths(-7).AddDays(6), TransactionReference = "IBRD-DISB-202603-0094" },
             new Disbursement { WithdrawalApplicationId = wa10.Id, AmountDisbursed = 120_000_000m, DesignatedAccountBalanceAfter = 0m, DisbursedAt = DateTime.UtcNow.AddMonths(-11), TransactionReference = "IBRD-DISB-202509-0088" }
-        );
+        };
+        db.Disbursements.AddRange(disbursements);
+
+        void AddDisbursedAudit(WithdrawalApplication wa, Disbursement d, Country country)
+        {
+            db.AuditLogEntries.Add(new AuditLogEntry
+            {
+                EntityType = "WithdrawalApplication",
+                EntityId = wa.Id,
+                Action = "Disbursed",
+                Summary = $"{wa.ApplicationNumber} disbursed ${d.AmountDisbursed:N0} (ref {d.TransactionReference}) by {admin.Name}.",
+                PerformedByName = admin.Name,
+                PerformedByRole = admin.Role.ToString(),
+                CountryId = country.Id,
+                CreatedAt = d.DisbursedAt
+            });
+        }
+
+        AddDisbursedAudit(wa1, disbursements[0], kenya);
+        AddDisbursedAudit(wa2, disbursements[1], kenya);
+        AddDisbursedAudit(wa5, disbursements[2], kenya);
+        AddDisbursedAudit(wa7, disbursements[3], india);
+        AddDisbursedAudit(wa9, disbursements[4], brazil);
+        AddDisbursedAudit(wa10, disbursements[5], colombia);
 
         db.ResultsIndicators.AddRange(
             new ResultsIndicator { ProjectId = pKenyaGrid.Id, IndicatorName = "People provided with new or improved solar mini-grid electricity", Unit = "beneficiaries", BaselineValue = 0m, TargetValue = 450_000m, CurrentValue = 215_000m },

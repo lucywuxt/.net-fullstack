@@ -7,6 +7,10 @@ public static partial class DbSeeder
     private static async Task SeedTransactionsAsync(
         LoanlyDbContext db,
         Admin admin,
+        Country kenya,
+        Country india,
+        Country brazil,
+        Country colombia,
         Project pKenyaGrid,
         Project pKenyaHealth,
         Project pIndiaTransit,
@@ -27,6 +31,57 @@ public static partial class DbSeeder
         db.WithdrawalApplications.AddRange(wa1, wa2, wa3, wa4, wa5, wa6, wa7, wa8, wa9, wa10);
         await db.SaveChangesAsync();
 
-        await SeedDisbursementsAndIndicatorsAsync(db, pKenyaGrid, pKenyaHealth, pIndiaTransit, pBrazilAmazon, wa1, wa2, wa5, wa7, wa9, wa10);
+        SeedWithdrawalSubmitAndReviewAudit(db, admin, pKenyaGrid, kenya, wa1, wa2, wa3, wa4);
+        SeedWithdrawalSubmitAndReviewAudit(db, admin, pKenyaHealth, kenya, wa5, wa6);
+        SeedWithdrawalSubmitAndReviewAudit(db, admin, pIndiaTransit, india, wa7, wa8);
+        SeedWithdrawalSubmitAndReviewAudit(db, admin, pBrazilAmazon, brazil, wa9);
+        SeedWithdrawalSubmitAndReviewAudit(db, admin, pColombiaHealth, colombia, wa10);
+        await db.SaveChangesAsync();
+
+        await SeedDisbursementsAndIndicatorsAsync(db, admin, kenya, india, brazil, colombia, pKenyaGrid, pKenyaHealth, pIndiaTransit, pBrazilAmazon, wa1, wa2, wa5, wa7, wa9, wa10);
+    }
+
+    /// <summary>
+    /// Backfills the Created event (always) and a StatusChanged review event (if the
+    /// withdrawal was reviewed) for seed-data WithdrawalApplications, which bypass
+    /// SubmitWithdrawalApplicationAsync/ReviewWithdrawalApplicationAsync and so would
+    /// otherwise have no audit trail. A withdrawal already Disbursed is logged here as
+    /// having been "marked Approved" at ReviewedAt — the Disbursed event itself is
+    /// added separately once the Disbursement row exists.
+    /// </summary>
+    private static void SeedWithdrawalSubmitAndReviewAudit(LoanlyDbContext db, Admin admin, Project project, Country country, params WithdrawalApplication[] withdrawals)
+    {
+        foreach (var wa in withdrawals)
+        {
+            db.AuditLogEntries.Add(new AuditLogEntry
+            {
+                EntityType = "WithdrawalApplication",
+                EntityId = wa.Id,
+                Action = "Created",
+                Summary = $"{wa.ApplicationNumber} submitted for {project.ProjectCode} requesting ${wa.AmountRequested:N0} ({wa.Category}).",
+                PerformedByName = country.Name,
+                PerformedByRole = "Country",
+                CountryId = country.Id,
+                CreatedAt = wa.SubmittedAt
+            });
+
+            if (wa.ReviewedAt.HasValue)
+            {
+                var reviewStatus = wa.Status == WithdrawalStatus.Disbursed ? WithdrawalStatus.Approved : wa.Status;
+                var noteSuffix = string.IsNullOrWhiteSpace(wa.ReviewNotes) ? "" : $" Note: {wa.ReviewNotes}";
+
+                db.AuditLogEntries.Add(new AuditLogEntry
+                {
+                    EntityType = "WithdrawalApplication",
+                    EntityId = wa.Id,
+                    Action = "StatusChanged",
+                    Summary = $"{wa.ApplicationNumber} marked {reviewStatus} by {admin.Name}.{noteSuffix}",
+                    PerformedByName = admin.Name,
+                    PerformedByRole = admin.Role.ToString(),
+                    CountryId = country.Id,
+                    CreatedAt = wa.ReviewedAt.Value
+                });
+            }
+        }
     }
 }

@@ -140,20 +140,23 @@ public record CreateWithdrawalApplicationRequestDto(
     List<SupportingDocumentInputDto>? Documents
 );
 
-// Supporting Document DTOs — metadata only (filename/size/type captured from
-// the browser File API client-side); no file bytes are stored or uploaded.
+// Supporting Document DTOs. List/history responses carry metadata only — the
+// actual bytes are fetched separately via GET /api/withdrawals/documents/{id}/content.
 public record SupportingDocumentDto(
     int Id,
     string FileName,
     long FileSizeBytes,
     SupportingDocumentType DocumentType,
-    DateTime UploadedAt
+    DateTime UploadedAt,
+    bool HasContent
 );
 
 public record SupportingDocumentInputDto(
     string FileName,
     long FileSizeBytes,
-    SupportingDocumentType DocumentType
+    SupportingDocumentType DocumentType,
+    string? ContentType,
+    string? FileContentBase64
 );
 
 // Audit / activity log DTOs

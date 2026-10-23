@@ -6,6 +6,8 @@ namespace Loanly.Api.Services;
 
 public partial class FinancingService
 {
+    private const long MaxSupportingDocumentBytes = 8 * 1024 * 1024;
+
     public async Task<WithdrawalApplicationDto> SubmitWithdrawalApplicationAsync(
         int countryId,
         CreateWithdrawalApplicationRequestDto request)
@@ -61,12 +63,31 @@ public partial class FinancingService
                 if (string.IsNullOrWhiteSpace(doc.FileName) || doc.FileSizeBytes <= 0)
                     continue;
 
+                if (doc.FileSizeBytes > MaxSupportingDocumentBytes)
+                    throw new ServiceValidationException(
+                        $"'{doc.FileName}' is {doc.FileSizeBytes / 1024.0 / 1024.0:N1} MB, which exceeds the {MaxSupportingDocumentBytes / 1024 / 1024} MB per-file upload limit.");
+
+                byte[]? content = null;
+                if (!string.IsNullOrWhiteSpace(doc.FileContentBase64))
+                {
+                    try
+                    {
+                        content = Convert.FromBase64String(doc.FileContentBase64);
+                    }
+                    catch (FormatException)
+                    {
+                        throw new ServiceValidationException($"'{doc.FileName}' could not be read — the upload was corrupted.");
+                    }
+                }
+
                 application.SupportingDocuments.Add(new SupportingDocument
                 {
                     FileName = doc.FileName.Trim(),
                     FileSizeBytes = doc.FileSizeBytes,
                     DocumentType = doc.DocumentType,
-                    UploadedAt = DateTime.UtcNow
+                    UploadedAt = DateTime.UtcNow,
+                    ContentType = string.IsNullOrWhiteSpace(doc.ContentType) ? "application/octet-stream" : doc.ContentType,
+                    FileContent = content
                 });
             }
         }
@@ -76,7 +97,7 @@ public partial class FinancingService
 
         await LogAuditAsync(
             "WithdrawalApplication", application.Id, "Created",
-            $"{application.ApplicationNumber} submitted for {project.ProjectCode} requesting {application.AmountRequested:C0} ({application.Category}).",
+            $"{application.ApplicationNumber} submitted for {project.ProjectCode} requesting ${application.AmountRequested:N0} ({application.Category}).",
             project.Country?.Name ?? "Country", "Country", project.CountryId);
 
         var reloaded = await _db.WithdrawalApplications

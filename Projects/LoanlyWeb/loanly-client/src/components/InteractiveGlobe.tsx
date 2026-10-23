@@ -5,29 +5,26 @@ import {
   resolveIso3,
   resolveCountryName,
   computeFeatureCenter,
-  getChoroplethColor,
+  getEngagementColor,
 } from '../utils/globeHelpers';
 
+export interface EngagementInfo {
+  projectCount: number;
+  totalApproved: number;
+}
+
 interface InteractiveGlobeProps {
-  valueByIso3: Record<string, number>;
-  minVal: number;
-  maxVal: number;
-  unit: string;
-  colorScale: string;
+  engagedIso3: string[];
+  engagementByIso3: Record<string, EngagementInfo>;
   selectedIso3: string | null;
-  compareIso3List: string[];
   isMobile: boolean;
   onSelectCountry: (iso3: string, name: string) => void;
 }
 
 const InteractiveGlobe: React.FC<InteractiveGlobeProps> = ({
-  valueByIso3,
-  minVal,
-  maxVal,
-  unit,
-  colorScale,
+  engagedIso3,
+  engagementByIso3,
   selectedIso3,
-  compareIso3List,
   isMobile,
   onSelectCountry,
 }) => {
@@ -84,7 +81,7 @@ const InteractiveGlobe: React.FC<InteractiveGlobeProps> = ({
     }
   }, [selectedIso3, isMobile, features]);
 
-  const compareSet = useMemo(() => new Set(compareIso3List), [compareIso3List]);
+  const engagedSet = useMemo(() => new Set(engagedIso3), [engagedIso3]);
 
   const handlePolygonClick = (polygonObj: object) => {
     const feat = polygonObj as GeoFeature;
@@ -116,39 +113,29 @@ const InteractiveGlobe: React.FC<InteractiveGlobeProps> = ({
         polygonAltitude={(d) => {
           const iso = resolveIso3(d as GeoFeature);
           if (iso === selectedIso3) return 0.055;
-          if (compareSet.has(iso)) return 0.04;
-          return 0.012;
+          if (engagedSet.has(iso)) return 0.025;
+          return 0.01;
         }}
         polygonCapColor={(d) => {
           const iso = resolveIso3(d as GeoFeature);
-          return getChoroplethColor(
-            valueByIso3[iso],
-            minVal,
-            maxVal,
-            colorScale,
-            iso === selectedIso3,
-            compareSet.has(iso)
-          );
+          return getEngagementColor(engagedSet.has(iso), iso === selectedIso3, false);
         }}
         polygonSideColor={() => 'rgba(15, 23, 42, 0.55)'}
         polygonStrokeColor={(d) => {
           const iso = resolveIso3(d as GeoFeature);
           if (iso === selectedIso3) return '#fde047';
-          if (compareSet.has(iso)) return '#38bdf8';
-          return 'rgba(148, 163, 184, 0.32)';
+          if (engagedSet.has(iso)) return 'rgba(16, 185, 129, 0.55)';
+          return 'rgba(148, 163, 184, 0.2)';
         }}
         polygonLabel={(d) => {
           const feat = d as GeoFeature;
           const iso = resolveIso3(feat);
           const name = resolveCountryName(feat);
-          const val = valueByIso3[iso];
-          const formatted =
-            val !== undefined
-              ? unit === 'USD'
-                ? `$${val.toLocaleString()}`
-                : `${val.toLocaleString()} ${unit}`
-              : 'No data for selected year';
-          return `<div class="globe-tooltip"><strong>${name} (${iso})</strong><div>${formatted}</div><small>Tap to inspect &amp; compare</small></div>`;
+          const info = engagementByIso3[iso];
+          if (info) {
+            return `<div class="globe-tooltip"><strong>${name} (${iso})</strong><div>${info.projectCount} active project${info.projectCount === 1 ? '' : 's'} &middot; $${(info.totalApproved / 1e6).toFixed(0)}M approved</div><small>Click to view engagement</small></div>`;
+          }
+          return `<div class="globe-tooltip"><strong>${name}</strong><small>No active World Bank Client Connection engagement</small></div>`;
         }}
         onPolygonClick={handlePolygonClick}
         polygonsTransitionDuration={350}

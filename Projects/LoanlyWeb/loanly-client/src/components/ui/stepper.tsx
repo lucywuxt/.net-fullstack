@@ -5,14 +5,17 @@ import { cn } from '@/lib/utils';
 export const Stepper: React.FC<{ stages: string[]; currentIndex: number }> = ({ stages, currentIndex }) => (
   <div className="flex items-center">
     {stages.map((stage, i) => {
-      const done = i < currentIndex;
-      const current = i === currentIndex;
+      const isLastStage = i === stages.length - 1;
+      // The terminal stage (Closed) has nothing left to progress toward, so being
+      // "current" there means the lifecycle is complete — render it as done, not in-progress.
+      const done = i < currentIndex || (isLastStage && i === currentIndex);
+      const current = i === currentIndex && !done;
       return (
         <React.Fragment key={stage}>
           <div className="flex flex-col items-center gap-1">
             <div
               className={cn(
-                'flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-mono',
+                'flex h-7 w-7 items-center justify-center rounded-full text-xs font-mono',
                 done
                   ? 'bg-emerald-500 text-zinc-950'
                   : current
@@ -20,9 +23,9 @@ export const Stepper: React.FC<{ stages: string[]; currentIndex: number }> = ({ 
                   : 'border border-border text-muted-foreground'
               )}
             >
-              {done ? <Check className="h-3 w-3" /> : i + 1}
+              {done ? <Check className="h-3.5 w-3.5" /> : i + 1}
             </div>
-            <span className={cn('text-[10px] whitespace-nowrap', current ? 'text-foreground' : 'text-muted-foreground')}>
+            <span className={cn('text-xs font-medium whitespace-nowrap', current ? 'text-foreground' : 'text-muted-foreground')}>
               {stage}
             </span>
           </div>

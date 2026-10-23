@@ -81,6 +81,26 @@ public class WithdrawalsController : ControllerBase
         }
     }
 
+    [HttpGet("documents/{id:int}/content")]
+    public async Task<IActionResult> GetDocumentContent(int id)
+    {
+        try
+        {
+            var content = await _financing.GetSupportingDocumentContentAsync(id);
+            var role = User.FindFirstValue(ClaimTypes.Role);
+            if (role == "Country")
+            {
+                int callerCountryId = int.Parse(User.FindFirstValue("countryId") ?? "0");
+                if (content.OwnerCountryId != callerCountryId) return Forbid();
+            }
+            return File(content.Bytes, content.ContentType, content.FileName);
+        }
+        catch (ServiceValidationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
     [HttpGet("disbursements")]
     public async Task<ActionResult<List<DisbursementDto>>> GetDisbursements([FromQuery] int? projectId = null)
     {

@@ -1,5 +1,6 @@
 using Loanly.Api.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Loanly.Api.Data;
 
@@ -17,6 +18,41 @@ public class LoanlyDbContext : DbContext
     public DbSet<ResultsIndicator> ResultsIndicators => Set<ResultsIndicator>();
     public DbSet<SupportingDocument> SupportingDocuments => Set<SupportingDocument>();
     public DbSet<AuditLogEntry> AuditLogEntries => Set<AuditLogEntry>();
+
+    // SQL Server's datetime2 columns don't persist DateTimeKind — every value we
+    // write is already UTC (DateTime.UtcNow throughout this codebase), but EF Core
+    // reads it back as Kind=Unspecified, so System.Text.Json serializes it without
+    // the trailing "Z" and the browser then treats it as local time instead of
+    // converting. Stamp Kind=Utc back on every DateTime read from the database so
+    // timestamps serialize correctly and the frontend converts them to the
+    // viewer's own timezone instead of displaying the raw UTC value.
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        base.ConfigureConventions(configurationBuilder);
+
+        configurationBuilder.Properties<DateTime>()
+            .HaveConversion<UtcDateTimeConverter>();
+        configurationBuilder.Properties<DateTime?>()
+            .HaveConversion<NullableUtcDateTimeConverter>();
+    }
+
+    private class UtcDateTimeConverter : ValueConverter<DateTime, DateTime>
+    {
+        public UtcDateTimeConverter() : base(
+            v => v,
+            v => DateTime.SpecifyKind(v, DateTimeKind.Utc))
+        {
+        }
+    }
+
+    private class NullableUtcDateTimeConverter : ValueConverter<DateTime?, DateTime?>
+    {
+        public NullableUtcDateTimeConverter() : base(
+            v => v,
+            v => v.HasValue ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc) : v)
+        {
+        }
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -93,6 +129,7 @@ public class LoanlyDbContext : DbContext
         modelBuilder.Entity<SupportingDocument>(entity =>
         {
             entity.Property(d => d.DocumentType).HasConversion<string>().HasMaxLength(40);
+            entity.Property(d => d.FileContent).HasColumnType("varbinary(max)");
 
             entity.HasOne(d => d.WithdrawalApplication)
                 .WithMany(w => w.SupportingDocuments)

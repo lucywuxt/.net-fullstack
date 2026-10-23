@@ -85,6 +85,22 @@ public class ProjectsController : ControllerBase
         }
     }
 
+    [HttpDelete("{id:int}")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> DeleteProject(int id)
+    {
+        try
+        {
+            int adminId = int.Parse(User.FindFirstValue("adminId") ?? "0");
+            await _financing.DeleteProjectAsync(adminId, id);
+            return NoContent();
+        }
+        catch (ServiceValidationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
     [HttpPost("{id:int}/indicators")]
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult<ResultsIndicatorDto>> UpsertIndicator(int id, [FromBody] UpsertResultsIndicatorRequestDto request)

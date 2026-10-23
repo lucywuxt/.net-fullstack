@@ -1,9 +1,47 @@
 import React, { useState } from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { MessageSquare, Send, Sparkles, X, Minimize2 } from 'lucide-react';
 import { api } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { Button } from './ui/button';
 import { cn } from '@/lib/utils';
+
+const MARKDOWN_COMPONENTS = {
+  p: ({ children }: React.ComponentPropsWithoutRef<'p'>) => <p className="mb-1.5 last:mb-0">{children}</p>,
+  ul: ({ children }: React.ComponentPropsWithoutRef<'ul'>) => (
+    <ul className="mb-1.5 list-disc space-y-0.5 pl-4 last:mb-0">{children}</ul>
+  ),
+  ol: ({ children }: React.ComponentPropsWithoutRef<'ol'>) => (
+    <ol className="mb-1.5 list-decimal space-y-0.5 pl-4 last:mb-0">{children}</ol>
+  ),
+  li: ({ children }: React.ComponentPropsWithoutRef<'li'>) => <li>{children}</li>,
+  strong: ({ children }: React.ComponentPropsWithoutRef<'strong'>) => (
+    <strong className="font-semibold text-foreground">{children}</strong>
+  ),
+  a: ({ children, href }: React.ComponentPropsWithoutRef<'a'>) => (
+    <a href={href} target="_blank" rel="noreferrer" className="text-emerald-400 underline underline-offset-2">
+      {children}
+    </a>
+  ),
+  code: ({ children }: React.ComponentPropsWithoutRef<'code'>) => (
+    <code className="rounded bg-background/60 px-1 py-0.5 font-mono text-[11px]">{children}</code>
+  ),
+  pre: ({ children }: React.ComponentPropsWithoutRef<'pre'>) => (
+    <pre className="mb-1.5 overflow-x-auto rounded-md bg-background/60 p-2 font-mono text-[11px] last:mb-0">{children}</pre>
+  ),
+  h1: ({ children }: React.ComponentPropsWithoutRef<'h1'>) => <p className="mb-1 font-semibold text-foreground">{children}</p>,
+  h2: ({ children }: React.ComponentPropsWithoutRef<'h2'>) => <p className="mb-1 font-semibold text-foreground">{children}</p>,
+  h3: ({ children }: React.ComponentPropsWithoutRef<'h3'>) => <p className="mb-1 font-semibold text-foreground">{children}</p>,
+};
+
+const ChatMarkdown: React.FC<{ content: string }> = ({ content }) => (
+  <div className="prose-chat">
+    <ReactMarkdown remarkPlugins={[remarkGfm]} components={MARKDOWN_COMPONENTS}>
+      {content}
+    </ReactMarkdown>
+  </div>
+);
 
 interface ChatMessage {
   role: 'user' | 'assistant';
@@ -20,8 +58,6 @@ export const AiChatWidget: React.FC<AiChatWidgetProps> = ({ selectedProjectId, s
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [modelBadge, setModelBadge] = useState('gemini-3.6-flash');
-  const [contextSummary, setContextSummary] = useState('Live Client Connection Context');
   const [suggestions, setSuggestions] = useState<string[]>([
     "What's the status of my latest withdrawal application?",
     'Which expenditure category does consultant travel fall under?',
@@ -31,7 +67,7 @@ export const AiChatWidget: React.FC<AiChatWidgetProps> = ({ selectedProjectId, s
     {
       role: 'assistant',
       content:
-        'Welcome to the **Loanly Client Connection Operations Assistant** (powered by **Gemini 3.6 Flash**). Ask me about your active project ceilings, Withdrawal Application statuses, expenditure categories (Works, Goods, ConsultingServices, Training, OperatingCosts), or IBRD/IDA instruments.',
+        'Welcome to the **Loanly Client Connection Operations Assistant**. Ask me about your active project ceilings, Withdrawal Application statuses, expenditure categories (Works, Goods, ConsultingServices, Training, OperatingCosts), or IBRD/IDA instruments.',
     },
   ]);
 
@@ -54,8 +90,6 @@ export const AiChatWidget: React.FC<AiChatWidgetProps> = ({ selectedProjectId, s
         history: nextMessages.slice(-6),
       });
       setMessages([...nextMessages, { role: 'assistant', content: response.reply }]);
-      setModelBadge(response.modelUsed);
-      setContextSummary(response.contextSummary);
       if (response.suggestedFollowUps?.length) {
         setSuggestions(response.suggestedFollowUps);
       }
@@ -80,7 +114,7 @@ export const AiChatWidget: React.FC<AiChatWidgetProps> = ({ selectedProjectId, s
       {!isOpen ? (
         <button
           onClick={() => setIsOpen(true)}
-          title="Open Gemini 3.6 Flash Operations Assistant"
+          title="Open Client Connection Operations Assistant"
           className="liquid-glass liquid-glass-lift flex items-center gap-2 rounded-full border-emerald-500/30 px-4 py-2.5 text-sm font-medium text-foreground shadow-lg hover:border-emerald-500/60"
         >
           <Sparkles className="h-4 w-4 text-emerald-400" />
@@ -96,9 +130,7 @@ export const AiChatWidget: React.FC<AiChatWidgetProps> = ({ selectedProjectId, s
               </div>
               <div>
                 <div className="text-xs font-semibold text-foreground">Client Connection Assistant</div>
-                <div className="text-[10px] text-muted-foreground">
-                  {modelBadge} • {contextSummary}
-                </div>
+                <div className="text-[10px] text-muted-foreground">Live Client Connection Context</div>
               </div>
             </div>
             <div className="flex items-center gap-1">
@@ -133,7 +165,7 @@ export const AiChatWidget: React.FC<AiChatWidgetProps> = ({ selectedProjectId, s
                 <div className="mb-1 text-[10px] font-medium text-muted-foreground">
                   {m.role === 'assistant' ? 'WB Operations AI' : user.name}
                 </div>
-                <div className="whitespace-pre-wrap">{m.content}</div>
+                <ChatMarkdown content={m.content} />
               </div>
             ))}
             {loading && (

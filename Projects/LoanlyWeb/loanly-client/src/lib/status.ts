@@ -1,4 +1,4 @@
-export type BadgeTone = 'active' | 'pipeline' | 'risk' | 'muted' | 'default';
+export type BadgeTone = 'active' | 'pipeline' | 'info' | 'risk' | 'muted' | 'default';
 
 export const PROJECT_STATUS_TONE: Record<string, BadgeTone> = {
   Active: 'active',
@@ -10,9 +10,9 @@ export const PROJECT_STATUS_TONE: Record<string, BadgeTone> = {
 };
 
 export const WITHDRAWAL_STATUS_TONE: Record<string, BadgeTone> = {
-  Approved: 'active',
-  Disbursed: 'active',
+  Submitted: 'muted',
   UnderReview: 'pipeline',
-  Submitted: 'pipeline',
+  Approved: 'info',
+  Disbursed: 'active',
   Rejected: 'risk',
 };

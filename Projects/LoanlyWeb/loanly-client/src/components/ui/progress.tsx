@@ -12,7 +12,7 @@ export const ProgressBar: React.FC<{ percent: number; tone?: keyof typeof TONE; 
   tone = 'emerald',
   className,
 }) => (
-  <div className={cn('h-1.5 w-full overflow-hidden rounded-full bg-muted', className)}>
+  <div className={cn('h-2.5 w-full overflow-hidden rounded-full bg-muted-foreground/20', className)}>
     <div
       className={cn('h-full rounded-full transition-all', TONE[tone])}
       style={{ width: `${Math.min(100, Math.max(0, percent))}%` }}

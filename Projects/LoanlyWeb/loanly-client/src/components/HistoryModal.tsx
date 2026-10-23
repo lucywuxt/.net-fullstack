@@ -1,9 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { History, FileCheck2 } from 'lucide-react';
+import { History, FileCheck2, Eye, Loader2 } from 'lucide-react';
 import type { AuditLogEntry, SupportingDocument } from '../types/api';
 import { api } from '../services/api';
 import { Dialog, DialogHeader } from './ui/dialog';
 import { Badge } from './ui/badge';
+
+function openDocumentInNewTab(blob: Blob) {
+  const url = URL.createObjectURL(blob);
+  window.open(url, '_blank', 'noopener,noreferrer');
+  // give the new tab a moment to actually load the blob before revoking it
+  setTimeout(() => URL.revokeObjectURL(url), 60_000);
+}
 
 interface HistoryModalProps {
   entityType: 'WithdrawalApplication' | 'Project';
@@ -22,6 +29,8 @@ function formatFileSize(bytes: number): string {
 export const HistoryModal: React.FC<HistoryModalProps> = ({ entityType, entityId, title, documents, onClose }) => {
   const [entries, setEntries] = useState<AuditLogEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [viewingDocId, setViewingDocId] = useState<number | null>(null);
+  const [docError, setDocError] = useState<string | null>(null);
 
   useEffect(() => {
     const load = entityType === 'WithdrawalApplication' ? api.getWithdrawalHistory : api.getProjectHistory;
@@ -29,6 +38,19 @@ export const HistoryModal: React.FC<HistoryModalProps> = ({ entityType, entityId
       .then(setEntries)
       .finally(() => setLoading(false));
   }, [entityType, entityId]);
+
+  const handleViewDocument = async (doc: SupportingDocument) => {
+    setDocError(null);
+    setViewingDocId(doc.id);
+    try {
+      const { blob } = await api.getDocumentContent(doc.id);
+      openDocumentInNewTab(blob);
+    } catch (err) {
+      setDocError(err instanceof Error ? err.message : `Could not open ${doc.fileName}.`);
+    } finally {
+      setViewingDocId(null);
+    }
+  };
 
   return (
     <Dialog onClose={onClose} className="max-w-xl">
@@ -44,6 +66,7 @@ export const HistoryModal: React.FC<HistoryModalProps> = ({ entityType, entityId
             <div className="mb-1.5 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
               Supporting Documents ({documents.length})
             </div>
+            {docError && <p className="mb-1.5 text-[11px] text-rose-400">{docError}</p>}
             <ul className="space-y-1.5">
               {documents.map((d) => (
                 <li
@@ -54,6 +77,25 @@ export const HistoryModal: React.FC<HistoryModalProps> = ({ entityType, entityId
                   <span className="flex-1 truncate text-foreground">{d.fileName}</span>
                   <Badge variant="muted">{d.documentType}</Badge>
                   <span className="flex-shrink-0 text-muted-foreground">{formatFileSize(d.fileSizeBytes)}</span>
+                  {d.hasContent ? (
+                    <button
+                      type="button"
+                      onClick={() => handleViewDocument(d)}
+                      disabled={viewingDocId === d.id}
+                      title={`View ${d.fileName}`}
+                      className="flex-shrink-0 rounded p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-emerald-400 disabled:opacity-50"
+                    >
+                      {viewingDocId === d.id ? (
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      ) : (
+                        <Eye className="h-3.5 w-3.5" />
+                      )}
+                    </button>
+                  ) : (
+                    <span className="flex-shrink-0 text-[10px] italic text-muted-foreground" title="Uploaded before file storage was enabled">
+                      not available
+                    </span>
+                  )}
                 </li>
               ))}
             </ul>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Globe2, LogOut } from 'lucide-react';
+import type { AuditLogEntry } from '../types/api';
 import { useAuth } from '../context/AuthContext';
 import { ThemeToggle } from './ThemeToggle';
 import { NotificationBell } from './NotificationBell';
@@ -12,10 +13,18 @@ interface SidebarShellProps {
   tabs: TabItem[];
   active: string;
   onChange: (id: string) => void;
+  onNotificationClick?: (entry: AuditLogEntry) => void;
   children: React.ReactNode;
 }
 
-export const SidebarShell: React.FC<SidebarShellProps> = ({ portalLabel, tabs, active, onChange, children }) => {
+export const SidebarShell: React.FC<SidebarShellProps> = ({
+  portalLabel,
+  tabs,
+  active,
+  onChange,
+  onNotificationClick,
+  children,
+}) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -35,7 +44,7 @@ export const SidebarShell: React.FC<SidebarShellProps> = ({ portalLabel, tabs, a
 
         <div className="flex items-center justify-between px-4 pb-3">
           <span className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">{portalLabel}</span>
-          <NotificationBell />
+          <NotificationBell onEntryClick={onNotificationClick} />
         </div>
 
         <nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto px-2">
@@ -94,7 +103,7 @@ export const SidebarShell: React.FC<SidebarShellProps> = ({ portalLabel, tabs, a
             <span className="font-mono text-sm font-semibold tracking-tight">LOANLY</span>
           </Link>
           <div className="flex items-center gap-1">
-            <NotificationBell />
+            <NotificationBell onEntryClick={onNotificationClick} />
             <ThemeToggle />
             <button
               onClick={handleLogout}

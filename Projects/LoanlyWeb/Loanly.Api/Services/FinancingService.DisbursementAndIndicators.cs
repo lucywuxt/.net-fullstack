@@ -66,7 +66,7 @@ public partial class FinancingService
         var admin = await _db.Admins.FindAsync(adminId);
         await LogAuditAsync(
             "WithdrawalApplication", application.Id, "Disbursed",
-            $"{application.ApplicationNumber} disbursed {disbursement.AmountDisbursed:C0} (ref {disbursement.TransactionReference}) by {admin?.Name ?? "Admin"}.",
+            $"{application.ApplicationNumber} disbursed ${disbursement.AmountDisbursed:N0} (ref {disbursement.TransactionReference}) by {admin?.Name ?? "Admin"}.",
             admin?.Name ?? "Admin", admin?.Role.ToString() ?? "Admin", project.CountryId);
 
         return new DisbursementDto(

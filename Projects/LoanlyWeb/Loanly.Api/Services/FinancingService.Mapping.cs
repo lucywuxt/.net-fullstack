@@ -43,7 +43,7 @@ public partial class FinancingService
     );
 
     private static SupportingDocumentDto MapDocumentToDto(SupportingDocument d) => new(
-        d.Id, d.FileName, d.FileSizeBytes, d.DocumentType, d.UploadedAt
+        d.Id, d.FileName, d.FileSizeBytes, d.DocumentType, d.UploadedAt, d.FileContent != null && d.FileContent.Length > 0
     );
 
     private static AuditLogEntryDto MapAuditLogToDto(AuditLogEntry a) => new(

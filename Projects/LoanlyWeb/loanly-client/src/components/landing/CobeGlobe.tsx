@@ -1,18 +1,14 @@
 import React, { useEffect, useRef } from 'react';
 import createGlobe from 'cobe';
 import { useTheme } from '../../context/ThemeContext';
+import { COUNTRY_COORDS } from '../../lib/countryGeo';
 
-// Approximate capital/major-city coordinates for the countries this
-// app's demo portfolio actually operates in, so the decorative globe
-// still nods at real data rather than being purely arbitrary.
-const MARKED_COUNTRIES: { location: [number, number]; size: number; iso: string; name: string }[] = [
-  { location: [-1.286, 36.817], size: 0.06, iso: 'KEN', name: 'Kenya' },
-  { location: [28.6139, 77.209], size: 0.07, iso: 'IND', name: 'India' },
-  { location: [-15.793, -47.882], size: 0.06, iso: 'BRA', name: 'Brazil' },
-  { location: [21.0278, 105.8342], size: 0.05, iso: 'VNM', name: 'Vietnam' },
-  { location: [9.0765, 7.3986], size: 0.05, iso: 'NGA', name: 'Nigeria' },
-  { location: [4.711, -74.0721], size: 0.05, iso: 'COL', name: 'Colombia' },
-];
+const MARKED_COUNTRIES = Object.entries(COUNTRY_COORDS).map(([iso, c]) => ({
+  location: c.location,
+  size: iso === 'IND' ? 0.07 : 0.06,
+  iso,
+  name: c.name,
+}));
 const MARKERS = MARKED_COUNTRIES.map(({ location, size, iso }) => ({ location, size, id: iso }));
 
 interface CobeGlobeProps {

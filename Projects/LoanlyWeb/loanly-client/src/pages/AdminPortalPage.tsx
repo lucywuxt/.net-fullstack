@@ -7,7 +7,6 @@ import {
   XCircle,
   Banknote,
   Target,
-  ArrowRight,
   Clock,
   History,
   Paperclip,
@@ -19,6 +18,7 @@ import type {
   Disbursement,
   PortfolioAnalytics,
   Project,
+  ProjectSector,
   ProjectStatus,
   ResultsIndicator,
   WithdrawalApplication,
@@ -30,8 +30,11 @@ import { AdminIndicatorModal } from '../components/AdminIndicatorModal';
 import { HistoryModal } from '../components/HistoryModal';
 import { AiChatWidget } from '../components/AiChatWidget';
 import { SidebarShell } from '../components/SidebarShell';
+import { ProjectTile } from '../components/ProjectTile';
+import { ProjectDetailView } from '../components/ProjectDetailView';
 import { Card, CardContent } from '../components/ui/card';
-import { Badge } from '../components/ui/badge';
+import { Dialog, DialogHeader } from '../components/ui/dialog';
+import { Badge, badgeVariants } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { StatCard } from '../components/ui/stat-card';
 import { ProgressBar } from '../components/ui/progress';
@@ -41,7 +44,8 @@ import { Pagination } from '../components/ui/pagination';
 import { Table, TableBody, TableCell, TableHead, SortableHead, TableHeader, TableRow } from '../components/ui/table';
 import { usePagination } from '../hooks/usePagination';
 import { PROJECT_STATUS_TONE, WITHDRAWAL_STATUS_TONE } from '../lib/status';
-import { SECTOR_BADGE_CLASSES } from '../lib/sector';
+import { SECTOR_BADGE_CLASSES, SECTOR_ORDER } from '../lib/sector';
+import { cn } from '@/lib/utils';
 
 type WaSortKey = 'submittedAt' | 'amountRequested' | 'status';
 
@@ -52,6 +56,15 @@ const NEXT_STAGE_MAP: Partial<Record<ProjectStatus, ProjectStatus>> = {
   BoardApproval: 'Active',
   Active: 'Closed',
 };
+
+const PROJECT_STATUS_FILTER_OPTIONS: ProjectStatus[] = [
+  'Concept',
+  'Appraisal',
+  'Negotiation',
+  'BoardApproval',
+  'Active',
+  'Closed',
+];
 
 export const AdminPortalPage: React.FC = () => {
   const { user } = useAuth();
@@ -67,6 +80,13 @@ export const AdminPortalPage: React.FC = () => {
   const [actionBanner, setActionBanner] = useState<string | null>(null);
   const [historyTarget, setHistoryTarget] = useState<WithdrawalApplication | null>(null);
   const [projectHistoryTarget, setProjectHistoryTarget] = useState<Project | null>(null);
+  const [selectedProjectId, setSelectedProjectId] = useState<number | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Project | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [sectorFilter, setSectorFilter] = useState<Set<ProjectSector>>(new Set());
+  const [projectStatusFilter, setProjectStatusFilter] = useState<Set<ProjectStatus>>(new Set());
+  const [countryFilter, setCountryFilter] = useState<Set<string>>(new Set());
 
   const [waSearch, setWaSearch] = useState('');
   const [waStatusFilter, setWaStatusFilter] = useState<WithdrawalStatus | 'All'>('All');
@@ -94,6 +114,14 @@ export const AdminPortalPage: React.FC = () => {
   useEffect(() => {
     loadPortfolio();
   }, []);
+
+  // Guards against a stale selection (e.g. a notification pointing at a since-deleted
+  // project) leaving the detail view stuck on a blank screen.
+  useEffect(() => {
+    if (selectedProjectId != null && projects.length > 0 && !projects.some((p) => p.id === selectedProjectId)) {
+      setSelectedProjectId(null);
+    }
+  }, [projects, selectedProjectId]);
 
   const handleAdvanceLifecycle = async (project: Project) => {
     const next = NEXT_STAGE_MAP[project.status];
@@ -144,8 +172,68 @@ export const AdminPortalPage: React.FC = () => {
     }
   };
 
+  const openDeleteDialog = (project: Project) => {
+    setDeleteError(null);
+    setDeleteTarget(project);
+  };
+
+  const closeDeleteDialog = () => {
+    setDeleteTarget(null);
+    setDeleteError(null);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    setDeleteError(null);
+    try {
+      await api.deleteProject(deleteTarget.id);
+      setActionBanner(`Deleted project ${deleteTarget.projectCode} "${deleteTarget.title}".`);
+      setDeleteTarget(null);
+      setDeleteError(null);
+      setSelectedProjectId(null);
+      await loadPortfolio();
+    } catch (err) {
+      setDeleteError(err instanceof Error ? err.message : 'Failed to delete project');
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   const toggleWaSort = (key: WaSortKey) =>
     setWaSort((prev) => (prev.key === key ? { key, dir: prev.dir === 'asc' ? 'desc' : 'asc' } : { key, dir: 'desc' }));
+
+  const toggleSectorFilter = (sector: ProjectSector) =>
+    setSectorFilter((prev) => {
+      const next = new Set(prev);
+      next.has(sector) ? next.delete(sector) : next.add(sector);
+      return next;
+    });
+
+  const toggleProjectStatusFilter = (status: ProjectStatus) =>
+    setProjectStatusFilter((prev) => {
+      const next = new Set(prev);
+      next.has(status) ? next.delete(status) : next.add(status);
+      return next;
+    });
+
+  const toggleCountryFilter = (iso3: string) =>
+    setCountryFilter((prev) => {
+      const next = new Set(prev);
+      next.has(iso3) ? next.delete(iso3) : next.add(iso3);
+      return next;
+    });
+
+  const filteredProjects = useMemo(
+    () =>
+      projects.filter(
+        (p) =>
+          (sectorFilter.size === 0 || sectorFilter.has(p.sector)) &&
+          (projectStatusFilter.size === 0 || projectStatusFilter.has(p.status)) &&
+          (countryFilter.size === 0 || countryFilter.has(p.countryIso3))
+      ),
+    [projects, sectorFilter, projectStatusFilter, countryFilter]
+  );
 
   const filteredWithdrawals = useMemo(() => {
     const q = waSearch.trim().toLowerCase();
@@ -175,112 +263,200 @@ export const AdminPortalPage: React.FC = () => {
       portalLabel="Task Team Portal"
       active={activeTab}
       onChange={(id) => setActiveTab(id as typeof activeTab)}
+      onNotificationClick={(entry) => {
+        const projectId =
+          entry.entityType === 'Project'
+            ? entry.entityId
+            : entry.entityType === 'WithdrawalApplication'
+            ? withdrawals.find((w) => w.id === entry.entityId)?.projectId
+            : undefined;
+        if (projectId == null) return;
+        setActiveTab('projects');
+        setSelectedProjectId(projectId);
+      }}
       tabs={[
         { id: 'dashboard', label: 'Portfolio Analytics', icon: <PieChartIcon className="h-3.5 w-3.5" /> },
-        { id: 'projects', label: `Project Lifecycle (${projects.length})`, icon: <Landmark className="h-3.5 w-3.5" /> },
-        { id: 'withdrawals', label: `Withdrawal Review & Disbursements (${withdrawals.length})`, icon: <Banknote className="h-3.5 w-3.5" /> },
+        { id: 'projects', label: 'Project Lifecycle', icon: <Landmark className="h-3.5 w-3.5" /> },
+        { id: 'withdrawals', label: 'Withdrawal Review & Disbursements', icon: <Banknote className="h-3.5 w-3.5" /> },
         { id: 'indicators', label: 'Results Indicators (PDO)', icon: <Target className="h-3.5 w-3.5" /> },
       ]}
     >
     <div className="space-y-6">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <Badge variant="pipeline" className="mb-2">
-            WORLD BANK INTERNAL OPERATIONS • {user?.subRoleOrRegion?.toUpperCase()}
-          </Badge>
-          <h1 className="text-xl font-semibold text-foreground">Task Team &amp; WFACS Disbursement Control Center</h1>
-          <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
-            Manage sovereign project lifecycles, enforce financing ceilings on Withdrawal Applications, record
-            Designated Account disbursements, and track PDO Results Indicators.
-          </p>
-        </div>
-        <Button onClick={() => setShowCreateProject(true)}>
-          <FolderPlus className="h-4 w-4" />
-          Create New Project
-        </Button>
-      </div>
+      {!(activeTab === 'projects' && selectedProjectId) && (
+        <>
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <Badge variant="pipeline" className="mb-2">
+                WORLD BANK INTERNAL OPERATIONS • {user?.subRoleOrRegion?.toUpperCase()}
+              </Badge>
+              <h1 className="text-xl font-semibold text-foreground">Task Team &amp; WFACS Disbursement Control Center</h1>
+              <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
+                Manage sovereign project lifecycles, enforce financing ceilings on Withdrawal Applications, record
+                Designated Account disbursements, and track PDO Results Indicators.
+              </p>
+            </div>
+            <Button onClick={() => setShowCreateProject(true)}>
+              <FolderPlus className="h-4 w-4" />
+              Create New Project
+            </Button>
+          </div>
+
+          {analytics && (
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              <StatCard
+                icon={<Landmark className="h-4 w-4" />}
+                tone="sky"
+                label="Total Portfolio Committed"
+                value={`$${analytics.totalCommitted.toLocaleString()}`}
+                sub={`${analytics.totalProjectsCount} Projects (${analytics.activeProjectsCount} Active)`}
+              />
+              <StatCard
+                icon={<CheckCircle2 className="h-4 w-4" />}
+                tone="emerald"
+                label="Total Disbursed"
+                value={`$${analytics.totalDisbursed.toLocaleString()}`}
+                sub={`${analytics.disbursementRatePercent}% Portfolio Disbursement Rate`}
+              />
+              <StatCard
+                icon={<Banknote className="h-4 w-4" />}
+                tone="amber"
+                label="Total Undisbursed Ceiling"
+                value={`$${analytics.totalUndisbursed.toLocaleString()}`}
+                sub="Available Across Approved Portfolio"
+              />
+              <StatCard
+                icon={<Clock className="h-4 w-4" />}
+                tone="violet"
+                label="Actionable Withdrawal Queue"
+                value={`${analytics.pendingWithdrawalsCount} WAs`}
+                sub={`$${analytics.pendingWithdrawalsVolume.toLocaleString()} Pending Volume`}
+              />
+            </div>
+          )}
+        </>
+      )}
 
       {actionError && <Alert variant="error">{actionError}</Alert>}
       {actionBanner && <Alert variant="success">{actionBanner}</Alert>}
 
-      {analytics && (
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <StatCard
-            icon={<Landmark className="h-4 w-4" />}
-            tone="sky"
-            label="Total Portfolio Committed"
-            value={`$${analytics.totalCommitted.toLocaleString()}`}
-            sub={`${analytics.totalProjectsCount} Projects (${analytics.activeProjectsCount} Active)`}
-          />
-          <StatCard
-            icon={<CheckCircle2 className="h-4 w-4" />}
-            tone="emerald"
-            label="Total Disbursed"
-            value={`$${analytics.totalDisbursed.toLocaleString()}`}
-            sub={`${analytics.disbursementRatePercent}% Portfolio Disbursement Rate`}
-          />
-          <StatCard
-            icon={<Banknote className="h-4 w-4" />}
-            tone="amber"
-            label="Total Undisbursed Ceiling"
-            value={`$${analytics.totalUndisbursed.toLocaleString()}`}
-            sub="Available Across Approved Portfolio"
-          />
-          <StatCard
-            icon={<Clock className="h-4 w-4" />}
-            tone="violet"
-            label="Actionable Withdrawal Queue"
-            value={`${analytics.pendingWithdrawalsCount} WAs`}
-            sub={`$${analytics.pendingWithdrawalsVolume.toLocaleString()} Pending Volume`}
-          />
-        </div>
+      {activeTab === 'dashboard' && analytics && (
+        <AdminPortfolioCharts
+          analytics={analytics}
+          projects={projects}
+          onSelectCountry={(iso3) => {
+            setCountryFilter(new Set([iso3]));
+            setSectorFilter(new Set());
+            setProjectStatusFilter(new Set());
+            setSelectedProjectId(null);
+            setActiveTab('projects');
+          }}
+        />
       )}
 
-      {activeTab === 'dashboard' && analytics && <AdminPortfolioCharts analytics={analytics} />}
-
       {activeTab === 'projects' && (
-        <div className="space-y-3">
-          {projects.map((p) => {
-            const nextStage = NEXT_STAGE_MAP[p.status];
+        selectedProjectId ? (
+          (() => {
+            const selected = projects.find((p) => p.id === selectedProjectId);
+            if (!selected) return null;
             return (
-              <Card key={p.id} className="p-4">
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div>
-                    <div className="mb-1.5 flex flex-wrap items-center gap-1.5">
-                      <Badge variant="muted">{p.countryName} ({p.countryIso3})</Badge>
-                      <Badge variant="muted">{p.financingInstrument}</Badge>
-                      <Badge variant="muted" className={SECTOR_BADGE_CLASSES[p.sector]}>{p.sector}</Badge>
-                      <Badge variant={PROJECT_STATUS_TONE[p.status] ?? 'default'}>{p.status}</Badge>
-                    </div>
-                    <h3 className="text-sm font-semibold text-foreground">{p.title}</h3>
-                    <p className="mt-1 max-w-2xl text-xs text-muted-foreground">{p.projectDevelopmentObjective}</p>
-                  </div>
-                  <div className="flex shrink-0 gap-2">
-                    {nextStage && (
-                      <Button size="sm" onClick={() => handleAdvanceLifecycle(p)}>
-                        Advance to {nextStage}
-                        <ArrowRight className="h-3.5 w-3.5" />
-                      </Button>
-                    )}
-                    <Button size="sm" variant="outline" onClick={() => setIndicatorModal({ project: p })}>
-                      <Target className="h-3.5 w-3.5" />
-                      Indicator
-                    </Button>
-                    <Button size="sm" variant="outline" onClick={() => setProjectHistoryTarget(p)}>
-                      <History className="h-3.5 w-3.5" />
-                    </Button>
-                  </div>
-                </div>
-                <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[11px] text-muted-foreground">
-                  <span>Ceiling: <strong className="text-foreground">${p.approvedAmount.toLocaleString()}</strong></span>
-                  <span>Disbursed: <strong className="text-emerald-400">${p.totalDisbursed.toLocaleString()}</strong></span>
-                  <span>Pending: <strong className="text-amber-400">${p.committedPendingDisbursement.toLocaleString()}</strong></span>
-                  <span>Remaining: <strong className="text-sky-400">${p.remainingUndisbursedAmount.toLocaleString()}</strong></span>
-                </div>
-              </Card>
+              <ProjectDetailView
+                project={selected}
+                withdrawals={withdrawals.filter((w) => w.projectId === selectedProjectId)}
+                disbursements={disbursements.filter((d) => d.projectId === selectedProjectId)}
+                onBack={() => setSelectedProjectId(null)}
+                onShowHistory={setHistoryTarget}
+                admin={{
+                  nextStage: NEXT_STAGE_MAP[selected.status],
+                  onAdvanceLifecycle: () => handleAdvanceLifecycle(selected),
+                  onManageIndicator: (existing) => setIndicatorModal({ project: selected, existing }),
+                  onShowProjectHistory: () => setProjectHistoryTarget(selected),
+                  onReviewWithdrawal: handleReviewWA,
+                  onRecordDisbursement: handleRecordDisbursement,
+                  onDeleteProject: () => openDeleteDialog(selected),
+                }}
+              />
             );
-          })}
-        </div>
+          })()
+        ) : (
+          <div className="space-y-4">
+            <div className="flex flex-wrap items-center gap-1.5">
+              <span className="mr-1 text-xs text-muted-foreground">Sector</span>
+              {SECTOR_ORDER.map((sector) => (
+                <button
+                  key={sector}
+                  type="button"
+                  onClick={() => toggleSectorFilter(sector as ProjectSector)}
+                  className={cn(
+                    badgeVariants({ variant: 'muted' }),
+                    'cursor-pointer transition-colors',
+                    sectorFilter.has(sector as ProjectSector)
+                      ? SECTOR_BADGE_CLASSES[sector]
+                      : 'opacity-60 hover:opacity-100'
+                  )}
+                >
+                  {sector}
+                </button>
+              ))}
+              <span className="ml-3 mr-1 text-xs text-muted-foreground">Status</span>
+              {PROJECT_STATUS_FILTER_OPTIONS.map((status) => (
+                <button
+                  key={status}
+                  type="button"
+                  onClick={() => toggleProjectStatusFilter(status)}
+                  className={cn(
+                    badgeVariants({ variant: projectStatusFilter.has(status) ? PROJECT_STATUS_TONE[status] : 'muted' }),
+                    'cursor-pointer transition-colors',
+                    !projectStatusFilter.has(status) && 'opacity-60 hover:opacity-100'
+                  )}
+                >
+                  {status}
+                </button>
+              ))}
+              <span className="ml-3 mr-1 text-xs text-muted-foreground">Country</span>
+              {countries.map((c) => (
+                <button
+                  key={c.isoAlpha3}
+                  type="button"
+                  onClick={() => toggleCountryFilter(c.isoAlpha3)}
+                  className={cn(
+                    badgeVariants({ variant: 'muted' }),
+                    'cursor-pointer transition-colors',
+                    countryFilter.has(c.isoAlpha3)
+                      ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400'
+                      : 'opacity-60 hover:opacity-100'
+                  )}
+                >
+                  {c.isoAlpha3}
+                </button>
+              ))}
+              {(sectorFilter.size > 0 || projectStatusFilter.size > 0 || countryFilter.size > 0) && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSectorFilter(new Set());
+                    setProjectStatusFilter(new Set());
+                    setCountryFilter(new Set());
+                  }}
+                  className="ml-2 text-xs text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+                >
+                  Clear filters
+                </button>
+              )}
+            </div>
+
+            {filteredProjects.length === 0 ? (
+              <div className="py-12 text-center text-sm text-muted-foreground">
+                No projects match the selected filters.
+              </div>
+            ) : (
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {filteredProjects.map((p) => (
+                  <ProjectTile key={p.id} project={p} onClick={() => setSelectedProjectId(p.id)} />
+                ))}
+              </div>
+            )}
+          </div>
+        )
       )}
 
       {activeTab === 'withdrawals' && (
@@ -485,6 +661,31 @@ export const AdminPortalPage: React.FC = () => {
           title={`History — ${projectHistoryTarget.title}`}
           onClose={() => setProjectHistoryTarget(null)}
         />
+      )}
+
+      {deleteTarget && (
+        <Dialog onClose={() => (deleting ? undefined : closeDeleteDialog())}>
+          <DialogHeader title="Delete Project" onClose={closeDeleteDialog} />
+          <div className="p-4">
+            <p className="text-sm text-muted-foreground">
+              Are you sure you want to permanently delete <strong className="text-foreground">{deleteTarget.projectCode} &ldquo;{deleteTarget.title}&rdquo;</strong>?
+              This also removes its Withdrawal Applications and Results Indicators, and cannot be undone.
+            </p>
+            {deleteError && <Alert variant="error" className="mt-3">{deleteError}</Alert>}
+            <div className="mt-4 flex justify-end gap-2">
+              <Button variant="outline" onClick={closeDeleteDialog} disabled={deleting}>
+                Cancel
+              </Button>
+              <Button
+                className="bg-rose-500 text-zinc-950 hover:bg-rose-400"
+                onClick={handleConfirmDelete}
+                disabled={deleting}
+              >
+                {deleting ? 'Deleting…' : 'Delete Project'}
+              </Button>
+            </div>
+          </div>
+        </Dialog>
       )}
 
       <AiChatWidget />

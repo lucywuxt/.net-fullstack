@@ -36,39 +36,10 @@ export function computeFeatureCenter(feat: GeoFeature): { lat: number; lng: numb
   return { lat: 10, lng: 20 };
 }
 
-export function getChoroplethColor(
-  value: number | undefined,
-  minVal: number,
-  maxVal: number,
-  scale: string,
-  isSelected: boolean,
-  isCompared: boolean
-): string {
+/** Binary "is this country an active Loanly engagement" color, not a generic data choropleth. */
+export function getEngagementColor(isEngaged: boolean, isSelected: boolean, isCompared: boolean): string {
   if (isSelected) return 'rgba(250, 204, 21, 0.92)';
   if (isCompared) return 'rgba(56, 189, 248, 0.88)';
-  if (value === undefined || Number.isNaN(value)) return 'rgba(30, 41, 59, 0.65)';
-
-  const span = Math.max(maxVal - minVal, 0.0001);
-  const rawRatio = Math.max(0, Math.min(1, (value - minVal) / span));
-  const t = scale === 'emerald' ? Math.pow(rawRatio, 0.45) : rawRatio;
-
-  if (scale === 'amber') {
-    return `rgba(${Math.round(60 + 195 * t)}, ${Math.round(50 + 145 * t)}, ${Math.round(30 + 30 * (1 - t))}, 0.84)`;
-  }
-  if (scale === 'rose') {
-    return `rgba(${Math.round(70 + 175 * t)}, ${Math.round(45 + 40 * (1 - t))}, ${Math.round(80 + 50 * t)}, 0.84)`;
-  }
-  if (scale === 'violet') {
-    return `rgba(${Math.round(55 + 135 * t)}, ${Math.round(50 + 60 * t)}, ${Math.round(110 + 140 * t)}, 0.84)`;
-  }
-  if (scale === 'cyan') {
-    return `rgba(${Math.round(20 + 40 * t)}, ${Math.round(80 + 145 * t)}, ${Math.round(130 + 115 * t)}, 0.84)`;
-  }
-  if (scale === 'sky') {
-    return `rgba(${Math.round(30 + 25 * t)}, ${Math.round(100 + 90 * t)}, ${Math.round(160 + 80 * t)}, 0.84)`;
-  }
-  if (scale === 'indigo') {
-    return `rgba(${Math.round(60 + 40 * t)}, ${Math.round(55 + 50 * t)}, ${Math.round(150 + 90 * t)}, 0.84)`;
-  }
-  return `rgba(${Math.round(16 + 35 * t)}, ${Math.round(75 + 155 * t)}, ${Math.round(90 + 75 * t)}, 0.85)`;
+  if (isEngaged) return 'rgba(16, 185, 129, 0.75)';
+  return 'rgba(71, 85, 105, 0.3)';
 }

@@ -37,6 +37,21 @@ function formatFileSize(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
+const MAX_FILE_BYTES = 8 * 1024 * 1024;
+
+function readFileAsBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      // strip the "data:<mime>;base64," prefix — we send contentType separately
+      resolve(result.slice(result.indexOf(',') + 1));
+    };
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(file);
+  });
+}
+
 interface PickedFile {
   file: File;
   documentType: SupportingDocumentType;
@@ -57,7 +72,14 @@ export const WithdrawalModal: React.FC<WithdrawalModalProps> = ({ project, onClo
 
   const handleFilesPicked = (fileList: FileList | null) => {
     if (!fileList) return;
-    const picked = Array.from(fileList).map((file) => ({ file, documentType: 'Other' as SupportingDocumentType }));
+    const incoming = Array.from(fileList);
+    const oversized = incoming.filter((f) => f.size > MAX_FILE_BYTES);
+    if (oversized.length > 0) {
+      setError(`${oversized.map((f) => f.name).join(', ')} exceed${oversized.length === 1 ? 's' : ''} the 8 MB per-file upload limit and was not attached.`);
+    }
+    const picked = incoming
+      .filter((f) => f.size <= MAX_FILE_BYTES)
+      .map((file) => ({ file, documentType: 'Other' as SupportingDocumentType }));
     setFiles((prev) => [...prev, ...picked]);
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
@@ -75,16 +97,21 @@ export const WithdrawalModal: React.FC<WithdrawalModalProps> = ({ project, onClo
     setError(null);
     setSubmitting(true);
     try {
+      const documents = await Promise.all(
+        files.map(async (f) => ({
+          fileName: f.file.name,
+          fileSizeBytes: f.file.size,
+          documentType: f.documentType,
+          contentType: f.file.type || 'application/octet-stream',
+          fileContentBase64: await readFileAsBase64(f.file),
+        }))
+      );
       await api.submitWithdrawal({
         projectId: project.id,
         category,
         amountRequested: Number(amount),
         supportingDocumentsNote: docsNote,
-        documents: files.map((f) => ({
-          fileName: f.file.name,
-          fileSizeBytes: f.file.size,
-          documentType: f.documentType,
-        })),
+        documents,
       });
       onSubmitted();
     } catch (err) {
@@ -208,7 +235,7 @@ export const WithdrawalModal: React.FC<WithdrawalModalProps> = ({ project, onClo
             </ul>
           )}
           <p className="mt-1 text-[11px] text-muted-foreground">
-            File metadata only (name, size, type) is recorded — files are not uploaded or stored.
+            Files are attached to the Withdrawal Application and can be viewed later from its History. 8 MB limit per file.
           </p>
         </div>
 

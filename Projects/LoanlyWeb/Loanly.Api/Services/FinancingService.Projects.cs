@@ -113,7 +113,7 @@ public partial class FinancingService
         var admin = await _db.Admins.FindAsync(adminId);
         await LogAuditAsync(
             "Project", project.Id, "Created",
-            $"{project.ProjectCode} \"{project.Title}\" created for {country.Name} ({project.Sector}, {project.ApprovedAmount:C0}).",
+            $"{project.ProjectCode} \"{project.Title}\" created for {country.Name} ({project.Sector}, ${project.ApprovedAmount:N0}).",
             admin?.Name ?? "Admin", admin?.Role.ToString() ?? "Admin", country.Id);
 
         return (await GetProjectByIdAsync(project.Id))!;
@@ -158,5 +158,26 @@ public partial class FinancingService
             admin?.Name ?? "Admin", admin?.Role.ToString() ?? "Admin", project.CountryId);
 
         return (await GetProjectByIdAsync(project.Id))!;
+    }
+
+    public async Task DeleteProjectAsync(int adminId, int projectId)
+    {
+        var project = await _db.Projects
+            .Include(p => p.WithdrawalApplications).ThenInclude(w => w.Disbursement)
+            .FirstOrDefaultAsync(p => p.Id == projectId)
+            ?? throw new ServiceValidationException($"Project with ID {projectId} was not found.");
+
+        if (project.WithdrawalApplications.Any(w => w.Disbursement != null))
+            throw new ServiceValidationException(
+                "Cannot delete a project that already has recorded disbursements. Close it instead to preserve the financial record.");
+
+        var admin = await _db.Admins.FindAsync(adminId);
+        await LogAuditAsync(
+            "Project", project.Id, "Deleted",
+            $"Project {project.ProjectCode} \"{project.Title}\" deleted by {admin?.Name ?? "Admin"}.",
+            admin?.Name ?? "Admin", admin?.Role.ToString() ?? "Admin", project.CountryId);
+
+        _db.Projects.Remove(project);
+        await _db.SaveChangesAsync();
     }
 }
