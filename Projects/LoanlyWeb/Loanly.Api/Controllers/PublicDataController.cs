@@ -64,7 +64,7 @@ public class PublicDataController : ControllerBase
         var projects = await _db.Projects
             .Include(p => p.Country)
             .Include(p => p.ResultsIndicators)
-            .Where(p => p.Status == ProjectStatus.Active && p.ResultsIndicators.Any())
+            .Where(p => p.Status == ProjectStatus.Active)
             .ToListAsync();
 
         var stories = projects
