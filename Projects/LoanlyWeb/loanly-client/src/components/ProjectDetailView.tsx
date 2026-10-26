@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   ArrowLeft,
   ArrowRight,
@@ -27,6 +27,8 @@ import { Stepper } from './ui/stepper';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
 import { PROJECT_STATUS_TONE, WITHDRAWAL_STATUS_TONE } from '../lib/status';
 import { SECTOR_BADGE_CLASSES } from '../lib/sector';
+import type { HighlightTarget } from './GlobalSearch';
+import { cn } from '@/lib/utils';
 
 const LIFECYCLE_STAGES: ProjectStatus[] = ['Concept', 'Appraisal', 'Negotiation', 'BoardApproval', 'Active', 'Closed'];
 
@@ -48,6 +50,7 @@ interface ProjectDetailViewProps {
   onSubmitWithdrawal?: () => void;
   onShowHistory: (w: WithdrawalApplication) => void;
   admin?: AdminActions;
+  highlightTarget?: HighlightTarget | null;
 }
 
 export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({
@@ -58,8 +61,15 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({
   onSubmitWithdrawal,
   onShowHistory,
   admin,
+  highlightTarget,
 }) => {
   const pct = p.approvedAmount > 0 ? Math.round((p.totalDisbursed / p.approvedAmount) * 100) : 0;
+
+  useEffect(() => {
+    if (!highlightTarget) return;
+    const el = document.querySelector(`[data-row-key="${highlightTarget.type}-${highlightTarget.id}"]`);
+    el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, [highlightTarget]);
 
   return (
     <div className="space-y-5">
@@ -205,7 +215,13 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({
                 </TableHeader>
                 <TableBody>
                   {withdrawals.map((w) => (
-                    <TableRow key={w.id}>
+                    <TableRow
+                      key={w.id}
+                      data-row-key={`withdrawal-${w.id}`}
+                      className={cn(
+                        highlightTarget?.type === 'withdrawal' && highlightTarget.id === w.id && 'animate-highlight-flash'
+                      )}
+                    >
                       <TableCell className="font-mono text-foreground">{w.applicationNumber}</TableCell>
                       <TableCell><Badge variant="muted">{w.category}</Badge></TableCell>
                       <TableCell className="font-mono">${w.amountRequested.toLocaleString()}</TableCell>
@@ -292,7 +308,13 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({
                 </TableHeader>
                 <TableBody>
                   {disbursements.map((d) => (
-                    <TableRow key={d.id}>
+                    <TableRow
+                      key={d.id}
+                      data-row-key={`disbursement-${d.id}`}
+                      className={cn(
+                        highlightTarget?.type === 'disbursement' && highlightTarget.id === d.id && 'animate-highlight-flash'
+                      )}
+                    >
                       <TableCell className="font-mono text-muted-foreground">{d.transactionReference}</TableCell>
                       <TableCell>{d.applicationNumber}</TableCell>
                       <TableCell className="text-right font-mono text-emerald-400">+${d.amountDisbursed.toLocaleString()}</TableCell>

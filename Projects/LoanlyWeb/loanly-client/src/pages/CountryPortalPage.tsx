@@ -18,6 +18,7 @@ import { SidebarShell } from '../components/SidebarShell';
 import { CountryFocusGlobe } from '../components/CountryFocusGlobe';
 import { ProjectTile } from '../components/ProjectTile';
 import { ProjectDetailView } from '../components/ProjectDetailView';
+import type { HighlightTarget } from '../components/GlobalSearch';
 import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
@@ -39,6 +40,7 @@ export const CountryPortalPage: React.FC = () => {
   const [disbursements, setDisbursements] = useState<Disbursement[]>([]);
   const [activeTab, setActiveTab] = useState<'projects' | 'withdrawals' | 'disbursements'>('projects');
   const [selectedProjectId, setSelectedProjectId] = useState<number | null>(null);
+  const [highlightTarget, setHighlightTarget] = useState<HighlightTarget | null>(null);
   const [modalProject, setModalProject] = useState<Project | null>(null);
   const [historyTarget, setHistoryTarget] = useState<WithdrawalApplication | null>(null);
   const [loading, setLoading] = useState(true);
@@ -132,6 +134,12 @@ export const CountryPortalPage: React.FC = () => {
   const totalRemaining = projects.reduce((acc, p) => acc + p.remainingUndisbursedAmount, 0);
   const activeProjects = projects.filter((p) => p.status === 'Active');
 
+  const navigateToProject = (projectId: number, highlight?: HighlightTarget) => {
+    setActiveTab('projects');
+    setSelectedProjectId(projectId);
+    setHighlightTarget(highlight ?? null);
+  };
+
   return (
     <SidebarShell
       portalLabel="Borrower Portal"
@@ -145,9 +153,10 @@ export const CountryPortalPage: React.FC = () => {
             ? withdrawals.find((w) => w.id === entry.entityId)?.projectId
             : undefined;
         if (projectId == null) return;
-        setActiveTab('projects');
-        setSelectedProjectId(projectId);
+        navigateToProject(projectId);
       }}
+      searchData={{ projects, withdrawals, disbursements }}
+      onSelectProject={navigateToProject}
       tabs={[
         { id: 'projects', label: 'My Projects', icon: <Landmark className="h-3.5 w-3.5" /> },
         { id: 'withdrawals', label: 'Withdrawal Applications', icon: <Clock className="h-3.5 w-3.5" /> },
@@ -208,9 +217,10 @@ export const CountryPortalPage: React.FC = () => {
               project={selected}
               withdrawals={withdrawals.filter((w) => w.projectId === selectedProjectId)}
               disbursements={disbursements.filter((d) => d.projectId === selectedProjectId)}
-              onBack={() => setSelectedProjectId(null)}
+              onBack={() => { setSelectedProjectId(null); setHighlightTarget(null); }}
               onSubmitWithdrawal={() => setModalProject(selected)}
               onShowHistory={setHistoryTarget}
+              highlightTarget={highlightTarget}
             />
           );
         })()

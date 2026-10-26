@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Loanly.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7c80c2ca0d8b64804fac132c7d13c34858a518c1")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8d387cbbd0f4578653ee1200992388b928a1c3a7")]
 [assembly: System.Reflection.AssemblyProductAttribute("Loanly.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Loanly.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

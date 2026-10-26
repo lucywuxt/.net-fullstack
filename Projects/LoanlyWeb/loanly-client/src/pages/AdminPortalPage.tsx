@@ -32,6 +32,7 @@ import { AiChatWidget } from '../components/AiChatWidget';
 import { SidebarShell } from '../components/SidebarShell';
 import { ProjectTile } from '../components/ProjectTile';
 import { ProjectDetailView } from '../components/ProjectDetailView';
+import type { HighlightTarget } from '../components/GlobalSearch';
 import { Card, CardContent } from '../components/ui/card';
 import { Dialog, DialogHeader } from '../components/ui/dialog';
 import { Badge, badgeVariants } from '../components/ui/badge';
@@ -81,6 +82,7 @@ export const AdminPortalPage: React.FC = () => {
   const [historyTarget, setHistoryTarget] = useState<WithdrawalApplication | null>(null);
   const [projectHistoryTarget, setProjectHistoryTarget] = useState<Project | null>(null);
   const [selectedProjectId, setSelectedProjectId] = useState<number | null>(null);
+  const [highlightTarget, setHighlightTarget] = useState<HighlightTarget | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Project | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
@@ -258,6 +260,12 @@ export const AdminPortalPage: React.FC = () => {
 
   const waPage = usePagination(filteredWithdrawals, 8);
 
+  const navigateToProject = (projectId: number, highlight?: HighlightTarget) => {
+    setActiveTab('projects');
+    setSelectedProjectId(projectId);
+    setHighlightTarget(highlight ?? null);
+  };
+
   return (
     <SidebarShell
       portalLabel="Task Team Portal"
@@ -271,9 +279,10 @@ export const AdminPortalPage: React.FC = () => {
             ? withdrawals.find((w) => w.id === entry.entityId)?.projectId
             : undefined;
         if (projectId == null) return;
-        setActiveTab('projects');
-        setSelectedProjectId(projectId);
+        navigateToProject(projectId);
       }}
+      searchData={{ projects, withdrawals, disbursements }}
+      onSelectProject={navigateToProject}
       tabs={[
         { id: 'dashboard', label: 'Portfolio Analytics', icon: <PieChartIcon className="h-3.5 w-3.5" /> },
         { id: 'projects', label: 'Project Lifecycle', icon: <Landmark className="h-3.5 w-3.5" /> },
@@ -363,8 +372,9 @@ export const AdminPortalPage: React.FC = () => {
                 project={selected}
                 withdrawals={withdrawals.filter((w) => w.projectId === selectedProjectId)}
                 disbursements={disbursements.filter((d) => d.projectId === selectedProjectId)}
-                onBack={() => setSelectedProjectId(null)}
+                onBack={() => { setSelectedProjectId(null); setHighlightTarget(null); }}
                 onShowHistory={setHistoryTarget}
+                highlightTarget={highlightTarget}
                 admin={{
                   nextStage: NEXT_STAGE_MAP[selected.status],
                   onAdvanceLifecycle: () => handleAdvanceLifecycle(selected),

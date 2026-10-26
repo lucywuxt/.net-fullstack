@@ -86,3 +86,21 @@
     );
   }
 }
+
+/* Momentary flash used to draw the eye to a table row jumped to from
+   Global Search (e.g. a specific withdrawal application or disbursement),
+   so landing on the project page doesn't leave the user hunting for it. */
+@layer utilities {
+  @keyframes highlight-flash {
+    0%, 15% {
+      background-color: color-mix(in srgb, #10b981 30%, transparent);
+    }
+    100% {
+      background-color: transparent;
+    }
+  }
+
+  .animate-highlight-flash {
+    animation: highlight-flash 2.2s ease-out;
+  }
+}

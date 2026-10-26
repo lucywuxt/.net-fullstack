@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Globe2, LogOut } from 'lucide-react';
-import type { AuditLogEntry } from '../types/api';
+import { Globe2, LogOut, Search } from 'lucide-react';
+import type { AuditLogEntry, Disbursement, Project, WithdrawalApplication } from '../types/api';
 import { useAuth } from '../context/AuthContext';
 import { ThemeToggle } from './ThemeToggle';
 import { NotificationBell } from './NotificationBell';
+import { GlobalSearch, type GlobalSearchHandle, type HighlightTarget } from './GlobalSearch';
 import { TabBar, type TabItem } from './ui/tabs';
 import { cn } from '@/lib/utils';
 
@@ -14,6 +15,8 @@ interface SidebarShellProps {
   active: string;
   onChange: (id: string) => void;
   onNotificationClick?: (entry: AuditLogEntry) => void;
+  searchData?: { projects: Project[]; withdrawals: WithdrawalApplication[]; disbursements: Disbursement[] };
+  onSelectProject?: (projectId: number, highlight?: HighlightTarget) => void;
   children: React.ReactNode;
 }
 
@@ -23,10 +26,13 @@ export const SidebarShell: React.FC<SidebarShellProps> = ({
   active,
   onChange,
   onNotificationClick,
+  searchData,
+  onSelectProject,
   children,
 }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const searchRef = useRef<GlobalSearchHandle>(null);
 
   const handleLogout = () => {
     logout();
@@ -35,6 +41,16 @@ export const SidebarShell: React.FC<SidebarShellProps> = ({
 
   return (
     <div className="flex h-screen overflow-hidden bg-background text-foreground">
+      {searchData && onSelectProject && (
+        <GlobalSearch
+          ref={searchRef}
+          projects={searchData.projects}
+          withdrawals={searchData.withdrawals}
+          disbursements={searchData.disbursements}
+          onSelectProject={onSelectProject}
+        />
+      )}
+
       {/* Vertical sidebar (desktop) */}
       <aside className="liquid-glass hidden w-60 shrink-0 flex-col rounded-none border-y-0 border-l-0 md:flex">
         <Link to="/" className="flex items-center gap-2 px-4 py-4">
@@ -44,7 +60,19 @@ export const SidebarShell: React.FC<SidebarShellProps> = ({
 
         <div className="flex items-center justify-between px-4 pb-3">
           <span className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">{portalLabel}</span>
-          <NotificationBell onEntryClick={onNotificationClick} />
+          <div className="flex items-center gap-1">
+            {searchData && onSelectProject && (
+              <button
+                type="button"
+                onClick={() => searchRef.current?.open()}
+                title="Search (⌘K)"
+                className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              >
+                <Search className="h-4 w-4" />
+              </button>
+            )}
+            <NotificationBell onEntryClick={onNotificationClick} />
+          </div>
         </div>
 
         <nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto px-2">
@@ -103,6 +131,16 @@ export const SidebarShell: React.FC<SidebarShellProps> = ({
             <span className="font-mono text-sm font-semibold tracking-tight">LOANLY</span>
           </Link>
           <div className="flex items-center gap-1">
+            {searchData && onSelectProject && (
+              <button
+                type="button"
+                onClick={() => searchRef.current?.open()}
+                title="Search (⌘K)"
+                className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              >
+                <Search className="h-4 w-4" />
+              </button>
+            )}
             <NotificationBell onEntryClick={onNotificationClick} />
             <ThemeToggle />
             <button
